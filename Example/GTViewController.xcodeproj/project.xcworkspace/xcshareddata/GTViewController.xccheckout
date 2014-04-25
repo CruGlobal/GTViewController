@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>C7873363-6135-4BCE-A8D6-00EB22729B65</string>
+	<key>IDESourceControlProjectName</key>
+	<string>GTViewController</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>182081EE-0262-46F7-B281-BB0D3F0E4B6A</key>
+		<string>https://github.com/CruGlobal/GTViewController.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>GTViewController/GTViewController.xcodeproj/project.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>182081EE-0262-46F7-B281-BB0D3F0E4B6A</key>
+		<string>../../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.com/CruGlobal/GTViewController.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>110</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>182081EE-0262-46F7-B281-BB0D3F0E4B6A</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>182081EE-0262-46F7-B281-BB0D3F0E4B6A</string>
+			<key>IDESourceControlWCCName</key>
+			<string>GTViewController</string>
+		</dict>
+	</array>
+</dict>
+</plist>
