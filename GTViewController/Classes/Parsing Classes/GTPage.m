@@ -17,7 +17,6 @@
 #import "UISnuffleButton.h"
 #import "TBXML.h"
 #import "GTInterpreter.h"
-#import "God_ToolsAppDelegate.h"
 #import "GTFileLoader.h"
 
 
@@ -954,7 +953,6 @@ extern NSString * const kAttr_watermark;
 
 - (BOOL)viewWillTransitionWithSwipe:(BOOL)swipe {
 	
-	//NSLog(@"%@: viewWillTransitionWithSwipe", [self nibNameForInit]);
 	//if there is a panel open, close it quickly
 	if (self.isexpanded) {
 		if (swipe) {
