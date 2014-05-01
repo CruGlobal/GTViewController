@@ -15,7 +15,7 @@
 
 @property (nonatomic, weak) id<snuffyViewControllerMenuDelegate> menuDelegate;
 
-- (instancetype)initWithFileLoader:(GTFileLoader *)fileLoader delegate:(id<snuffyViewControllerMenuDelegate>)delegate;
+- (instancetype)initWithPackageCode:(NSString *)packageCode languageCode:(NSString *)languageCode delegate:(id<snuffyViewControllerMenuDelegate>)delegate;
 - (void)loadResourceWithPackageCode:(NSString *)packageCode languageCode:(NSString *)languageCode;
 - (void)switchToPageWithIndex:(NSUInteger)pageIndex;
 

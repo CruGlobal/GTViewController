@@ -237,32 +237,9 @@ extern NSString * const kAttr_watermark;
 
 @implementation GTViewController
 
-- (snuffyPageMenuViewController *)pageMenu {
+- (instancetype)initWithPackageCode:(NSString *)packageCode languageCode:(NSString *)languageCode delegate:(id<snuffyViewControllerMenuDelegate>)delegate {
 	
-	if (_pageMenu == nil) {
-		
-		[self willChangeValueForKey:@"pageMenu"];
-		_pageMenu = [[snuffyPageMenuViewController alloc] initWithNibName:@"snuffyPageMenuViewController" bundle:nil];
-		[self didChangeValueForKey:@"pageMenu"];
-		
-		__weak GTViewController *weakSelf = self;
-		[[NSNotificationCenter defaultCenter] addObserverForName:GTTPageMenuViewControllerSwitchPage object:_pageMenu queue:nil usingBlock:^(NSNotification *note) {
-			
-			NSNumber *pageNumber = note.userInfo[GTTPageMenuViewControllerPageNumber];
-			[weakSelf skipTo:[pageNumber integerValue]];
-			
-		}];
-		
-	}
-	
-	return _pageMenu;
-	
-}
-
-// The designated initializer. Override to perform setup that is required before the view is loaded.
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
-	
-	if ((self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil])) {
+	if ((self = [super initWithNibName:NSStringFromClass([self class]) bundle:nil])) {
 		
 		[self registerNotificationHandlers];
 		
@@ -285,14 +262,6 @@ extern NSString * const kAttr_watermark;
 		self.activeLanguage = self.language;
 		self.activeView		= 0;
 		
-#ifdef __TARGET_KGP__
-		self.activePackage	= @"kgp";
-#endif
-		
-#ifdef __TARGET_SATISFIED__
-        self.activePackage	= @"satisfied";
-#endif
-		
 		self.fileLoader = [GTFileLoader fileLoaderWithPackage:self.package language:self.language];
 		[self.fileLoader performSelectorInBackground:@selector(cacheSharedImages) withObject:nil];
 		
@@ -307,6 +276,41 @@ extern NSString * const kAttr_watermark;
 	}
 	
 	return self;
+	
+}
+
+- (void)loadResourceWithPackageCode:(NSString *)packageCode languageCode:(NSString *)languageCode {
+	
+	[self switchTo:packageCode language:languageCode];
+	
+}
+
+- (void)switchToPageWithIndex:(NSUInteger)pageIndex {
+	
+	[self skipTo:pageIndex];
+	
+}
+
+- (snuffyPageMenuViewController *)pageMenu {
+	
+	if (_pageMenu == nil) {
+		
+		[self willChangeValueForKey:@"pageMenu"];
+		_pageMenu = [[snuffyPageMenuViewController alloc] initWithNibName:@"snuffyPageMenuViewController" bundle:nil];
+		[self didChangeValueForKey:@"pageMenu"];
+		
+		__weak GTViewController *weakSelf = self;
+		[[NSNotificationCenter defaultCenter] addObserverForName:GTTPageMenuViewControllerSwitchPage object:_pageMenu queue:nil usingBlock:^(NSNotification *note) {
+			
+			NSNumber *pageNumber = note.userInfo[GTTPageMenuViewControllerPageNumber];
+			[weakSelf skipTo:[pageNumber integerValue]];
+			
+		}];
+		
+	}
+	
+	return _pageMenu;
+	
 }
 
 - (void)registerNotificationHandlers {
