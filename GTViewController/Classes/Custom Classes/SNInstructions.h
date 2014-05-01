@@ -8,27 +8,23 @@
 
 #import <Foundation/Foundation.h>
 
-enum {
-	SNTextDirectionModeLeftToRight,
+typedef NS_ENUM(NSUInteger, SNTextDirectionMode) {
+    SNTextDirectionModeLeftToRight,
 	SNTextDirectionModeRightToLeft
 };
-typedef NSUInteger SNTextDirectionMode;
 
+@protocol SNInstructionsDelegate;
 
 @interface SNInstructions : NSObject
 
-@property	(nonatomic, assign)	NSInteger				textDirection;
-
-@property	(nonatomic, strong) UIView					*parentView;
-@property	(nonatomic, strong) UIImageView				*pointerImage;
-@property	(nonatomic, strong) UIImageView				*pointerShadowImage;
-@property	(nonatomic, strong) UIImageView				*tapImage;
-
-@property	(nonatomic, weak)	id						delegate;
-
-@property	(nonatomic, assign)	NSInteger				counter;
-
--(void)showIntructionsInView:(UIView *)view forDirection:(SNTextDirectionMode)textDirection withDelegate:(id)delegate;
+-(void)showIntructionsInView:(UIView *)view forDirection:(SNTextDirectionMode)textDirection withDelegate:(id<SNInstructionsDelegate>)delegate;
 -(void)stopAnimations;
+
+@end
+
+@protocol SNInstructionsDelegate <NSObject>
+
+@optional
+- (void)instructionAnimationsComplete;
 
 @end

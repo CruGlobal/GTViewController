@@ -9,19 +9,34 @@
 #import "SNInstructions.h"
 #import <QuartzCore/QuartzCore.h>
 
+@interface SNInstructions ()
+
+@property	(nonatomic, assign)	NSInteger				textDirection;
+
+@property	(nonatomic, strong) UIView					*parentView;
+@property	(nonatomic, strong) UIImageView				*pointerImage;
+@property	(nonatomic, strong) UIImageView				*pointerShadowImage;
+@property	(nonatomic, strong) UIImageView				*tapImage;
+
+@property	(nonatomic, weak)	id<SNInstructionsDelegate> delegate;
+
+@property	(nonatomic, assign)	NSInteger				counter;
+
+@end
+
 @implementation SNInstructions
 
--(id)init {
+- (instancetype)init {
 	
 	self	= [super init];
 	
 	if (self != nil) {
 		
-		self.pointerImage	= [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"hand_pointer"]];
+		self.pointerImage	= [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"GTInstructions_Hand_Pointer"]];
 		
-		self.pointerShadowImage	= [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"hand_pointer_shadow"]];
+		self.pointerShadowImage	= [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"GTInstructions_Hand_Pointer_Shadow"]];
 		
-		self.tapImage	= [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"PkgDwnldScrn_NotDownloaded_Badge@2x"]];
+		self.tapImage	= [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"GTInstructions_Hand_Pointer_Tap_Circle"]];
 		
 		self.counter = 0;
 		
@@ -31,7 +46,7 @@
 	
 }
 
--(void)showIntructionsInView:(UIView *)view forDirection:(SNTextDirectionMode)textDirection withDelegate:(id)delegate {
+- (void)showIntructionsInView:(UIView *)view forDirection:(SNTextDirectionMode)textDirection withDelegate:(id)delegate {
 	
 	if (textDirection == SNTextDirectionModeRightToLeft) {
 		
@@ -77,7 +92,7 @@
 	
 }
 
--(void)fadeInSwipeDidStop {
+- (void)fadeInSwipeDidStop {
 	
 	CGPoint pointerCenter		= self.pointerImage.center;
 	pointerCenter.x				-= self.textDirection * (self.parentView.frame.size.width * 0.25);
@@ -101,7 +116,7 @@
 	
 }
 
--(void)firstHalfOfSwipeDidStop {
+- (void)firstHalfOfSwipeDidStop {
 	
 	CGPoint pointerCenter		= self.pointerImage.center;
 	pointerCenter.x				-= self.textDirection * (self.parentView.frame.size.width * 0.25);
@@ -125,7 +140,7 @@
 	
 }
 
--(void)secondHalfOfSwipeDidStop {
+- (void)secondHalfOfSwipeDidStop {
 	
 	// first half of swipe in the direction of text direction
 	[UIView beginAnimations:nil context:nil];
@@ -143,13 +158,13 @@
 	
 }
 
--(void)fadeOutSwipeDidStop {
+- (void)fadeOutSwipeDidStop {
 	
 	[self performSelector:@selector(startTapAnimation) withObject:nil afterDelay:0.4];
 	
 }
 
--(void)startTapAnimation {
+- (void)startTapAnimation {
 	
 	self.pointerImage.center	= self.parentView.center;
 	self.pointerShadowImage.center	= self.parentView.center;
@@ -170,7 +185,7 @@
 	
 }
 
--(void)fadeInTapDidStop {
+- (void)fadeInTapDidStop {
 	
 	// first half of swipe in the direction of text direction
 	[UIView beginAnimations:nil context:nil];
@@ -189,7 +204,7 @@
 	
 }
 
--(void)firstHalfOfTapDidStop {
+- (void)firstHalfOfTapDidStop {
 	
 	CGPoint tapCenter		= self.pointerImage.center;
 	tapCenter.x				-= 36;
@@ -220,7 +235,7 @@
 	
 }
 
--(void)secondHalfOfTapDidStop {
+- (void)secondHalfOfTapDidStop {
 
 	[self.pointerImage removeFromSuperview];
 	[self.pointerShadowImage removeFromSuperview];
@@ -238,7 +253,7 @@
 	
 }
 
--(void)stopAnimations {
+- (void)stopAnimations {
 	
 	[self.pointerImage.layer removeAllAnimations];
 	[self.pointerShadowImage.layer removeAllAnimations];
