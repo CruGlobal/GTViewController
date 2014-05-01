@@ -1,18 +1,25 @@
 //
-//  snuffyViewController.m
-//  Snuffy
+//  GTViewController.m
+//  GTViewController
 //
-//  Created by Michael Harrison on 24/06/10.
-//  Copyright CCCA 2010. All rights reserved.
+//  Created by Michael Harrison on 4/25/14.
+//  Copyright (c) 2014 Michael Harrison. All rights reserved.
 //
 
-#import "snuffyViewController.h"
+#import "GTViewController.h"
 
+#import <QuartzCore/QuartzCore.h>
+#import <AVFoundation/AVFoundation.h>
 #import "GTTrackerNotifications.h"
 #import <MessageUI/MessageUI.h>
 #import "GTPage.h"
 #import "AboutViewController.h"
 #import "snuffyPageMenuViewController.h"
+#import "HorizontalGestureRecognizer.h"
+#import "TBXML.h"
+#import "GTFileLoader.h"
+#import "SNInstructions.h"
+#import "GTPage.h"
 
 NSString *const snuffyViewControllerCampaignLinkCampaignSource        = @"godtools-ios";
 NSString *const snuffyViewControllerCampaignLinkCampaignMedium        = @"email";
@@ -86,7 +93,72 @@ extern NSString * const kName_PanelImage;
 extern NSString * const kAttr_backgroundImage;
 extern NSString * const kAttr_watermark;
 
-@interface snuffyViewController () <MFMailComposeViewControllerDelegate, UIActionSheetDelegate, AboutViewControllerDelegate>
+@interface GTViewController () <MFMailComposeViewControllerDelegate, UIActionSheetDelegate, AboutViewControllerDelegate, SNInstructionsDelegate, HorizontalGestureRecognizerDelegate, GTPageDelegate>
+
+@property (nonatomic, weak)		IBOutlet UIButton	*navToolbarButton;
+@property (nonatomic, weak)		IBOutlet UIToolbar *navToolbar;
+@property (nonatomic, weak)		IBOutlet UIBarButtonItem *langButton;
+@property (nonatomic, weak)		IBOutlet UIBarButtonItem *menuButton;
+@property (nonatomic, weak)		IBOutlet UIBarButtonItem *shareButton;
+@property (nonatomic, weak)		IBOutlet UIBarButtonItem *aboutButton;
+@property (nonatomic, strong)	UIBarButtonItem *switchButton;
+@property (nonatomic, weak)		IBOutlet UIView *navView;
+@property (nonatomic, weak)		IBOutlet UINavigationItem *navTitle;
+@property (nonatomic, assign)	BOOL navToolbarIsShown;
+
+@property (nonatomic, strong)	SNInstructions	*instructionPlayer;
+@property (nonatomic, strong)	NSArray			*arrayFromPlist;
+
+@property (nonatomic, assign)   BOOL setUpRun;
+
+@property (nonatomic, strong)	GTFileLoader *fileLoader;
+@property (nonatomic, strong)	AVAudioPlayer *AVPlayer;
+@property (nonatomic, strong)	NSString *packageName;
+
+@property (nonatomic, strong)	GTPage *leftLeftPage;
+@property (nonatomic, strong)	GTPage *leftPage;
+@property (nonatomic, strong)	GTPage *centerPage;
+@property (nonatomic, strong)	GTPage *rightPage;
+@property (nonatomic, strong)	GTPage *rightRightPage;
+@property (nonatomic, strong)	NSArray *packageArray;
+@property (nonatomic, strong)	NSMutableArray *languageArray;
+@property (nonatomic, strong)	NSMutableArray *pageArray;
+@property (nonatomic, strong)	NSArray *viewControllerArray;
+@property (nonatomic, strong)	NSArray *viewControllerDisplayNameArray;
+@property (nonatomic, strong)	NSArray *viewControllerThumbnailArray;
+@property (nonatomic, strong)	NSString *activePackage;
+@property (nonatomic, strong)	NSString *activeLanguage;
+@property (nonatomic)			NSInteger activeView;
+@property (nonatomic, strong)	NSString *aboutFilename;
+
+@property (nonatomic, strong)	GTPage *oldCenterPage;
+
+@property (nonatomic, assign)	double transitionAnimationDuration;
+@property (nonatomic, assign)	double resistedDragMultiplier;
+@property (nonatomic, assign)	NSUInteger gapBetweenViews;
+
+@property (nonatomic, assign)	CGPoint inViewInCenterCenter;
+@property (nonatomic, assign)	CGPoint outOfViewOnRightCenter;
+@property (nonatomic, assign)	CGPoint outOfViewOnLeftCenter;
+
+@property (nonatomic, assign)	NSInteger animating;
+@property (nonatomic, strong)	CABasicAnimation *animateCurrentViewOut;
+@property (nonatomic, strong)	CABasicAnimation *animateCurrentViewBackToCenter;
+@property (nonatomic, strong)	CABasicAnimation *animateNextViewIn;
+@property (nonatomic, strong)	CABasicAnimation *animateNextViewOut;
+
+@property (nonatomic, strong)	HorizontalGestureRecognizer *gestureRecognizer;
+
+@property (nonatomic, assign)	BOOL firstLeftSwipeRegistered;
+@property (nonatomic, assign)	BOOL secondLeftSwipeRegistered;
+@property (nonatomic, assign)	BOOL firstRightSwipeRegistered;
+@property (nonatomic, assign)	BOOL secondRightSwipeRegistered;
+
+@property (nonatomic, assign)	BOOL viewWillTransitionExecuted;
+
+@property (nonatomic, assign)	BOOL activeViewMasked;
+@property (nonatomic, assign)	BOOL isRotated;
+@property (nonatomic, assign)	BOOL instructionsAreRunning;
 
 @property (nonatomic, strong) snuffyPageMenuViewController	*pageMenu;
 @property (nonatomic, assign) BOOL							isFirstRunSinceCreation;
@@ -106,9 +178,64 @@ extern NSString * const kAttr_watermark;
 - (void)emailAllLinks;
 - (void)copyAllLinks;
 
+//naviagation methods
+-(IBAction)toggleToolbar:(id)sender;
+-(void)showNavToolbar;
+-(void)showNavToolbarDidStop;
+-(void)hideNavToolbar;
+-(void)hideNavToolbarDidStop;
+-(void)fiftyTap;
+
+-(void)showInstructions;
+-(void)runInstructionsIfNecessary;
+
+-(IBAction)navEmptySelector:(id)sender;
+-(IBAction)navToolbarShareSelector:(id)sender;
+-(IBAction)navToolbarAboutSelector:(id)sender;
+-(IBAction)navToolbarRewindSelector:(id)sender;
+-(IBAction)navToolbarMenuSelector:(id)sender;
+-(IBAction)navToolbarFastForwardSelector:(id)sender;
+
+- (void)skipTo:(NSInteger)index;
+- (void)skipToTransitionDidStop;
+
+//animation methods
+- (void)animateCenterViewBackToCenterFromLeft;
+- (void)animateCenterViewBackToCenterFromRight;
+- (void)animateCenterViewOutToRight;
+- (void)animateCenterViewOutToLeft;
+
+//animation callbacks
+- (void)animateCenterViewBackToCenterFromLeftDidStop;
+- (void)animateCenterViewBackToCenterFromRightDidStop;
+- (void)animateRightViewOutFromCurrentPosDidStop;
+- (void)animateLeftViewOutFromCurrentPosDidStop;
+- (void)animateCenterViewOutToTheRightDidStop;
+- (void)animateLeftViewInFromTheLeftDidStop;
+- (void)animateCenterViewOutToTheLeftDidStop;
+- (void)animateRightViewInFromTheRightDidStop;
+- (void)animationCleanUp;
+
+//caching methods
+- (void)centerViewHasTransitionedOutToLeft;
+- (void)centerViewHasTransitionedOutToRight;
+- (void)cacheImagesForPage:(GTPage *)pageToCache;
+- (void)cacheImagesForButtonWithElement:(TBXMLElement *)button_el;
+- (void)cacheImagesForPanelWithElement:(TBXMLElement *)panel_el;
+
+//config functions
+- (void)switchTo:(NSString *)packageID language:(NSString *)language;
+- (NSString *)language;
+- (void)changeLanguageTo:(NSString *)languageCode;
+- (NSString *)getLocationCode;
+- (NSString *)package;
+- (void)changePackageTo:(NSString *)packageID;
+- (NSString *)pathOfPackageConfig;
+- (NSMutableArray *)pageArrayFromDocumentElement:(TBXMLElement *)element;
+
 @end
 
-@implementation snuffyViewController
+@implementation GTViewController
 
 - (snuffyPageMenuViewController *)pageMenu {
 	
@@ -118,7 +245,7 @@ extern NSString * const kAttr_watermark;
 		_pageMenu = [[snuffyPageMenuViewController alloc] initWithNibName:@"snuffyPageMenuViewController" bundle:nil];
 		[self didChangeValueForKey:@"pageMenu"];
 		
-		__weak snuffyViewController *weakSelf = self;
+		__weak GTViewController *weakSelf = self;
 		[[NSNotificationCenter defaultCenter] addObserverForName:GTTPageMenuViewControllerSwitchPage object:_pageMenu queue:nil usingBlock:^(NSNotification *note) {
 			
 			NSNumber *pageNumber = note.userInfo[GTTPageMenuViewControllerPageNumber];
@@ -130,10 +257,6 @@ extern NSString * const kAttr_watermark;
 	
 	return _pageMenu;
 	
-}
-
--(NSString *)nibNameForInit {
-	return @"snuffyViewController";
 }
 
 // The designated initializer. Override to perform setup that is required before the view is loaded.
@@ -157,16 +280,9 @@ extern NSString * const kAttr_watermark;
 		UIBarButtonItem	*helpButton				= [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Package_PopUpToolBar_Icon_Help"] style:UIBarButtonItemStyleBordered target:self action:@selector(showInstructions)];
 		self.navigationItem.rightBarButtonItem	= helpButton;
 		
-        //set up repositories
-		if (self.localRepo == nil || self.remoteRepo == nil) {
-			
-			[self populateRepositories];
-			
-		}
-		
 		//init active package, language and pages
-		self.activePackage	= @"kgp";//[[self.localRepo.packages allKeys] objectAtIndex:0];
-		self.activeLanguage = [self findBestLanguageForPackage:self.activePackage];
+		self.activePackage	= @"kgp";
+		self.activeLanguage = self.language;
 		self.activeView		= 0;
 		
 #ifdef __TARGET_KGP__
@@ -177,7 +293,7 @@ extern NSString * const kAttr_watermark;
         self.activePackage	= @"satisfied";
 #endif
 		
-		self.fileLoader = [GTFileLoader fileLoaderWithPackage:[self package] language:[self language]];
+		self.fileLoader = [GTFileLoader fileLoaderWithPackage:self.package language:self.language];
 		[self.fileLoader performSelectorInBackground:@selector(cacheSharedImages) withObject:nil];
 		
 		//parse xml
@@ -195,7 +311,7 @@ extern NSString * const kAttr_watermark;
 
 - (void)registerNotificationHandlers {
 	
-	__weak snuffyViewController *weakSelf = self;
+	__weak GTViewController *weakSelf = self;
 	
 	[[NSNotificationCenter defaultCenter] addObserverForName:snuffyViewControllerTouchNotificationTouchesBegan object:nil queue:nil usingBlock:^(NSNotification *note) {
 		
@@ -1687,7 +1803,7 @@ extern NSString * const kAttr_watermark;
 -(void)switchTo:(NSString *)packageID language:(NSString *)language {
 	
 	if (language == nil) {
-		language = [self findBestLanguageForPackage:packageID];
+		language = self.language;
 	}
 	
 	//change package
@@ -1704,40 +1820,15 @@ extern NSString * const kAttr_watermark;
     }
     @catch (NSException *exception) {
         
-        //prepare to delete
-        if (language == nil) {
-            if (packageID == [self package]) {
-                [self switchTo:@"kgp" language:nil];
-            }
-        } else {
-            if (packageID == [self package] && language == [self language]) {
-                [self switchTo:@"kgp" language:nil];
-            }
-        }
-        
-		SNPackageMeta *tempPackageMeta = [self.localRepo.packages objectForKey:packageID];
-        
         //notify the user of the deletion
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Something was wrong with the resource"
-														message:[NSString stringWithFormat:@"Sorry - we couldn't open %@, we have forward you on to our most popular booklet, Knowing God Personally.", [[tempPackageMeta getLanguage:language] get:@"name"]]
+														message:@"Sorry - there was an error loading the current package."
 													   delegate:nil
                                               cancelButtonTitle:@"OK"
 											  otherButtonTitles:nil];
 		[alert show];
 		
     }
-	
-}
-
--(void)localRepoHasBeenUpdated {
-	
-	[self populateRepositories];
-	
-}
-
--(void)remoteRepoHasBeenUpdated {
-	
-	[self populateRepositories];
 	
 }
 
@@ -1789,32 +1880,6 @@ extern NSString * const kAttr_watermark;
 	return pageArr;
 }
 
-- (NSString *)findBestLanguageForPackage:(NSString *)packageID {
-	
-	NSArray			*languages		= [NSLocale preferredLanguages];
-	NSString		*prefLang		= [languages objectAtIndex:0];
-	NSString		*locationCode	= [self getLocationCode];
-	NSString		*prefLangWithLoc= [prefLang stringByAppendingFormat:@"%@", locationCode];
-	SNPackageMeta	*currentPackage	= [self.localRepo.packages objectForKey:packageID];
-	NSString		*defaultLang	= [currentPackage get:@"base_language"];
-	NSString		*returnLanguage	= nil;
-    
-	
-	if ([currentPackage hasLanguage:prefLangWithLoc]) {
-		returnLanguage	= prefLangWithLoc;
-	} else if ([currentPackage hasLanguage:self.activeLanguage]) {
-		returnLanguage	= self.activeLanguage;
-	} else if ([currentPackage hasLanguage:prefLang]) {
-		returnLanguage	= prefLang;
-	} else if ([currentPackage hasLanguage:defaultLang]) {
-		returnLanguage	= defaultLang;
-	} else {
-		returnLanguage	= [[currentPackage.languages allKeys] objectAtIndex:0];
-	}
-	
-	return returnLanguage;
-}
-
 - (NSString *)getLocationCode {
 	NSLocale *locale = [NSLocale currentLocale];
 	NSString *countryCodes = [locale objectForKey:NSLocaleCountryCode];
@@ -1826,18 +1891,6 @@ extern NSString * const kAttr_watermark;
 	}
 	
 	return countryCodes;
-}
-
--(BOOL)isValidLanguage:(NSString *)languageCode {
-	
-	SNPackageMeta	*currentPackage	= [self.localRepo.packages objectForKey:self.activePackage];
-	
-	//if the language doesn't exist then false
-	if (![currentPackage hasLanguage:languageCode]) {
-		return NO;
-	}
-	
-	return true;
 }
 
 - (void)changeLanguageTo:(NSString *)languageCode {
@@ -1870,33 +1923,6 @@ extern NSString * const kAttr_watermark;
 	[self skipTo:self.activeView];
 	
 }
-
-- (void)populateRepositories {
-	
-	//TODO: grab these values from appropriate Class ie FileLoader
-	NSString		*localRepoFile			= [GTFileLoader pathOfLocalRepoFile];
-	//NSURL			*remoteRepoUrl			= [NSURL URLWithString:[metaRequest produceUrl]];
-	SnuffyRepo		*tempRepo				= nil;
-	
-	//if the local file doesn't exist in the Docs folder yet then move it from the bundle to the Docs
-	if (![[NSFileManager defaultManager] fileExistsAtPath:localRepoFile] || ![[NSFileManager defaultManager] fileExistsAtPath:[GTFileLoader pathOfPackagesDirectory]]) {
-		//[FileLoader resetPackagesDirectoryWithDefaultPackages];
-	}
-	
-	self.localRepo			= [[SnuffyRepo alloc] initWithPath:localRepoFile];
-	
-    tempRepo				= [[SnuffyRepo alloc] initWithPath:[GTFileLoader pathOfRemoteRepoFile]]; //for debugging
-	if (tempRepo) {
-        //the initialiser succeeded
-        //store the remote repo data
-        self.remoteRepo		= tempRepo;
-    } else {
-        //the initialiser failed - no connection to server
-        //use local repo as remote repo
-        self.remoteRepo     = self.localRepo;
-    }
-	
-}
  
 - (void)changePackageTo:(NSString *)packageID {
 	@try {
@@ -1908,61 +1934,10 @@ extern NSString * const kAttr_watermark;
 	
 }
 
-
-- (NSString *)findPackageAt:(NSInteger)index {
-		
-	return [[self.localRepo.packages allKeys] objectAtIndex:index];
-}
-
-- (NSString *)findLanguageAt:(NSInteger)index {
-   
-	SNPackageMeta	*currentPackage	= [self.localRepo.packages objectForKey:self.activePackage];
-	
-	return [[currentPackage.languages allKeys] objectAtIndex:index];
-}
-
 //returns the path of the index xml file
 - (NSString *)pathOfPackageConfig {
 	return [self.fileLoader pathOfPackagedXmlWithFilename:[[self language] stringByAppendingString:@".xml"]];
 }
-
--(void)updateWithLocalRepo:(SnuffyRepo *)localRepo remoteRepo:(SnuffyRepo *)remoteRepo {
-	
-	self.localRepo		= localRepo;
-	self.remoteRepo		= remoteRepo;
-	
-}
-
-//- (void)setUpViewController {
-//		
-//	if (self.centerPage == nil) {
-//	
-//			//create leftLeft view
-//		self.leftLeftPage	= nil;
-//			//create left view
-//		self.leftPage		= nil;
-//			//create center view
-//		self.centerPage		= [[GTPage alloc] initWithFilename:self.pageArray[kPageArray_File][self.activeView]
-//													  frame:self.view.frame
-//										 rootViewController:self];
-//		
-//		[self cacheImagesForPage:self.centerPage];
-//		
-//		self.rightPage		= [[GTPage alloc] initWithFilename:self.pageArray[kPageArray_File][self.activeView + 1]
-//													 frame:self.view.frame
-//										rootViewController:self];
-//		
-//		[self cacheImagesForPage:self.rightPage];
-//		
-//		self.rightRightPage = [[GTPage alloc] initWithFilename:self.pageArray[kPageArray_File][self.activeView + 2]
-//														 frame:self.view.frame
-//											rootViewController:self];
-//		
-//		[self cacheImagesForPage:self.rightRightPage];
-//		
-//	}
-//		
-//}
 
 - (void)viewWillAppear:(BOOL)animated {
 	
