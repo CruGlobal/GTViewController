@@ -15,6 +15,12 @@
 #import "UIRoundedView.h"
 #import	"UIDisclosureIndicator.h"
 
+#define UITextAlignmentLeft NSTextAlignmentLeft
+#define UITextAlignmentRight NSTextAlignmentRight
+#define UITextAlignmentCenter NSTextAlignmentCenter
+#define UILineBreakModeWordWrap NSLineBreakByWordWrapping
+#define UILineBreakModeTailTruncation NSLineBreakByTruncatingTail
+
 //////////Compiler Constants///////////
 #define DEFAULTOFFSET 10.0
 #define DEFAULT_PANEL_OFFSET_X 0.0
@@ -198,7 +204,7 @@ NSString * const  GTPageInterpreterAmharicFont_bolditalicslabel	= @"NotoSansEthi
 		//add background image if attribute is set
 		if ([TBXML valueOfAttributeNamed:kAttr_backgroundImage forElement:self.pageElement]) {
 			
-			UIImageView *bgimage	= [[UIImageView alloc] initWithImage:[self.fileLoader imageFromPackageWithFilename:[TBXML valueOfAttributeNamed:kAttr_backgroundImage forElement:self.pageElement]]];
+			UIImageView *bgimage	= [[UIImageView alloc] initWithImage:[self.fileLoader imageWithFilename:[TBXML valueOfAttributeNamed:kAttr_backgroundImage forElement:self.pageElement]]];
 			[bgimage setTag:900];
 			[bgimage setFrame:[self.pageView frame]];
 			[self.pageView insertSubview:bgimage atIndex:0];
@@ -247,7 +253,7 @@ NSString * const  GTPageInterpreterAmharicFont_bolditalicslabel	= @"NotoSansEthi
 //	//add background image if attribute is set
 //	if ([TBXML valueOfAttributeNamed:kAttr_backgroundImage forElement:self.pageElement]) {
 //
-//		UIImageView *bgimage	= [[UIImageView alloc] initWithImage:[[(snuffyViewController *)self.snuffleViewController fileLoader] imageFromPackageWithFilename:[TBXML valueOfAttributeNamed:kAttr_backgroundImage forElement:self.pageElement]]];
+//		UIImageView *bgimage	= [[UIImageView alloc] initWithImage:[[(snuffyViewController *)self.snuffleViewController fileLoader] imageWithFilename:[TBXML valueOfAttributeNamed:kAttr_backgroundImage forElement:self.pageElement]]];
 //		[bgimage setTag:900];
 //		[bgimage setFrame:[self.pageView frame]];
 //		[self.pageView insertSubview:bgimage atIndex:0];
@@ -367,8 +373,8 @@ NSString * const  GTPageInterpreterAmharicFont_bolditalicslabel	= @"NotoSansEthi
 		if (shadows == nil || [shadows isEqual:@"yes"]) {
 			////Add a gradiated shadow to the top and bottom of the page
 			//Create the imageviews
-			UIImageView *grad_shad_top	= [[UIImageView alloc] initWithImage:[self.fileLoader imageFromSharedWithFilename:@"grad_shad_top.png"]];
-			UIImageView *grad_shad_bot	= [[UIImageView alloc] initWithImage:[self.fileLoader imageFromSharedWithFilename:@"grad_shad_bot.png"]];
+			UIImageView *grad_shad_top	= [[UIImageView alloc] initWithImage:[self.fileLoader imageWithFilename:@"grad_shad_top.png"]];
+			UIImageView *grad_shad_bot	= [[UIImageView alloc] initWithImage:[self.fileLoader imageWithFilename:@"grad_shad_bot.png"]];
 			
 			//Set the imageview properties
 			[grad_shad_top	setFrame:CGRectMake(CGRectGetMinX(self.pageView.frame),		CGRectGetMinY(self.pageView.frame),			self.pageView.frame.size.width,	30)];
@@ -441,8 +447,8 @@ NSString * const  GTPageInterpreterAmharicFont_bolditalicslabel	= @"NotoSansEthi
 			//add shadows if its mode is straight
 			if ([[TBXML valueOfAttributeNamed:kAttr_mode forElement:question_el] isEqual:kTitleMode_straight]) {
 				//Create the imageviews
-				questionShadowTop	= [[UIImageView alloc] initWithImage:[self.fileLoader imageFromSharedWithFilename:@"grad_shad_bot.png"]];
-				questionShadowBot	= [[UIImageView alloc] initWithImage:[self.fileLoader imageFromSharedWithFilename:@"grad_shad_top.png"]];
+				questionShadowTop	= [[UIImageView alloc] initWithImage:[self.fileLoader imageWithFilename:@"grad_shad_bot.png"]];
+				questionShadowBot	= [[UIImageView alloc] initWithImage:[self.fileLoader imageWithFilename:@"grad_shad_top.png"]];
 				
 				//Set the imageview properties
 				[questionShadowTop	setFrame:CGRectMake(CGRectGetMinX(self.questionFrame),		CGRectGetMinY(self.questionFrame) - 10,		self.questionFrame.size.width,	30)];
@@ -460,8 +466,8 @@ NSString * const  GTPageInterpreterAmharicFont_bolditalicslabel	= @"NotoSansEthi
 			//add shadows if its mode is straight
 			if ([[TBXML valueOfAttributeNamed:kAttr_mode forElement:second_question_el] isEqual:kTitleMode_straight]) {
 				//Create the imageviews
-				question2ShadowTop	= [[UIImageView alloc] initWithImage:[self.fileLoader imageFromSharedWithFilename:@"grad_shad_bot.png"]];
-				question2ShadowBot	= [[UIImageView alloc] initWithImage:[self.fileLoader imageFromSharedWithFilename:@"grad_shad_top.png"]];
+				question2ShadowTop	= [[UIImageView alloc] initWithImage:[self.fileLoader imageWithFilename:@"grad_shad_bot.png"]];
+				question2ShadowBot	= [[UIImageView alloc] initWithImage:[self.fileLoader imageWithFilename:@"grad_shad_top.png"]];
 				
 				CGRect qframe = secondQuestionLabel.frame;
 				
@@ -479,10 +485,10 @@ NSString * const  GTPageInterpreterAmharicFont_bolditalicslabel	= @"NotoSansEthi
 		if ([mode isEqual:kTitleMode_doublecurve] || mode == nil) {
 			////Add a gradiated shadow to the title
 			//Create the imageviews
-			UIImageView *grad_shad_NE	= [[UIImageView alloc] initWithImage:[self.fileLoader imageFromSharedWithFilename:@"grad_shad_NE.png"]];
-			UIImageView *grad_shad_E	= [[UIImageView alloc] initWithImage:[self.fileLoader imageFromSharedWithFilename:@"grad_shad_E.png"]];
-			UIImageView *grad_shad_SE	= [[UIImageView alloc] initWithImage:[self.fileLoader imageFromSharedWithFilename:@"grad_shad_SE.png"]];
-			UIImageView *grad_shad_S	= [[UIImageView alloc] initWithImage:[self.fileLoader imageFromSharedWithFilename:@"grad_shad_S.png"]];
+			UIImageView *grad_shad_NE	= [[UIImageView alloc] initWithImage:[self.fileLoader imageWithFilename:@"grad_shad_NE.png"]];
+			UIImageView *grad_shad_E	= [[UIImageView alloc] initWithImage:[self.fileLoader imageWithFilename:@"grad_shad_E.png"]];
+			UIImageView *grad_shad_SE	= [[UIImageView alloc] initWithImage:[self.fileLoader imageWithFilename:@"grad_shad_SE.png"]];
+			UIImageView *grad_shad_S	= [[UIImageView alloc] initWithImage:[self.fileLoader imageWithFilename:@"grad_shad_S.png"]];
 			
 			//Set the imageview properties
 			[grad_shad_NE	setFrame:CGRectMake(titleView.frame.origin.x + titleView.frame.size.width - 10,
@@ -514,10 +520,10 @@ NSString * const  GTPageInterpreterAmharicFont_bolditalicslabel	= @"NotoSansEthi
 		} else if ([mode isEqual:kTitleMode_singlecurve]) {
 			////Add a gradiated shadow to the title
 			//Create the imageviews
-			UIImageView *grad_shad_NE	= [[UIImageView alloc] initWithImage:[self.fileLoader imageFromSharedWithFilename:@"grad_shad_NE.png"]];
-			UIImageView *grad_shad_E	= [[UIImageView alloc] initWithImage:[self.fileLoader imageFromSharedWithFilename:@"grad_shad_E.png"]];
-			UIImageView *grad_shad_SE	= [[UIImageView alloc] initWithImage:[self.fileLoader imageFromSharedWithFilename:@"grad_shad_SE.png"]];
-			UIImageView *grad_shad_S	= [[UIImageView alloc] initWithImage:[self.fileLoader imageFromSharedWithFilename:@"grad_shad_S.png"]];
+			UIImageView *grad_shad_NE	= [[UIImageView alloc] initWithImage:[self.fileLoader imageWithFilename:@"grad_shad_NE.png"]];
+			UIImageView *grad_shad_E	= [[UIImageView alloc] initWithImage:[self.fileLoader imageWithFilename:@"grad_shad_E.png"]];
+			UIImageView *grad_shad_SE	= [[UIImageView alloc] initWithImage:[self.fileLoader imageWithFilename:@"grad_shad_SE.png"]];
+			UIImageView *grad_shad_S	= [[UIImageView alloc] initWithImage:[self.fileLoader imageWithFilename:@"grad_shad_S.png"]];
 			
 			//Set the imageview properties
 			[grad_shad_NE	setFrame:CGRectMake(titleView.frame.origin.x + titleView.frame.size.width - 10,
@@ -549,8 +555,8 @@ NSString * const  GTPageInterpreterAmharicFont_bolditalicslabel	= @"NotoSansEthi
 		} else if ([mode isEqual:kTitleMode_straight]) {
 			////Add a gradiated shadow to the top and bottom of the title
 			//Create the imageviews
-			UIImageView *title_grad_shad_top	= [[UIImageView alloc] initWithImage:[self.fileLoader imageFromSharedWithFilename:@"grad_shad_bot.png"]];
-			UIImageView *title_grad_shad_bot	= [[UIImageView alloc] initWithImage:[self.fileLoader imageFromSharedWithFilename:@"grad_shad_top.png"]];
+			UIImageView *title_grad_shad_top	= [[UIImageView alloc] initWithImage:[self.fileLoader imageWithFilename:@"grad_shad_bot.png"]];
+			UIImageView *title_grad_shad_bot	= [[UIImageView alloc] initWithImage:[self.fileLoader imageWithFilename:@"grad_shad_top.png"]];
 			
 			//Set the imageview properties
 			[title_grad_shad_top	setFrame:CGRectMake(CGRectGetMinX(titleView.frame),		CGRectGetMinY(titleView.frame) + 10,		titleView.frame.size.width,	30)];
@@ -565,15 +571,15 @@ NSString * const  GTPageInterpreterAmharicFont_bolditalicslabel	= @"NotoSansEthi
 			
 			////Add a gradiated shadow to the title
 			//Create the imageviews
-			UIImageView *grad_shad_NE_title		= [[UIImageView alloc] initWithImage:[self.fileLoader imageFromSharedWithFilename:@"grad_shad_NE.png"]];
-			UIImageView *grad_shad_E			= [[UIImageView alloc] initWithImage:[self.fileLoader imageFromSharedWithFilename:@"grad_shad_E.png"]];
-			UIImageView *grad_shad_E_title		= [[UIImageView alloc] initWithImage:[self.fileLoader imageFromSharedWithFilename:@"grad_shad_E.png"]];
-			UIImageView *grad_shad_SE			= [[UIImageView alloc] initWithImage:[self.fileLoader imageFromSharedWithFilename:@"grad_shad_SE.png"]];
-			UIImageView *grad_shad_SE_title		= [[UIImageView alloc] initWithImage:[self.fileLoader imageFromSharedWithFilename:@"grad_shad_SE.png"]];
-			UIImageView *grad_shad_SE_static	= [[UIImageView alloc] initWithImage:[self.fileLoader imageFromSharedWithFilename:@"grad_shad_SE.png"]];
-			UIImageView *grad_shad_S			= [[UIImageView alloc] initWithImage:[self.fileLoader imageFromSharedWithFilename:@"grad_shad_S.png"]];
-			UIImageView *grad_shad_S_title		= [[UIImageView alloc] initWithImage:[self.fileLoader imageFromSharedWithFilename:@"grad_shad_S.png"]];
-			UIImageView *grad_shad_S_static		= [[UIImageView alloc] initWithImage:[self.fileLoader imageFromSharedWithFilename:@"grad_shad_S.png"]];
+			UIImageView *grad_shad_NE_title		= [[UIImageView alloc] initWithImage:[self.fileLoader imageWithFilename:@"grad_shad_NE.png"]];
+			UIImageView *grad_shad_E			= [[UIImageView alloc] initWithImage:[self.fileLoader imageWithFilename:@"grad_shad_E.png"]];
+			UIImageView *grad_shad_E_title		= [[UIImageView alloc] initWithImage:[self.fileLoader imageWithFilename:@"grad_shad_E.png"]];
+			UIImageView *grad_shad_SE			= [[UIImageView alloc] initWithImage:[self.fileLoader imageWithFilename:@"grad_shad_SE.png"]];
+			UIImageView *grad_shad_SE_title		= [[UIImageView alloc] initWithImage:[self.fileLoader imageWithFilename:@"grad_shad_SE.png"]];
+			UIImageView *grad_shad_SE_static	= [[UIImageView alloc] initWithImage:[self.fileLoader imageWithFilename:@"grad_shad_SE.png"]];
+			UIImageView *grad_shad_S			= [[UIImageView alloc] initWithImage:[self.fileLoader imageWithFilename:@"grad_shad_S.png"]];
+			UIImageView *grad_shad_S_title		= [[UIImageView alloc] initWithImage:[self.fileLoader imageWithFilename:@"grad_shad_S.png"]];
+			UIImageView *grad_shad_S_static		= [[UIImageView alloc] initWithImage:[self.fileLoader imageWithFilename:@"grad_shad_S.png"]];
 			
 			//Set the imageview properties
 			[grad_shad_NE_title		setFrame:CGRectMake(titleView.frame.size.width - DROPSHADOW_INSET,
@@ -1050,7 +1056,7 @@ NSString * const  GTPageInterpreterAmharicFont_bolditalicslabel	= @"NotoSansEthi
 	UIImageView *watermark = nil;
 	
 	if (filename != nil) {
-		watermark = [[UIImageView alloc] initWithImage:[self.fileLoader imageFromPackageWithFilename:filename]];
+		watermark = [[UIImageView alloc] initWithImage:[self.fileLoader imageWithFilename:filename]];
 		[watermark setFrame:self.pageView.frame];
 	}
 	
@@ -1075,10 +1081,10 @@ NSString * const  GTPageInterpreterAmharicFont_bolditalicslabel	= @"NotoSansEthi
 		//NSLog(@"Caching Loop: %@:%@", [TBXML elementName:element], elementText);
 		
 		if (bgImageFilename) {
-			[self.fileLoader cacheImageFromPackageWithFilename:bgImageFilename];
+			[self.fileLoader cacheImageWithFileName:bgImageFilename];
 		}
 		if (watermarkFilename) {
-			[self.fileLoader cacheImageFromPackageWithFilename:watermarkFilename];
+			[self.fileLoader cacheImageWithFileName:watermarkFilename];
 		}
 		
 		NSRange substrFound;
@@ -1086,8 +1092,7 @@ NSString * const  GTPageInterpreterAmharicFont_bolditalicslabel	= @"NotoSansEthi
 		
 		if (substrFound.location != NSNotFound) {
 			//text contains ".png"; is an image filename
-			[self.fileLoader cacheImageFromPackageWithFilename:elementText];
-			//NSLog(@"Caching File: %@", elementText);
+			[self.fileLoader cacheImageWithFileName:elementText];
 		}
 		
 		
@@ -1218,7 +1223,7 @@ NSString * const  GTPageInterpreterAmharicFont_bolditalicslabel	= @"NotoSansEthi
 				textColor				= self.backgroundColor;
 			}
 			if (image == nil) {
-				bgImage = [self.fileLoader imageFromSharedWithFilename:@"URL_Button.png"];
+				bgImage = [self.fileLoader imageWithFilename:@"URL_Button.png"];
 			}
 			hide						= NO;
 			contentHorizontalAlignment	= UIControlContentHorizontalAlignmentCenter;
@@ -1246,7 +1251,7 @@ NSString * const  GTPageInterpreterAmharicFont_bolditalicslabel	= @"NotoSansEthi
 		
 		//load background image if it exists
 		if (image != nil) {
-			bgImage = [self.fileLoader imageFromPackageWithFilename:image];
+			bgImage = [self.fileLoader imageWithFilename:image];
 		}
 		
 		//if size defined then multiply it by that factor
@@ -1316,7 +1321,7 @@ NSString * const  GTPageInterpreterAmharicFont_bolditalicslabel	= @"NotoSansEthi
 		}
 		
 		//create, set up and return button lines image
-		UIImageView *buttonLinesTemp = [[UIImageView alloc] initWithImage:[self.fileLoader imageFromSharedWithFilename:filename]];
+		UIImageView *buttonLinesTemp = [[UIImageView alloc] initWithImage:[self.fileLoader imageWithFilename:filename]];
 		[buttonLinesTemp setFrame:CGRectMake(xPos, yPos, width, height)];
 		[buttonLinesTemp setOpaque:NO];
 		[buttonLinesTemp setTag:(30 + buttonTag)];
@@ -1398,7 +1403,7 @@ NSString * const  GTPageInterpreterAmharicFont_bolditalicslabel	= @"NotoSansEthi
 		CGFloat		yoffset		=						round([[TBXML valueOfAttributeNamed:kAttr_yoff		forElement:element] floatValue]);
 		
 		//load the image into an image view
-		UIImageView *imageTemp = [[UIImageView alloc] initWithImage:[self.fileLoader imageFromPackageWithFilename:filename]];
+		UIImageView *imageTemp = [[UIImageView alloc] initWithImage:[self.fileLoader imageWithFilename:filename]];
 		
 		x						=						(x == 0 ? xpostion						: x);
 		y						=						(y == 0 ? ypostion						: y);
@@ -2043,7 +2048,7 @@ NSString * const  GTPageInterpreterAmharicFont_bolditalicslabel	= @"NotoSansEthi
 		
 		//peek mode: create the vertical line
 		if ([mode isEqual:kTitleMode_peek]) {
-			UIImageView *tempVertLine = [[UIImageView alloc] initWithImage:[self.fileLoader imageFromSharedWithFilename:@"vline.png"]];
+			UIImageView *tempVertLine = [[UIImageView alloc] initWithImage:[self.fileLoader imageWithFilename:@"vline.png"]];
 			tempVertLine.frame = CGRectMake(CGRectGetMaxX(tempHeading.frame) + 4, tempSubHeading.frame.origin.y + 5, 2, tempSubHeading.frame.size.height - 10);
 			if (tempVertLine) {[titleContainer addSubview:tempVertLine];}
 		}

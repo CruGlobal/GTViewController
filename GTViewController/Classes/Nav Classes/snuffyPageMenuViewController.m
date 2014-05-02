@@ -98,7 +98,7 @@ extern NSInteger  const kPageArray_Desc;
 	cell.selectionStyle			= UITableViewCellSelectionStyleGray;
 	cell.textLabel.textColor	= [UIColor blackColor];
 	cell.textLabel.font			= ( [self.language isEqualToString:@"am-ET"] ? [UIFont fontWithName:@"NotoSansEthiopic" size:14.0] : [UIFont fontWithName:@"Helvetica-Bold" size:14.0] );
-	cell.imageView.image		= [[GTFileLoader fileLoaderWithPackage:self.package language:self.language] imageThumbFromPackageWithFilename:self.pageArray[kPageArray_Thumb][indexPath.row]];
+	cell.imageView.image		= [[GTFileLoader fileLoaderWithPackage:self.package language:self.language] imageWithFilename:self.pageArray[kPageArray_Thumb][indexPath.row]];
 	cell.textLabel.text			= self.pageArray[kPageArray_Desc][indexPath.row]; //grab display text
 	
 	//set alternating background color

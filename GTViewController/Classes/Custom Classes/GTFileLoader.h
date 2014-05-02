@@ -11,46 +11,24 @@
 
 @interface GTFileLoader : NSObject
 
-@property (nonatomic, assign)	BOOL				isRetinaDisplay;
 @property (nonatomic, strong)	NSString			*package;
 @property (nonatomic, strong)	NSString			*language;
-@property (nonatomic, strong)	NSMutableDictionary	*imageCache;
 
 + (GTFileLoader *)sharedInstance;
 + (GTFileLoader *)sharedInstanceWithPackage:(NSString *)pack language:(NSString *)lang;
 + (instancetype)fileLoaderWithPackage:(NSString *)pack language:(NSString *)lang;
--(id)initWithPackage:(NSString *)pack language:(NSString *)lang;
--(NSString *)pathOfConfigFile;
--(NSString *)pathOfFileWithFilename:(NSString *)filename;
--(NSString *)pathOfBundledImageWithFilename:(NSString *)filename;
--(NSString *)pathOfSharedImageWithFilename:(NSString *)filename;
--(NSString *)pathOfPackagedXmlWithFilename:(NSString *)filename;
--(NSString *)pathOfPackagedImageWithFilename:(NSString *)filename;
--(NSString *)pathOfPackagedThumbWithFilename:(NSString *)filename;
--(NSString *)pathOfPackagedIconWithFilename:(NSString *)filename;
+- (instancetype)initWithPackage:(NSString *)pack language:(NSString *)lang;
 
--(UIImage *)imageWithFilename:(NSString *)filename;
--(UIImage *)imageWithPath:(NSString *)path;
--(UIImage *)imageFromBundleWithFilename:(NSString *)filename;
--(UIImage *)imageFromSharedWithFilename:(NSString *)filename;
--(UIImage *)imageFromPackageWithFilename:(NSString *)filename;
--(UIImage *)imageThumbFromPackageWithFilename:(NSString *)filename;
--(UIImage *)imageIconFromPackageWithFilename:(NSString *)filename;
++ (NSString *)pathOfPackagesDirectory;
+- (NSString *)pathOfConfigFile;
+- (NSString *)pathOfFileWithFilename:(NSString *)filename;
 
--(NSString *)filenameForDevicesResolutionWith:(NSString *)filename;
--(void)cacheImageWithFileName:(NSString *)filename;
--(void)cacheImageFromBundleWithFilename:(NSString *)filename;
--(void)cacheImageFromSharedWithFilename:(NSString *)filename;
--(void)cacheImageFromPackageWithFilename:(NSString *)filename;
--(void)cacheThumbFromPackageWithFilename:(NSString *)filename;
--(void)cacheIconFromPackageWithFilename:(NSString *)filename;
+- (UIImage *)imageWithFilename:(NSString *)filename;
 
--(void)cacheSharedImages;
--(void)clearCache;
+- (void)cacheImageWithFileName:(NSString *)filename;
+- (void)cacheSharedImages;
+- (void)clearCache;
 
-+(NSString *)pathOfPackagesDirectory;
-+(NSString *)pathOfXmlFileForPackage:(NSString *)packageID andLanguage:(NSString *)languageCode andFilename:(NSString *)filename;
-
-+(BOOL)isRetina;
++ (BOOL)isRetina;
 
 @end

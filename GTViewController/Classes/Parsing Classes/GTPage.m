@@ -135,7 +135,7 @@ extern NSString * const kAttr_watermark;
         self.shadowAddedBySubclass    = NO;
 
 		//parse xml
-        NSString * xmlPath            = [self.fileLoader pathOfPackagedXmlWithFilename:file];
+        NSString * xmlPath            = [self.fileLoader pathOfFileWithFilename:file];
         self.interpreter              = [GTInterpreter interpreterWithXMLPath:xmlPath fileLoader:self.fileLoader pageView:self panelTapDelegate:self buttonTapDelegate:self];
 
 		[self.interpreter renderPage];
@@ -604,27 +604,27 @@ extern NSString * const kAttr_watermark;
 		 [bgimage release];
 		 */
 		
-		panelShad_NE = [[UIImageView alloc] initWithImage:[self.fileLoader imageFromSharedWithFilename:@"grad_shad_NE.png"]];
+		panelShad_NE = [[UIImageView alloc] initWithImage:[self.fileLoader imageWithFilename:@"grad_shad_NE.png"]];
 		panelShad_NE.tag = 549; //'northeast' on numpad
 		//panelShad_NE.backgroundColor = [UIColor whiteColor];	//debug
 		[self.shadview addSubview:panelShad_NE];
 		
-		panelShad_E = [[UIImageView alloc] initWithImage:[self.fileLoader imageFromSharedWithFilename:@"grad_shad_E.png"]];
+		panelShad_E = [[UIImageView alloc] initWithImage:[self.fileLoader imageWithFilename:@"grad_shad_E.png"]];
 		panelShad_E.tag = 546; //'east' on numpad
 		//panelShad_E.backgroundColor = [UIColor whiteColor];	//debug
 		[self.shadview addSubview:panelShad_E];
 		
-		panelShad_SE = [[UIImageView alloc] initWithImage:[self.fileLoader imageFromSharedWithFilename:@"grad_shad_SE.png"]];
+		panelShad_SE = [[UIImageView alloc] initWithImage:[self.fileLoader imageWithFilename:@"grad_shad_SE.png"]];
 		panelShad_SE.tag = 543; //'southeast' on numpad
 		//panelShad_SE.backgroundColor = [UIColor whiteColor];	//debug
 		[self.shadview addSubview:panelShad_SE];
 		
-		panelShad_S = [[UIImageView alloc] initWithImage:[self.fileLoader imageFromSharedWithFilename:@"grad_shad_S.png"]];
+		panelShad_S = [[UIImageView alloc] initWithImage:[self.fileLoader imageWithFilename:@"grad_shad_S.png"]];
 		panelShad_S.tag = 542; //'south' on numpad
 		//panelShad_S.backgroundColor = [UIColor whiteColor];	//debug
 		[self.shadview addSubview:panelShad_S];
 		
-		panelShad_SW = [[UIImageView alloc] initWithImage:[self.fileLoader imageFromSharedWithFilename:@"grad_shad_SW.png"]];
+		panelShad_SW = [[UIImageView alloc] initWithImage:[self.fileLoader imageWithFilename:@"grad_shad_SW.png"]];
 		panelShad_SW.tag = 541; //'southwest' on numpad
 		//panelShad_SW.backgroundColor = [UIColor whiteColor];	//debug
 		[self.shadview addSubview:panelShad_SW];
