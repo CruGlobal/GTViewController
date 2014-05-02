@@ -28,6 +28,7 @@
 -(NSString *)pathOfPackagedImageWithFilename:(NSString *)filename;
 -(NSString *)pathOfPackagedThumbWithFilename:(NSString *)filename;
 -(NSString *)pathOfPackagedIconWithFilename:(NSString *)filename;
+
 -(UIImage *)imageWithFilename:(NSString *)filename;
 -(UIImage *)imageWithPath:(NSString *)path;
 -(UIImage *)imageFromBundleWithFilename:(NSString *)filename;
@@ -35,7 +36,7 @@
 -(UIImage *)imageFromPackageWithFilename:(NSString *)filename;
 -(UIImage *)imageThumbFromPackageWithFilename:(NSString *)filename;
 -(UIImage *)imageIconFromPackageWithFilename:(NSString *)filename;
--(UIImage *)imageIconReposIconAttribute:(NSString *)iconAttribute;
+
 -(NSString *)filenameForDevicesResolutionWith:(NSString *)filename;
 -(void)cacheImageWithFileName:(NSString *)filename;
 -(void)cacheImageFromBundleWithFilename:(NSString *)filename;
@@ -43,18 +44,12 @@
 -(void)cacheImageFromPackageWithFilename:(NSString *)filename;
 -(void)cacheThumbFromPackageWithFilename:(NSString *)filename;
 -(void)cacheIconFromPackageWithFilename:(NSString *)filename;
+
 -(void)cacheSharedImages;
 -(void)clearCache;
 
-+(NSString *)pathOfLocalRepoFile;
-+(NSString *)pathOfRemoteRepoFile;
 +(NSString *)pathOfPackagesDirectory;
-+(NSString *)pathOfIconFromReposIconAttribute:(NSString *)iconAttribute;
 +(NSString *)pathOfXmlFileForPackage:(NSString *)packageID andLanguage:(NSString *)languageCode andFilename:(NSString *)filename;
-
-//warning do not use
-+(void)unzipPayloadWithPath:(NSString *)path;
-+(void)removeLanguage:(NSString *)languageCode forPackage:(NSString *)packageID;
 
 +(BOOL)isRetina;
 

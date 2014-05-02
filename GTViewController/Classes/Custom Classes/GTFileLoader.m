@@ -6,10 +6,7 @@
 //  Copyright 2010 CCCA. All rights reserved.
 //
 
-#import <sys/utsname.h>
 #import "GTFileLoader.h"
-#import "SnuffyRepo.h"
-
 
 @implementation GTFileLoader
 
@@ -517,12 +514,6 @@
 	return image;
 }
 
--(UIImage *)imageIconReposIconAttribute:(NSString *)iconAttribute {
-	
-	return [self imageIconFromPackageWithFilename:[iconAttribute lastPathComponent]];
-	
-}
-
 -(NSString *)filenameForDevicesResolutionWith:(NSString *)filename {
 	//NSLog(@"filenameForDevicesResolutionWith:%@", filename);
 	
@@ -605,34 +596,9 @@
 	[self.imageCache removeAllObjects];
 }
 
-+(NSString *)pathOfLocalRepoFile {
-	return [[NSBundle mainBundle] pathForResource:@"localRepoFile" ofType:@"xml"];
-	//return [[NSHomeDirectory() stringByAppendingPathComponent:  @"Documents"] stringByAppendingPathComponent:@"localRepoFile.xml"];
-}
-
-+(NSString *)pathOfRemoteRepoFile {
-	return [[NSBundle mainBundle] pathForResource:@"remoteRepoFile" ofType:@"xml"];
-	//return [[NSHomeDirectory() stringByAppendingPathComponent:  @"Documents"] stringByAppendingPathComponent:@"remoteRepoFile.xml"];
-}
-
 +(NSString *)pathOfPackagesDirectory {
 	return [[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/Packages"];
 	//return [[NSHomeDirectory() stringByAppendingPathComponent:  @"Documents"] stringByAppendingPathComponent:@"Packages"];
-}
-
-+(NSString *)pathOfIconFromReposIconAttribute:(NSString *)iconAttribute {
-    //path to standard image
-    NSString *returnstring = [[[GTFileLoader pathOfPackagesDirectory] stringByDeletingLastPathComponent] stringByAppendingPathComponent:iconAttribute];
-    
-    //path to retina image
-    if ([self isRetina]) {
-        returnstring = [returnstring stringByDeletingPathExtension];
-        returnstring = [returnstring stringByAppendingString:@"@2x"];
-        returnstring = [returnstring stringByAppendingPathExtension:[iconAttribute pathExtension]];
-    }
-    
-    //NSLog(@"pathOfIconFromReposIconAttribute: %@", returnstring);
-	return returnstring;
 }
 
 +(NSString *)pathOfXmlFileForPackage:(NSString *)packageID andLanguage:(NSString *)languageCode andFilename:(NSString *)filename {
@@ -641,32 +607,12 @@
 	
 }
 
-+(void)unzipPayloadWithPath:(NSString *)path {
-	
-	
-}
-
-+(void)removeLanguage:(NSString *)languageCode forPackage:(NSString *)packageID {
-	
-	
-}
-
 +(BOOL)isRetina {
 	
-	/*
-	 struct utsname systemInfo;
-	 uname(&systemInfo);
-	 NSString *deviceType = [NSString stringWithCString:systemInfo.machine encoding:NSUTF8StringEncoding];
-	 */
-	
-	//if its not a Simulator, iPod, iPad, iPhone (1st, 2nd or 3G) or iPhone 3GS then it will have a retina display
-	//if (([deviceType rangeOfString:@"i386"].location == NSNotFound && [deviceType rangeOfString:@"iPod"].location == NSNotFound && [deviceType rangeOfString:@"iPad"].location == NSNotFound && [deviceType rangeOfString:@"iPhone1"].location == NSNotFound && [deviceType rangeOfString:@"iPhone2"].location == NSNotFound)) {
 	if ([[UIScreen mainScreen] respondsToSelector:@selector(displayLinkWithTarget:selector:)] && ([UIScreen mainScreen].scale == 2.0)) {
 		return YES;
-		//NSLog(@"isRetinaDisplay = YES");
 	} else {
 		return NO;
-		//NSLog(@"isRetinaDisplay = NO");
 	}
 	
 }
