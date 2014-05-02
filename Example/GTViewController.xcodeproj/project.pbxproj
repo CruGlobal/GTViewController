@@ -89,8 +89,6 @@
 		68C595E51912DDCF00BB2AC6 /* Package_PopUpToolBar_Icon_Switch.png in Resources */ = {isa = PBXBuildFile; fileRef = 68C595941912DDCF00BB2AC6 /* Package_PopUpToolBar_Icon_Switch.png */; };
 		68C595E61912DDCF00BB2AC6 /* Package_PopUpToolBar_Icon_Switch@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 68C595951912DDCF00BB2AC6 /* Package_PopUpToolBar_Icon_Switch@2x.png */; };
 		68C595E71912DDCF00BB2AC6 /* Package_PopUpToolBar_Icon_Switch@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 68C595951912DDCF00BB2AC6 /* Package_PopUpToolBar_Icon_Switch@2x.png */; };
-		68C595EA1912FBC700BB2AC6 /* GTExampleViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 68C595E91912FBC700BB2AC6 /* GTExampleViewController.m */; };
-		68C595EB1912FBC700BB2AC6 /* GTExampleViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 68C595E91912FBC700BB2AC6 /* GTExampleViewController.m */; };
 		68C595ED1912FCB700BB2AC6 /* Packages in Resources */ = {isa = PBXBuildFile; fileRef = 68C595EC1912FCB700BB2AC6 /* Packages */; };
 		68C595EE1912FCB700BB2AC6 /* Packages in Resources */ = {isa = PBXBuildFile; fileRef = 68C595EC1912FCB700BB2AC6 /* Packages */; };
 		68C595F01912FEB700BB2AC6 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68C595EF1912FEB700BB2AC6 /* QuartzCore.framework */; };
@@ -126,6 +124,8 @@
 		68C5961F19131A2A00BB2AC6 /* urlbutton@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 68C5960219131A2A00BB2AC6 /* urlbutton@2x.png */; };
 		68C5962019131A2A00BB2AC6 /* vline.png in Resources */ = {isa = PBXBuildFile; fileRef = 68C5960319131A2A00BB2AC6 /* vline.png */; };
 		68C5962119131A2A00BB2AC6 /* vline.png in Resources */ = {isa = PBXBuildFile; fileRef = 68C5960319131A2A00BB2AC6 /* vline.png */; };
+		68C5962419131CAB00BB2AC6 /* GTExampleTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 68C5962319131CAB00BB2AC6 /* GTExampleTableViewController.m */; };
+		68C5962519131CAB00BB2AC6 /* GTExampleTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 68C5962319131CAB00BB2AC6 /* GTExampleTableViewController.m */; };
 		68F1F806190B05ED00044CDF /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68F1F805190B05ED00044CDF /* Foundation.framework */; };
 		68F1F808190B05ED00044CDF /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68F1F807190B05ED00044CDF /* CoreGraphics.framework */; };
 		68F1F80A190B05ED00044CDF /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68F1F809190B05ED00044CDF /* UIKit.framework */; };
@@ -212,8 +212,6 @@
 		68C595931912DDCF00BB2AC6 /* Package_PopUpToolBar_Icon_Menu@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Package_PopUpToolBar_Icon_Menu@2x.png"; sourceTree = "<group>"; };
 		68C595941912DDCF00BB2AC6 /* Package_PopUpToolBar_Icon_Switch.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Package_PopUpToolBar_Icon_Switch.png; sourceTree = "<group>"; };
 		68C595951912DDCF00BB2AC6 /* Package_PopUpToolBar_Icon_Switch@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Package_PopUpToolBar_Icon_Switch@2x.png"; sourceTree = "<group>"; };
-		68C595E81912FBC700BB2AC6 /* GTExampleViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTExampleViewController.h; sourceTree = "<group>"; };
-		68C595E91912FBC700BB2AC6 /* GTExampleViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GTExampleViewController.m; sourceTree = "<group>"; };
 		68C595EC1912FCB700BB2AC6 /* Packages */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Packages; sourceTree = "<group>"; };
 		68C595EF1912FEB700BB2AC6 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		68C595F11912FEC200BB2AC6 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
@@ -233,6 +231,8 @@
 		68C5960119131A2A00BB2AC6 /* urlbutton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = urlbutton.png; sourceTree = "<group>"; };
 		68C5960219131A2A00BB2AC6 /* urlbutton@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "urlbutton@2x.png"; sourceTree = "<group>"; };
 		68C5960319131A2A00BB2AC6 /* vline.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = vline.png; sourceTree = "<group>"; };
+		68C5962219131CAB00BB2AC6 /* GTExampleTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTExampleTableViewController.h; sourceTree = "<group>"; };
+		68C5962319131CAB00BB2AC6 /* GTExampleTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GTExampleTableViewController.m; sourceTree = "<group>"; };
 		68F1F802190B05ED00044CDF /* GTViewController.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GTViewController.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		68F1F805190B05ED00044CDF /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		68F1F807190B05ED00044CDF /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -452,8 +452,8 @@
 				68F1F814190B05ED00044CDF /* GTAppDelegate.h */,
 				68F1F815190B05ED00044CDF /* GTAppDelegate.m */,
 				68F1F817190B05ED00044CDF /* Main.storyboard */,
-				68C595E81912FBC700BB2AC6 /* GTExampleViewController.h */,
-				68C595E91912FBC700BB2AC6 /* GTExampleViewController.m */,
+				68C5962219131CAB00BB2AC6 /* GTExampleTableViewController.h */,
+				68C5962319131CAB00BB2AC6 /* GTExampleTableViewController.m */,
 				68C595EC1912FCB700BB2AC6 /* Packages */,
 				68F1F81D190B05ED00044CDF /* Images.xcassets */,
 				68F1F80C190B05ED00044CDF /* Supporting Files */,
@@ -673,6 +673,7 @@
 				68F1F812190B05ED00044CDF /* main.m in Sources */,
 				68C595A21912DDCF00BB2AC6 /* HorizontalGestureRecognizer.m in Sources */,
 				68C5959E1912DDCF00BB2AC6 /* UISnuffleButton.m in Sources */,
+				68C5962419131CAB00BB2AC6 /* GTExampleTableViewController.m in Sources */,
 				68C595A81912DDCF00BB2AC6 /* GTViewController.m in Sources */,
 				68C595981912DDCF00BB2AC6 /* SNInstructions.m in Sources */,
 				68C5959A1912DDCF00BB2AC6 /* UIDisclosureIndicator.m in Sources */,
@@ -681,7 +682,6 @@
 				68C595B21912DDCF00BB2AC6 /* GTPage.m in Sources */,
 				68C5959C1912DDCF00BB2AC6 /* UIRoundedView.m in Sources */,
 				68C595A41912DDCF00BB2AC6 /* snuffyPageMenuViewController.m in Sources */,
-				68C595EA1912FBC700BB2AC6 /* GTExampleViewController.m in Sources */,
 				68C595B61912DDCF00BB2AC6 /* GTPageInterpreter.m in Sources */,
 				68C595BA1912DDCF00BB2AC6 /* NSDataAdditions.m in Sources */,
 				68C595B81912DDCF00BB2AC6 /* GTPageInterpreterAmharic.m in Sources */,
@@ -702,7 +702,6 @@
 				68C595A31912DDCF00BB2AC6 /* HorizontalGestureRecognizer.m in Sources */,
 				68C595B91912DDCF00BB2AC6 /* GTPageInterpreterAmharic.m in Sources */,
 				68C595991912DDCF00BB2AC6 /* SNInstructions.m in Sources */,
-				68C595EB1912FBC700BB2AC6 /* GTExampleViewController.m in Sources */,
 				68C595BB1912DDCF00BB2AC6 /* NSDataAdditions.m in Sources */,
 				68C5959F1912DDCF00BB2AC6 /* UISnuffleButton.m in Sources */,
 				68C595BD1912DDCF00BB2AC6 /* TBXML.m in Sources */,
@@ -714,6 +713,7 @@
 				68C5959B1912DDCF00BB2AC6 /* UIDisclosureIndicator.m in Sources */,
 				68C595B71912DDCF00BB2AC6 /* GTPageInterpreter.m in Sources */,
 				68C595971912DDCF00BB2AC6 /* GTFileLoader.m in Sources */,
+				68C5962519131CAB00BB2AC6 /* GTExampleTableViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

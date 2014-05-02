@@ -1,5 +1,5 @@
 //
-//  GTExampleViewController.h
+//  GTExampleTableViewController.h
 //  GTViewController
 //
 //  Created by Michael Harrison on 5/1/14.
@@ -8,6 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface GTExampleViewController : UINavigationController
+@interface GTExampleTableViewController : UITableViewController
 
 @end
