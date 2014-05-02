@@ -8,7 +8,11 @@
 
 #import "GTExampleViewController.h"
 
-@interface GTExampleViewController ()
+#import "GTViewController.h"
+
+@interface GTExampleViewController () <GTViewControllerMenuDelegate>
+
+@property (nonatomic, strong) GTViewController *godtoolsViewController;
 
 @end
 
@@ -23,10 +27,12 @@
     return self;
 }
 
-- (void)viewDidLoad
+- (void)viewDidAppear:(BOOL)animated
 {
-    [super viewDidLoad];
-    // Do any additional setup after loading the view.
+    [super viewDidAppear:animated];
+    
+	[self pushViewController:self.godtoolsViewController animated:NO];
+	
 }
 
 - (void)didReceiveMemoryWarning
@@ -35,15 +41,18 @@
     // Dispose of any resources that can be recreated.
 }
 
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+- (GTViewController *)godtoolsViewController {
+	
+	if (!_godtoolsViewController) {
+		
+		[self willChangeValueForKey:@"godtoolsViewController"];
+		_godtoolsViewController	= [[GTViewController alloc] initWithPackageCode:@"fourlaws" languageCode:@"en" versionNumber:@1 delegate:self];
+		[self didChangeValueForKey:@"godtoolsViewController"];
+		
+	}
+	
+	return _godtoolsViewController;
 }
-*/
+
 
 @end

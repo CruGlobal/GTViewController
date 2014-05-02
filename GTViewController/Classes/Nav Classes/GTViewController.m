@@ -10,7 +10,6 @@
 
 #import <QuartzCore/QuartzCore.h>
 #import <AVFoundation/AVFoundation.h>
-#import "GTTrackerNotifications.h"
 #import <MessageUI/MessageUI.h>
 #import "GTPage.h"
 #import "AboutViewController.h"
@@ -20,6 +19,14 @@
 #import "GTFileLoader.h"
 #import "SNInstructions.h"
 #import "GTPage.h"
+
+
+NSString *const GTViewControllerNotificationUserInfoLanguageKey			= @"org.cru.godtools.gtviewcontroller.notifications.all.key.language";
+NSString *const GTViewControllerNotificationUserInfoPackageKey			= @"org.cru.godtools.gtviewcontroller.notifications.all.key.package";
+NSString *const GTViewControllerNotificationUserInfoVersionKey			= @"org.cru.godtools.gtviewcontroller.notifications.all.key.version";
+
+NSString *const GTViewControllerNotificationResourceDidOpen				= @"org.cru.godtools.gtviewcontroller.notifications.resourcedidopen";
+NSString *const GTViewControllerNotificationUserDidShareResource		= @"org.cru.godtools.gtviewcontroller.notifications.userdidshareresource";
 
 NSString *const snuffyViewControllerCampaignLinkCampaignSource        = @"godtools-ios";
 NSString *const snuffyViewControllerCampaignLinkCampaignMedium        = @"email";
@@ -95,42 +102,39 @@ extern NSString * const kAttr_watermark;
 
 @interface GTViewController () <MFMailComposeViewControllerDelegate, UIActionSheetDelegate, AboutViewControllerDelegate, SNInstructionsDelegate, HorizontalGestureRecognizerDelegate, GTPageDelegate>
 
+@property (nonatomic, weak)		id<GTViewControllerMenuDelegate> menuDelegate;
+@property (nonatomic, strong)	GTFileLoader *fileLoader;
+
+@property (nonatomic, strong)	NSString *package;
+@property (nonatomic, strong)	NSString *language;
+@property (nonatomic, strong)	NSNumber *version;
+@property (nonatomic, assign)	NSInteger activeView;
+
+@property (nonatomic, strong)	NSString *aboutFilename;
+@property (nonatomic, strong)	NSString *packageName;
+
+@property (nonatomic, strong)	NSArray *packageArray;
+@property (nonatomic, strong)	NSMutableArray *languageArray;
+@property (nonatomic, strong)	NSMutableArray *pageArray;
+
 @property (nonatomic, weak)		IBOutlet UIButton	*navToolbarButton;
 @property (nonatomic, weak)		IBOutlet UIToolbar *navToolbar;
-@property (nonatomic, weak)		IBOutlet UIBarButtonItem *langButton;
 @property (nonatomic, weak)		IBOutlet UIBarButtonItem *menuButton;
 @property (nonatomic, weak)		IBOutlet UIBarButtonItem *shareButton;
 @property (nonatomic, weak)		IBOutlet UIBarButtonItem *aboutButton;
 @property (nonatomic, strong)	UIBarButtonItem *switchButton;
-@property (nonatomic, weak)		IBOutlet UIView *navView;
-@property (nonatomic, weak)		IBOutlet UINavigationItem *navTitle;
 @property (nonatomic, assign)	BOOL navToolbarIsShown;
 
 @property (nonatomic, strong)	SNInstructions	*instructionPlayer;
 @property (nonatomic, strong)	NSArray			*arrayFromPlist;
 
-@property (nonatomic, assign)   BOOL setUpRun;
-
-@property (nonatomic, strong)	GTFileLoader *fileLoader;
 @property (nonatomic, strong)	AVAudioPlayer *AVPlayer;
-@property (nonatomic, strong)	NSString *packageName;
 
 @property (nonatomic, strong)	GTPage *leftLeftPage;
 @property (nonatomic, strong)	GTPage *leftPage;
 @property (nonatomic, strong)	GTPage *centerPage;
 @property (nonatomic, strong)	GTPage *rightPage;
 @property (nonatomic, strong)	GTPage *rightRightPage;
-@property (nonatomic, strong)	NSArray *packageArray;
-@property (nonatomic, strong)	NSMutableArray *languageArray;
-@property (nonatomic, strong)	NSMutableArray *pageArray;
-@property (nonatomic, strong)	NSArray *viewControllerArray;
-@property (nonatomic, strong)	NSArray *viewControllerDisplayNameArray;
-@property (nonatomic, strong)	NSArray *viewControllerThumbnailArray;
-@property (nonatomic, strong)	NSString *activePackage;
-@property (nonatomic, strong)	NSString *activeLanguage;
-@property (nonatomic)			NSInteger activeView;
-@property (nonatomic, strong)	NSString *aboutFilename;
-
 @property (nonatomic, strong)	GTPage *oldCenterPage;
 
 @property (nonatomic, assign)	double transitionAnimationDuration;
@@ -159,10 +163,11 @@ extern NSString * const kAttr_watermark;
 @property (nonatomic, assign)	BOOL activeViewMasked;
 @property (nonatomic, assign)	BOOL isRotated;
 @property (nonatomic, assign)	BOOL instructionsAreRunning;
+@property (nonatomic, assign)	BOOL aboutViewControllerWasShown;
 
-@property (nonatomic, strong) snuffyPageMenuViewController	*pageMenu;
-@property (nonatomic, assign) BOOL							isFirstRunSinceCreation;
-@property (nonatomic, strong) NSArray						*allURLsButtonArray;
+@property (nonatomic, strong)	snuffyPageMenuViewController	*pageMenu;
+@property (nonatomic, assign)	BOOL							isFirstRunSinceCreation;
+@property (nonatomic, strong)	NSArray							*allURLsButtonArray;
 
 - (void)registerNotificationHandlers;
 - (void)removeNotificationHandlers;
@@ -225,19 +230,15 @@ extern NSString * const kAttr_watermark;
 
 //config functions
 - (void)switchTo:(NSString *)packageID language:(NSString *)language;
-- (NSString *)language;
 - (void)changeLanguageTo:(NSString *)languageCode;
-- (NSString *)getLocationCode;
-- (NSString *)package;
 - (void)changePackageTo:(NSString *)packageID;
-- (NSString *)pathOfPackageConfig;
 - (NSMutableArray *)pageArrayFromDocumentElement:(TBXMLElement *)element;
 
 @end
 
 @implementation GTViewController
 
-- (instancetype)initWithPackageCode:(NSString *)packageCode languageCode:(NSString *)languageCode delegate:(id<snuffyViewControllerMenuDelegate>)delegate {
+- (instancetype)initWithPackageCode:(NSString *)packageCode languageCode:(NSString *)languageCode versionNumber:(NSNumber *)versionNumber delegate:(id<GTViewControllerMenuDelegate>)delegate {
 	
 	if ((self = [super initWithNibName:NSStringFromClass([self class]) bundle:nil])) {
 		
@@ -258,15 +259,16 @@ extern NSString * const kAttr_watermark;
 		self.navigationItem.rightBarButtonItem	= helpButton;
 		
 		//init active package, language and pages
-		self.activePackage	= @"kgp";
-		self.activeLanguage = self.language;
-		self.activeView		= 0;
+		self.package	= ( packageCode ? packageCode : @"fourlaws" );
+		self.language	= ( languageCode ? languageCode : @"en" );
+		self.version	= ( versionNumber ? versionNumber : @1 );
+		self.activeView	= 0;
 		
 		self.fileLoader = [GTFileLoader fileLoaderWithPackage:self.package language:self.language];
 		[self.fileLoader performSelectorInBackground:@selector(cacheSharedImages) withObject:nil];
 		
 		//parse xml
-		TBXML *tempXml = [[TBXML alloc] initWithXMLPath:[self pathOfPackageConfig]];
+		TBXML *tempXml = [[TBXML alloc] initWithXMLPath:self.fileLoader.pathOfConfigFile];
 		//fill page array
 		self.pageArray =  [self pageArrayFromDocumentElement:tempXml.rootXMLElement];
 		
@@ -279,7 +281,9 @@ extern NSString * const kAttr_watermark;
 	
 }
 
-- (void)loadResourceWithPackageCode:(NSString *)packageCode languageCode:(NSString *)languageCode {
+- (void)loadResourceWithPackageCode:(NSString *)packageCode languageCode:(NSString *)languageCode versionNumber:(NSNumber *)versionNumber {
+	
+	self.version	= ( versionNumber ? versionNumber : @1 );
 	
 	[self switchTo:packageCode language:languageCode];
 	
@@ -423,11 +427,11 @@ extern NSString * const kAttr_watermark;
         case MFMailComposeResultSent:
             NSLog(@"Mail send: the email message is queued in the outbox. It is ready to send.");
 			
-			[[NSNotificationCenter defaultCenter] postNotificationName:GTTrackerNotificationUserDidShareResource
+			[[NSNotificationCenter defaultCenter] postNotificationName:GTViewControllerNotificationUserDidShareResource
 																object:self
-															  userInfo:@{GTTrackerNotificationUserInfoLanguageKey:	self.language,
-																		 GTTrackerNotificationUserInfoPackageKey:	self.package,
-																		 GTTrackerNotificationUserInfoVersionKey:	@1}];
+															  userInfo:@{GTViewControllerNotificationUserInfoLanguageKey:	self.language,
+																		 GTViewControllerNotificationUserInfoPackageKey:	self.package,
+																		 GTViewControllerNotificationUserInfoVersionKey:	self.version}];
 			
             break;
         case MFMailComposeResultFailed:
@@ -449,6 +453,7 @@ extern NSString * const kAttr_watermark;
     [self presentViewController:aboutViewController animated:YES completion:nil];
     
     aboutViewController.navigationTitle.title = self.packageName;
+	self.aboutViewControllerWasShown = YES;
     
 }
 
@@ -1794,16 +1799,6 @@ extern NSString * const kAttr_watermark;
 	
 }
 
-//returns the devices current language
-- (NSString *)language {
-	return self.activeLanguage;
-}
-
-//returns the selected package
-- (NSString *)package {
-	return self.activePackage;
-}
-
 -(void)switchTo:(NSString *)packageID language:(NSString *)language {
 	
 	if (language == nil) {
@@ -1811,8 +1806,8 @@ extern NSString * const kAttr_watermark;
 	}
 	
 	//change package
-	self.activePackage = packageID;
-	self.fileLoader.package = [self package];
+	self.language = packageID;
+	self.fileLoader.package = self.package;
 	
 	//set the active view to the start of the package
 	self.activeView = 0;
@@ -1884,24 +1879,11 @@ extern NSString * const kAttr_watermark;
 	return pageArr;
 }
 
-- (NSString *)getLocationCode {
-	NSLocale *locale = [NSLocale currentLocale];
-	NSString *countryCodes = [locale objectForKey:NSLocaleCountryCode];
-	
-	if (countryCodes == nil || [countryCodes isEqual:@""]) {
-		countryCodes = @"";
-	} else {
-		countryCodes = [NSString stringWithFormat:@"_%@", countryCodes];
-	}
-	
-	return countryCodes;
-}
-
 - (void)changeLanguageTo:(NSString *)languageCode {
 	
 	//change language
-	self.activeLanguage = languageCode;
-	self.fileLoader.language = [self language];
+	self.language = languageCode;
+	self.fileLoader.language = self.language;
 	
 	//grab active index
 	NSInteger currentIndex = self.activeView;
@@ -1911,9 +1893,9 @@ extern NSString * const kAttr_watermark;
 	[self.fileLoader cacheSharedImages];
 	
 	//init the xml
-	TBXML *tempXml = [[TBXML alloc] initWithXMLPath:[self pathOfPackageConfig]];
+	TBXML *tempXml = [[TBXML alloc] initWithXMLPath:self.fileLoader.pathOfConfigFile];
 	if (!tempXml.rootXMLElement) {
-		[NSException raise:@"Could not read resource!" format:@"The resource XML document is empty.\nsnuffyViewController:\n   activePackage=%@\n   activeLanguage=%@", [self activePackage], [self activeLanguage]];
+		[NSException raise:@"Could not read resource!" format:@"The resource XML document is empty.\nsnuffyViewController:\n   package=%@\n   language=%@\n   version=%@", self.package, self.language, self.version];
 	}
 	//load the new page array
 	self.pageArray =  [self pageArrayFromDocumentElement:tempXml.rootXMLElement];
@@ -1936,11 +1918,6 @@ extern NSString * const kAttr_watermark;
         NSLog(@"%@", exception);
     }
 	
-}
-
-//returns the path of the index xml file
-- (NSString *)pathOfPackageConfig {
-	return [self.fileLoader pathOfPackagedXmlWithFilename:[[self language] stringByAppendingString:@".xml"]];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -1974,7 +1951,7 @@ extern NSString * const kAttr_watermark;
 	
 }
 
--(void)viewDidAppear:(BOOL)animated {
+- (void)viewDidAppear:(BOOL)animated {
 	
 	[super viewDidAppear:animated];
 	
@@ -1982,6 +1959,20 @@ extern NSString * const kAttr_watermark;
 	
 		[self skipToIndex:self.activeView animated:YES];
 		self.isFirstRunSinceCreation	= NO;
+		
+	}
+	
+	if (!self.aboutViewControllerWasShown) {
+		
+		[[NSNotificationCenter defaultCenter] postNotificationName:GTViewControllerNotificationResourceDidOpen
+															object:self
+														  userInfo:@{GTViewControllerNotificationUserInfoLanguageKey:	self.language,
+																	 GTViewControllerNotificationUserInfoPackageKey:	self.package,
+																	 GTViewControllerNotificationUserInfoVersionKey:	self.version}];
+		
+	} else {
+		
+		self.aboutViewControllerWasShown = NO;
 		
 	}
 	

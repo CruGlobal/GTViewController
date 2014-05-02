@@ -89,6 +89,43 @@
 		68C595E51912DDCF00BB2AC6 /* Package_PopUpToolBar_Icon_Switch.png in Resources */ = {isa = PBXBuildFile; fileRef = 68C595941912DDCF00BB2AC6 /* Package_PopUpToolBar_Icon_Switch.png */; };
 		68C595E61912DDCF00BB2AC6 /* Package_PopUpToolBar_Icon_Switch@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 68C595951912DDCF00BB2AC6 /* Package_PopUpToolBar_Icon_Switch@2x.png */; };
 		68C595E71912DDCF00BB2AC6 /* Package_PopUpToolBar_Icon_Switch@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 68C595951912DDCF00BB2AC6 /* Package_PopUpToolBar_Icon_Switch@2x.png */; };
+		68C595EA1912FBC700BB2AC6 /* GTExampleViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 68C595E91912FBC700BB2AC6 /* GTExampleViewController.m */; };
+		68C595EB1912FBC700BB2AC6 /* GTExampleViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 68C595E91912FBC700BB2AC6 /* GTExampleViewController.m */; };
+		68C595ED1912FCB700BB2AC6 /* Packages in Resources */ = {isa = PBXBuildFile; fileRef = 68C595EC1912FCB700BB2AC6 /* Packages */; };
+		68C595EE1912FCB700BB2AC6 /* Packages in Resources */ = {isa = PBXBuildFile; fileRef = 68C595EC1912FCB700BB2AC6 /* Packages */; };
+		68C595F01912FEB700BB2AC6 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68C595EF1912FEB700BB2AC6 /* QuartzCore.framework */; };
+		68C595F21912FEC200BB2AC6 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 68C595F11912FEC200BB2AC6 /* libz.dylib */; };
+		68C595F41912FEF300BB2AC6 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68C595F31912FEF300BB2AC6 /* AVFoundation.framework */; };
+		68C5960419131A2A00BB2AC6 /* Buttonlines_large.png in Resources */ = {isa = PBXBuildFile; fileRef = 68C595F519131A2900BB2AC6 /* Buttonlines_large.png */; };
+		68C5960519131A2A00BB2AC6 /* Buttonlines_large.png in Resources */ = {isa = PBXBuildFile; fileRef = 68C595F519131A2900BB2AC6 /* Buttonlines_large.png */; };
+		68C5960619131A2A00BB2AC6 /* Buttonlines.png in Resources */ = {isa = PBXBuildFile; fileRef = 68C595F619131A2900BB2AC6 /* Buttonlines.png */; };
+		68C5960719131A2A00BB2AC6 /* Buttonlines.png in Resources */ = {isa = PBXBuildFile; fileRef = 68C595F619131A2900BB2AC6 /* Buttonlines.png */; };
+		68C5960819131A2A00BB2AC6 /* grad_shad_bot.png in Resources */ = {isa = PBXBuildFile; fileRef = 68C595F719131A2900BB2AC6 /* grad_shad_bot.png */; };
+		68C5960919131A2A00BB2AC6 /* grad_shad_bot.png in Resources */ = {isa = PBXBuildFile; fileRef = 68C595F719131A2900BB2AC6 /* grad_shad_bot.png */; };
+		68C5960A19131A2A00BB2AC6 /* grad_shad_E.png in Resources */ = {isa = PBXBuildFile; fileRef = 68C595F819131A2A00BB2AC6 /* grad_shad_E.png */; };
+		68C5960B19131A2A00BB2AC6 /* grad_shad_E.png in Resources */ = {isa = PBXBuildFile; fileRef = 68C595F819131A2A00BB2AC6 /* grad_shad_E.png */; };
+		68C5960C19131A2A00BB2AC6 /* grad_shad_NE.png in Resources */ = {isa = PBXBuildFile; fileRef = 68C595F919131A2A00BB2AC6 /* grad_shad_NE.png */; };
+		68C5960D19131A2A00BB2AC6 /* grad_shad_NE.png in Resources */ = {isa = PBXBuildFile; fileRef = 68C595F919131A2A00BB2AC6 /* grad_shad_NE.png */; };
+		68C5960E19131A2A00BB2AC6 /* grad_shad_S.png in Resources */ = {isa = PBXBuildFile; fileRef = 68C595FA19131A2A00BB2AC6 /* grad_shad_S.png */; };
+		68C5960F19131A2A00BB2AC6 /* grad_shad_S.png in Resources */ = {isa = PBXBuildFile; fileRef = 68C595FA19131A2A00BB2AC6 /* grad_shad_S.png */; };
+		68C5961019131A2A00BB2AC6 /* grad_shad_SE.png in Resources */ = {isa = PBXBuildFile; fileRef = 68C595FB19131A2A00BB2AC6 /* grad_shad_SE.png */; };
+		68C5961119131A2A00BB2AC6 /* grad_shad_SE.png in Resources */ = {isa = PBXBuildFile; fileRef = 68C595FB19131A2A00BB2AC6 /* grad_shad_SE.png */; };
+		68C5961219131A2A00BB2AC6 /* grad_shad_SW.png in Resources */ = {isa = PBXBuildFile; fileRef = 68C595FC19131A2A00BB2AC6 /* grad_shad_SW.png */; };
+		68C5961319131A2A00BB2AC6 /* grad_shad_SW.png in Resources */ = {isa = PBXBuildFile; fileRef = 68C595FC19131A2A00BB2AC6 /* grad_shad_SW.png */; };
+		68C5961419131A2A00BB2AC6 /* grad_shad_top.png in Resources */ = {isa = PBXBuildFile; fileRef = 68C595FD19131A2A00BB2AC6 /* grad_shad_top.png */; };
+		68C5961519131A2A00BB2AC6 /* grad_shad_top.png in Resources */ = {isa = PBXBuildFile; fileRef = 68C595FD19131A2A00BB2AC6 /* grad_shad_top.png */; };
+		68C5961619131A2A00BB2AC6 /* line.png in Resources */ = {isa = PBXBuildFile; fileRef = 68C595FE19131A2A00BB2AC6 /* line.png */; };
+		68C5961719131A2A00BB2AC6 /* line.png in Resources */ = {isa = PBXBuildFile; fileRef = 68C595FE19131A2A00BB2AC6 /* line.png */; };
+		68C5961819131A2A00BB2AC6 /* URL_Button.png in Resources */ = {isa = PBXBuildFile; fileRef = 68C595FF19131A2A00BB2AC6 /* URL_Button.png */; };
+		68C5961919131A2A00BB2AC6 /* URL_Button.png in Resources */ = {isa = PBXBuildFile; fileRef = 68C595FF19131A2A00BB2AC6 /* URL_Button.png */; };
+		68C5961A19131A2A00BB2AC6 /* URL_Button@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 68C5960019131A2A00BB2AC6 /* URL_Button@2x.png */; };
+		68C5961B19131A2A00BB2AC6 /* URL_Button@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 68C5960019131A2A00BB2AC6 /* URL_Button@2x.png */; };
+		68C5961C19131A2A00BB2AC6 /* urlbutton.png in Resources */ = {isa = PBXBuildFile; fileRef = 68C5960119131A2A00BB2AC6 /* urlbutton.png */; };
+		68C5961D19131A2A00BB2AC6 /* urlbutton.png in Resources */ = {isa = PBXBuildFile; fileRef = 68C5960119131A2A00BB2AC6 /* urlbutton.png */; };
+		68C5961E19131A2A00BB2AC6 /* urlbutton@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 68C5960219131A2A00BB2AC6 /* urlbutton@2x.png */; };
+		68C5961F19131A2A00BB2AC6 /* urlbutton@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 68C5960219131A2A00BB2AC6 /* urlbutton@2x.png */; };
+		68C5962019131A2A00BB2AC6 /* vline.png in Resources */ = {isa = PBXBuildFile; fileRef = 68C5960319131A2A00BB2AC6 /* vline.png */; };
+		68C5962119131A2A00BB2AC6 /* vline.png in Resources */ = {isa = PBXBuildFile; fileRef = 68C5960319131A2A00BB2AC6 /* vline.png */; };
 		68F1F806190B05ED00044CDF /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68F1F805190B05ED00044CDF /* Foundation.framework */; };
 		68F1F808190B05ED00044CDF /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68F1F807190B05ED00044CDF /* CoreGraphics.framework */; };
 		68F1F80A190B05ED00044CDF /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68F1F809190B05ED00044CDF /* UIKit.framework */; };
@@ -175,6 +212,27 @@
 		68C595931912DDCF00BB2AC6 /* Package_PopUpToolBar_Icon_Menu@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Package_PopUpToolBar_Icon_Menu@2x.png"; sourceTree = "<group>"; };
 		68C595941912DDCF00BB2AC6 /* Package_PopUpToolBar_Icon_Switch.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Package_PopUpToolBar_Icon_Switch.png; sourceTree = "<group>"; };
 		68C595951912DDCF00BB2AC6 /* Package_PopUpToolBar_Icon_Switch@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Package_PopUpToolBar_Icon_Switch@2x.png"; sourceTree = "<group>"; };
+		68C595E81912FBC700BB2AC6 /* GTExampleViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTExampleViewController.h; sourceTree = "<group>"; };
+		68C595E91912FBC700BB2AC6 /* GTExampleViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GTExampleViewController.m; sourceTree = "<group>"; };
+		68C595EC1912FCB700BB2AC6 /* Packages */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Packages; sourceTree = "<group>"; };
+		68C595EF1912FEB700BB2AC6 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		68C595F11912FEC200BB2AC6 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
+		68C595F31912FEF300BB2AC6 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		68C595F519131A2900BB2AC6 /* Buttonlines_large.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Buttonlines_large.png; sourceTree = "<group>"; };
+		68C595F619131A2900BB2AC6 /* Buttonlines.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Buttonlines.png; sourceTree = "<group>"; };
+		68C595F719131A2900BB2AC6 /* grad_shad_bot.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = grad_shad_bot.png; sourceTree = "<group>"; };
+		68C595F819131A2A00BB2AC6 /* grad_shad_E.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = grad_shad_E.png; sourceTree = "<group>"; };
+		68C595F919131A2A00BB2AC6 /* grad_shad_NE.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = grad_shad_NE.png; sourceTree = "<group>"; };
+		68C595FA19131A2A00BB2AC6 /* grad_shad_S.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = grad_shad_S.png; sourceTree = "<group>"; };
+		68C595FB19131A2A00BB2AC6 /* grad_shad_SE.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = grad_shad_SE.png; sourceTree = "<group>"; };
+		68C595FC19131A2A00BB2AC6 /* grad_shad_SW.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = grad_shad_SW.png; sourceTree = "<group>"; };
+		68C595FD19131A2A00BB2AC6 /* grad_shad_top.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = grad_shad_top.png; sourceTree = "<group>"; };
+		68C595FE19131A2A00BB2AC6 /* line.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = line.png; sourceTree = "<group>"; };
+		68C595FF19131A2A00BB2AC6 /* URL_Button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = URL_Button.png; sourceTree = "<group>"; };
+		68C5960019131A2A00BB2AC6 /* URL_Button@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "URL_Button@2x.png"; sourceTree = "<group>"; };
+		68C5960119131A2A00BB2AC6 /* urlbutton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = urlbutton.png; sourceTree = "<group>"; };
+		68C5960219131A2A00BB2AC6 /* urlbutton@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "urlbutton@2x.png"; sourceTree = "<group>"; };
+		68C5960319131A2A00BB2AC6 /* vline.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = vline.png; sourceTree = "<group>"; };
 		68F1F802190B05ED00044CDF /* GTViewController.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GTViewController.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		68F1F805190B05ED00044CDF /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		68F1F807190B05ED00044CDF /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -199,6 +257,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				68C595F41912FEF300BB2AC6 /* AVFoundation.framework in Frameworks */,
+				68C595F21912FEC200BB2AC6 /* libz.dylib in Frameworks */,
+				68C595F01912FEB700BB2AC6 /* QuartzCore.framework in Frameworks */,
 				68F1F808190B05ED00044CDF /* CoreGraphics.framework in Frameworks */,
 				68F1F80A190B05ED00044CDF /* UIKit.framework in Frameworks */,
 				68F1F806190B05ED00044CDF /* Foundation.framework in Frameworks */,
@@ -312,6 +373,21 @@
 				68C595821912DDCF00BB2AC6 /* arrow.png */,
 				68C595831912DDCF00BB2AC6 /* arrow@2x.png */,
 				68C595841912DDCF00BB2AC6 /* fiftytap.mp3 */,
+				68C595F519131A2900BB2AC6 /* Buttonlines_large.png */,
+				68C595F619131A2900BB2AC6 /* Buttonlines.png */,
+				68C595F719131A2900BB2AC6 /* grad_shad_bot.png */,
+				68C595F819131A2A00BB2AC6 /* grad_shad_E.png */,
+				68C595F919131A2A00BB2AC6 /* grad_shad_NE.png */,
+				68C595FA19131A2A00BB2AC6 /* grad_shad_S.png */,
+				68C595FB19131A2A00BB2AC6 /* grad_shad_SE.png */,
+				68C595FC19131A2A00BB2AC6 /* grad_shad_SW.png */,
+				68C595FD19131A2A00BB2AC6 /* grad_shad_top.png */,
+				68C595FE19131A2A00BB2AC6 /* line.png */,
+				68C595FF19131A2A00BB2AC6 /* URL_Button.png */,
+				68C5960019131A2A00BB2AC6 /* URL_Button@2x.png */,
+				68C5960119131A2A00BB2AC6 /* urlbutton.png */,
+				68C5960219131A2A00BB2AC6 /* urlbutton@2x.png */,
+				68C5960319131A2A00BB2AC6 /* vline.png */,
 				68C595851912DDCF00BB2AC6 /* GTInstructions_Hand_Pointer.png */,
 				68C595861912DDCF00BB2AC6 /* GTInstructions_Hand_Pointer@2x.png */,
 				68C595871912DDCF00BB2AC6 /* GTInstructions_Hand_Pointer_Shadow.png */,
@@ -356,6 +432,9 @@
 		68F1F804190B05ED00044CDF /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				68C595F31912FEF300BB2AC6 /* AVFoundation.framework */,
+				68C595F11912FEC200BB2AC6 /* libz.dylib */,
+				68C595EF1912FEB700BB2AC6 /* QuartzCore.framework */,
 				68F1F805190B05ED00044CDF /* Foundation.framework */,
 				68F1F807190B05ED00044CDF /* CoreGraphics.framework */,
 				68F1F809190B05ED00044CDF /* UIKit.framework */,
@@ -373,6 +452,9 @@
 				68F1F814190B05ED00044CDF /* GTAppDelegate.h */,
 				68F1F815190B05ED00044CDF /* GTAppDelegate.m */,
 				68F1F817190B05ED00044CDF /* Main.storyboard */,
+				68C595E81912FBC700BB2AC6 /* GTExampleViewController.h */,
+				68C595E91912FBC700BB2AC6 /* GTExampleViewController.m */,
+				68C595EC1912FCB700BB2AC6 /* Packages */,
 				68F1F81D190B05ED00044CDF /* Images.xcassets */,
 				68F1F80C190B05ED00044CDF /* Supporting Files */,
 			);
@@ -488,18 +570,31 @@
 				68C595CA1912DDCF00BB2AC6 /* GTInstructions_Hand_Pointer_Shadow.png in Resources */,
 				68F1F81E190B05ED00044CDF /* Images.xcassets in Resources */,
 				68C595AA1912DDCF00BB2AC6 /* GTViewController.xib in Resources */,
+				68C5961E19131A2A00BB2AC6 /* urlbutton@2x.png in Resources */,
 				68F1F810190B05ED00044CDF /* InfoPlist.strings in Resources */,
 				68C595CC1912DDCF00BB2AC6 /* GTInstructions_Hand_Pointer_Shadow@2x.png in Resources */,
+				68C5962019131A2A00BB2AC6 /* vline.png in Resources */,
+				68C5960819131A2A00BB2AC6 /* grad_shad_bot.png in Resources */,
+				68C5961219131A2A00BB2AC6 /* grad_shad_SW.png in Resources */,
 				68C595D21912DDCF00BB2AC6 /* NotoSansEthiopic-Regular.ttf in Resources */,
+				68C5960A19131A2A00BB2AC6 /* grad_shad_E.png in Resources */,
 				68C595C81912DDCF00BB2AC6 /* GTInstructions_Hand_Pointer@2x.png in Resources */,
 				68C595DE1912DDCF00BB2AC6 /* Package_PopUpToolBar_Icon_Info@2x.png in Resources */,
+				68C5961419131A2A00BB2AC6 /* grad_shad_top.png in Resources */,
+				68C5960C19131A2A00BB2AC6 /* grad_shad_NE.png in Resources */,
 				68C595D41912DDCF00BB2AC6 /* Package_PopUpToolBar_Icon_Export.png in Resources */,
 				68C595A61912DDCF00BB2AC6 /* snuffyPageMenuViewController.xib in Resources */,
 				68C595DC1912DDCF00BB2AC6 /* Package_PopUpToolBar_Icon_Info.png in Resources */,
+				68C5960419131A2A00BB2AC6 /* Buttonlines_large.png in Resources */,
+				68C5961619131A2A00BB2AC6 /* line.png in Resources */,
+				68C595ED1912FCB700BB2AC6 /* Packages in Resources */,
+				68C5961C19131A2A00BB2AC6 /* urlbutton.png in Resources */,
 				68C595E61912DDCF00BB2AC6 /* Package_PopUpToolBar_Icon_Switch@2x.png in Resources */,
 				68C595C01912DDCF00BB2AC6 /* arrow.png in Resources */,
 				68C595BE1912DDCF00BB2AC6 /* AbyssinicaSIL-R.ttf in Resources */,
 				68C595D01912DDCF00BB2AC6 /* NotoSansEthiopic-Bold.ttf in Resources */,
+				68C5961A19131A2A00BB2AC6 /* URL_Button@2x.png in Resources */,
+				68C5961819131A2A00BB2AC6 /* URL_Button.png in Resources */,
 				68C595C21912DDCF00BB2AC6 /* arrow@2x.png in Resources */,
 				68C595AE1912DDCF00BB2AC6 /* AboutViewController.xib in Resources */,
 				68C595C61912DDCF00BB2AC6 /* GTInstructions_Hand_Pointer.png in Resources */,
@@ -511,6 +606,9 @@
 				68C595E21912DDCF00BB2AC6 /* Package_PopUpToolBar_Icon_Menu@2x.png in Resources */,
 				68C595E01912DDCF00BB2AC6 /* Package_PopUpToolBar_Icon_Menu.png in Resources */,
 				68C595C41912DDCF00BB2AC6 /* fiftytap.mp3 in Resources */,
+				68C5961019131A2A00BB2AC6 /* grad_shad_SE.png in Resources */,
+				68C5960619131A2A00BB2AC6 /* Buttonlines.png in Resources */,
+				68C5960E19131A2A00BB2AC6 /* grad_shad_S.png in Resources */,
 				68C595B41912DDCF00BB2AC6 /* GTPage.xib in Resources */,
 				68C595E41912DDCF00BB2AC6 /* Package_PopUpToolBar_Icon_Switch.png in Resources */,
 			);
@@ -521,12 +619,20 @@
 			buildActionMask = 2147483647;
 			files = (
 				68C595DB1912DDCF00BB2AC6 /* Package_PopUpToolBar_Icon_Help@2x.png in Resources */,
+				68C5961F19131A2A00BB2AC6 /* urlbutton@2x.png in Resources */,
+				68C5960519131A2A00BB2AC6 /* Buttonlines_large.png in Resources */,
 				68C595E71912DDCF00BB2AC6 /* Package_PopUpToolBar_Icon_Switch@2x.png in Resources */,
+				68C5962119131A2A00BB2AC6 /* vline.png in Resources */,
 				68C595E11912DDCF00BB2AC6 /* Package_PopUpToolBar_Icon_Menu.png in Resources */,
 				68C595CB1912DDCF00BB2AC6 /* GTInstructions_Hand_Pointer_Shadow.png in Resources */,
 				68C595D51912DDCF00BB2AC6 /* Package_PopUpToolBar_Icon_Export.png in Resources */,
 				68C595D31912DDCF00BB2AC6 /* NotoSansEthiopic-Regular.ttf in Resources */,
+				68C5960F19131A2A00BB2AC6 /* grad_shad_S.png in Resources */,
+				68C5961719131A2A00BB2AC6 /* line.png in Resources */,
+				68C5961319131A2A00BB2AC6 /* grad_shad_SW.png in Resources */,
 				68C595AB1912DDCF00BB2AC6 /* GTViewController.xib in Resources */,
+				68C5960B19131A2A00BB2AC6 /* grad_shad_E.png in Resources */,
+				68C5960719131A2A00BB2AC6 /* Buttonlines.png in Resources */,
 				68C595B51912DDCF00BB2AC6 /* GTPage.xib in Resources */,
 				68C595BF1912DDCF00BB2AC6 /* AbyssinicaSIL-R.ttf in Resources */,
 				68C595DF1912DDCF00BB2AC6 /* Package_PopUpToolBar_Icon_Info@2x.png in Resources */,
@@ -535,13 +641,21 @@
 				68C595CD1912DDCF00BB2AC6 /* GTInstructions_Hand_Pointer_Shadow@2x.png in Resources */,
 				68C595A71912DDCF00BB2AC6 /* snuffyPageMenuViewController.xib in Resources */,
 				68C595C31912DDCF00BB2AC6 /* arrow@2x.png in Resources */,
+				68C5961919131A2A00BB2AC6 /* URL_Button.png in Resources */,
+				68C5960D19131A2A00BB2AC6 /* grad_shad_NE.png in Resources */,
 				68C595C51912DDCF00BB2AC6 /* fiftytap.mp3 in Resources */,
+				68C5961119131A2A00BB2AC6 /* grad_shad_SE.png in Resources */,
 				68C595C71912DDCF00BB2AC6 /* GTInstructions_Hand_Pointer.png in Resources */,
 				68C595E31912DDCF00BB2AC6 /* Package_PopUpToolBar_Icon_Menu@2x.png in Resources */,
 				68C595AF1912DDCF00BB2AC6 /* AboutViewController.xib in Resources */,
 				68C595DD1912DDCF00BB2AC6 /* Package_PopUpToolBar_Icon_Info.png in Resources */,
 				68C595C11912DDCF00BB2AC6 /* arrow.png in Resources */,
+				68C595EE1912FCB700BB2AC6 /* Packages in Resources */,
+				68C5961D19131A2A00BB2AC6 /* urlbutton.png in Resources */,
+				68C5961B19131A2A00BB2AC6 /* URL_Button@2x.png in Resources */,
 				68C595E51912DDCF00BB2AC6 /* Package_PopUpToolBar_Icon_Switch.png in Resources */,
+				68C5960919131A2A00BB2AC6 /* grad_shad_bot.png in Resources */,
+				68C5961519131A2A00BB2AC6 /* grad_shad_top.png in Resources */,
 				68C595D71912DDCF00BB2AC6 /* Package_PopUpToolBar_Icon_Export@2x.png in Resources */,
 				68C595C91912DDCF00BB2AC6 /* GTInstructions_Hand_Pointer@2x.png in Resources */,
 				68F1F82F190B05ED00044CDF /* InfoPlist.strings in Resources */,
@@ -567,6 +681,7 @@
 				68C595B21912DDCF00BB2AC6 /* GTPage.m in Sources */,
 				68C5959C1912DDCF00BB2AC6 /* UIRoundedView.m in Sources */,
 				68C595A41912DDCF00BB2AC6 /* snuffyPageMenuViewController.m in Sources */,
+				68C595EA1912FBC700BB2AC6 /* GTExampleViewController.m in Sources */,
 				68C595B61912DDCF00BB2AC6 /* GTPageInterpreter.m in Sources */,
 				68C595BA1912DDCF00BB2AC6 /* NSDataAdditions.m in Sources */,
 				68C595B81912DDCF00BB2AC6 /* GTPageInterpreterAmharic.m in Sources */,
@@ -587,6 +702,7 @@
 				68C595A31912DDCF00BB2AC6 /* HorizontalGestureRecognizer.m in Sources */,
 				68C595B91912DDCF00BB2AC6 /* GTPageInterpreterAmharic.m in Sources */,
 				68C595991912DDCF00BB2AC6 /* SNInstructions.m in Sources */,
+				68C595EB1912FBC700BB2AC6 /* GTExampleViewController.m in Sources */,
 				68C595BB1912DDCF00BB2AC6 /* NSDataAdditions.m in Sources */,
 				68C5959F1912DDCF00BB2AC6 /* UISnuffleButton.m in Sources */,
 				68C595BD1912DDCF00BB2AC6 /* TBXML.m in Sources */,
