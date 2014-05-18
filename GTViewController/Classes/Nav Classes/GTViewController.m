@@ -1806,7 +1806,7 @@ extern NSString * const kAttr_watermark;
 	}
 	
 	//change package
-	self.language = packageID;
+	self.package			= packageID;
 	self.fileLoader.package = self.package;
 	
 	//set the active view to the start of the package
@@ -1814,6 +1814,7 @@ extern NSString * const kAttr_watermark;
 	
 	//change the language to the best match found in this package
     @try {
+		
         [self changeLanguageTo:language];
 		
     }
