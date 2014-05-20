@@ -22,12 +22,9 @@
 #import "GTPage.h"
 
 
-NSString *const GTViewControllerNotificationUserInfoLanguageKey			= @"org.cru.godtools.gtviewcontroller.notifications.all.key.language";
-NSString *const GTViewControllerNotificationUserInfoPackageKey			= @"org.cru.godtools.gtviewcontroller.notifications.all.key.package";
-NSString *const GTViewControllerNotificationUserInfoVersionKey			= @"org.cru.godtools.gtviewcontroller.notifications.all.key.version";
+NSString *const GTViewControllerNotificationUserInfoConfigFilenameKey			= @"org.cru.godtools.gtviewcontroller.notifications.all.key.configfilename";
 
 NSString *const GTViewControllerNotificationResourceDidOpen				= @"org.cru.godtools.gtviewcontroller.notifications.resourcedidopen";
-NSString *const GTViewControllerNotificationUserDidShareResource		= @"org.cru.godtools.gtviewcontroller.notifications.userdidshareresource";
 
 /**
  *  Touch Notification Key Names
@@ -53,15 +50,6 @@ NSString *const snuffyViewControllerTouchNotificationTap              = @"org.cr
 #define TOOLBAR_PEEK 5
 
 
-
-//////////TableView Mode constants//////////
-
-
-NSInteger  const kTBMode_Package	= 0;
-NSInteger  const kTBMode_Language	= 1;
-NSInteger  const kTBMode_Page		= 2;
-
-
 //////////Page Array constants//////////
 
 
@@ -80,38 +68,21 @@ NSString * const kName_Page			= @"page";
 NSString * const kName_About		= @"about";
 
 //attribute string constants
-NSString * const kAttr_language		= @"lang";
 NSString * const kAttr_thumb		= @"thumb";
 NSString * const kAttr_filename		= @"filename";
-
-
-////////////Page constants////////////////
-
-// Constants for the XML tag names
-extern NSString * const kName_Button;
-extern NSString * const kName_Image;
-extern NSString * const kName_Panel;
-extern NSString * const kName_PanelImage;
-
-// Constants for the XML attribute names
-extern NSString * const kAttr_backgroundImage;
-extern NSString * const kAttr_watermark;
 
 @interface GTViewController () <MFMailComposeViewControllerDelegate, UIActionSheetDelegate, GTAboutViewControllerDelegate, SNInstructionsDelegate, HorizontalGestureRecognizerDelegate, GTPageDelegate>
 
 @property (nonatomic, weak)		id<GTViewControllerMenuDelegate> menuDelegate;
 @property (nonatomic, strong)	GTFileLoader *fileLoader;
 
-@property (nonatomic, strong)	NSString *package;
-@property (nonatomic, strong)	NSString *language;
-@property (nonatomic, strong)	NSNumber *version;
+@property (nonatomic, strong)	NSString *configFilename;
 @property (nonatomic, assign)	NSInteger activeView;
 
 @property (nonatomic, strong)	NSString *aboutFilename;
 @property (nonatomic, strong)	NSString *packageName;
 
 @property (nonatomic, strong)	NSArray *packageArray;
-@property (nonatomic, strong)	NSMutableArray *languageArray;
 @property (nonatomic, strong)	NSMutableArray *pageArray;
 
 @property (nonatomic, weak)		IBOutlet UIButton	*navToolbarButton;
@@ -168,6 +139,9 @@ extern NSString * const kAttr_watermark;
 
 @property (nonatomic, assign)	BOOL						isFirstRunSinceCreation;
 @property (nonatomic, strong)	NSArray						*allURLsButtonArray;
+
+//config functions
+- (NSMutableArray *)pageArrayForConfigFile:(NSString *)filename;
 
 - (void)registerNotificationHandlers;
 - (void)removeNotificationHandlers;
@@ -226,9 +200,6 @@ extern NSString * const kAttr_watermark;
 - (void)cacheImagesForButtonWithElement:(TBXMLElement *)button_el;
 - (void)cacheImagesForPanelWithElement:(TBXMLElement *)panel_el;
 
-//config functions
-- (NSMutableArray *)pageArrayFromDocumentElement:(TBXMLElement *)element;
-
 @end
 
 @implementation GTViewController
@@ -241,11 +212,10 @@ extern NSString * const kAttr_watermark;
 		
 		[self registerNotificationHandlers];
 		
+		self.fileLoader						= fileLoader;
 		self.pageMenu						= pageMenuViewController;
 		self.aboutPage						= aboutViewController;
 		self.shareSheet						= shareViewController;
-		
-		[self configureToolbar];
 		
 		self.transitionAnimationDuration	= NORMAL_TRANSITION_ANIMATION_DURATION;
 		self.resistedDragMultiplier			= RESISTED_DRAG_MULTIPLIER;
@@ -255,28 +225,14 @@ extern NSString * const kAttr_watermark;
 		self.instructionsAreRunning			= NO;
 		self.isFirstRunSinceCreation		= YES;
 		
-		//add instruction button and make instructions for button to play
+		//make instructions play if needed
 		self.instructionPlayer					= [[SNInstructions alloc] init];
 		
-		UIBarButtonItem	*helpButton				= [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Package_PopUpToolBar_Icon_Help"] style:UIBarButtonItemStyleBordered target:self action:@selector(showInstructions)];
-		self.navigationItem.rightBarButtonItem	= helpButton;
+		[self configureToolbar];
 		
-		//init active package, language and pages
-		self.package	= ( packageCode ? packageCode : @"fourlaws" );
-		self.language	= ( languageCode ? languageCode : @"en" );
-		self.version	= ( versionNumber ? versionNumber : @1 );
-		self.activeView	= 0;
-		
-		self.fileLoader = [GTFileLoader fileLoaderWithPackage:self.package language:self.language];
-		[self.fileLoader performSelectorInBackground:@selector(cacheSharedImages) withObject:nil];
-		
-		//parse xml
-		TBXML *tempXml = [[TBXML alloc] initWithXMLPath:self.fileLoader.pathOfConfigFile];
-		//fill page array
-		self.pageArray =  [self pageArrayFromDocumentElement:tempXml.rootXMLElement];
-		
-		//add gesture recognizer
 		self.gestureRecognizer	= [[HorizontalGestureRecognizer alloc] initWithDelegate:self target:self.view];
+		
+		[self loadResourceConfigFilename:filename];
 		
 	}
 	
@@ -286,19 +242,13 @@ extern NSString * const kAttr_watermark;
 
 - (void)loadResourceConfigFilename:(NSString *)filename {
 	
-	//clear cache
+	self.configFilename	= filename;
+	
 	[self.fileLoader clearCache];
 	[self.fileLoader cacheSharedImages];
 	
-	//init the xml
-	TBXML *tempXml = [[TBXML alloc] initWithXMLPath:[self.fileLoader pathOfFileWithFilename:filename]];
-	if (!tempXml.rootXMLElement) {
-		[NSException raise:@"Could not read resource!" format:@"Could not parse config file with name: %@. Try again. If the problem continues please contact support@godtoolsapp.com.", filename];
-	}
-	//load the new page array
-	self.pageArray =  [self pageArrayFromDocumentElement:tempXml.rootXMLElement];
+	self.pageArray =  [self pageArrayForConfigFile:filename];
 	
-	//skip to active page
 	[self skipTo:0];
 	
 }
@@ -455,8 +405,14 @@ extern NSString * const kAttr_watermark;
 
 #pragma mark - config parsing
 
--(NSMutableArray *)pageArrayFromDocumentElement:(TBXMLElement *)element {
+- (NSMutableArray *)pageArrayForConfigFile:(NSString *)filename {
 	
+	//init the xml
+	TBXML *tempXml = [[TBXML alloc] initWithXMLPath:[self.fileLoader pathOfFileWithFilename:filename]];
+	if (!tempXml.rootXMLElement) {
+		[NSException raise:@"Could not read resource!" format:@"Could not parse config file with name: %@. Try again. If the problem continues please contact support@godtoolsapp.com.", filename];
+	}
+	TBXMLElement	*element	= tempXml.rootXMLElement;
 	TBXMLElement	*page_el	= [TBXML childElementNamed:kName_Page parentElement:element];
 	TBXMLElement	*about_el	= [TBXML childElementNamed:kName_About parentElement:element];
 	TBXMLElement	*package_el	= [TBXML childElementNamed:kName_Package parentElement:element];
@@ -466,11 +422,9 @@ extern NSString * const kAttr_watermark;
 	NSMutableArray	*descArr	= [[NSMutableArray alloc] init];
 	
 	if (package_el != nil) {
-		self.packageName = [TBXML textForElement:package_el];	//set the packagename
-	}
-	else {
-		//NSLog(@"Warning: No packagename in %@.xml", [self language]);
-		self.packageName = @"";	//default packagename if not in xml
+		self.packageName		= [TBXML textForElement:package_el];
+	} else {
+		self.packageName		= @"";
 	}
 	
 	
@@ -612,6 +566,11 @@ extern NSString * const kAttr_watermark;
 
 - (void)configureToolbar {
 	
+	//configure top toolbar
+	UIBarButtonItem	*helpButton				= [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Package_PopUpToolBar_Icon_Help"] style:UIBarButtonItemStyleBordered target:self action:@selector(showInstructions)];
+	self.navigationItem.rightBarButtonItem	= helpButton;
+	
+	//configure bottom toolbar
 	NSMutableArray *buttons = [NSMutableArray arrayWithObject:[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil]];
 	
 	if (self.shareSheet) {
@@ -704,8 +663,6 @@ extern NSString * const kAttr_watermark;
 	
 	if (self.pageMenu) {
 		
-		self.pageMenu.language	= self.language;
-		self.pageMenu.package	= self.package;
 		self.pageMenu.pageArray = self.pageArray;
 		[self presentViewController:self.pageMenu animated:YES completion:nil];
 		self.childViewControllerWasShown = YES;
@@ -1881,9 +1838,7 @@ extern NSString * const kAttr_watermark;
 		
 		[[NSNotificationCenter defaultCenter] postNotificationName:GTViewControllerNotificationResourceDidOpen
 															object:self
-														  userInfo:@{GTViewControllerNotificationUserInfoLanguageKey:	self.language,
-																	 GTViewControllerNotificationUserInfoPackageKey:	self.package,
-																	 GTViewControllerNotificationUserInfoVersionKey:	self.version}];
+														  userInfo:@{GTViewControllerNotificationUserInfoConfigFilenameKey:	self.configFilename}];
 		
 	} else {
 		
