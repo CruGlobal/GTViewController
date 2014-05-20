@@ -11,10 +11,12 @@
 extern NSString * const GTTPageMenuViewControllerSwitchPage;
 extern NSString * const GTTPageMenuViewControllerPageNumber;
 
+@class GTFileLoader;
+
 @interface GTPageMenuViewController : UIViewController
 
 @property (nonatomic, strong) NSMutableArray *pageArray;
-@property (nonatomic, strong) NSString *package;
-@property (nonatomic, strong) NSString *language;
+
+- (instancetype)initWithFileLoader:(GTFileLoader *)fileLoader;
 
 @end

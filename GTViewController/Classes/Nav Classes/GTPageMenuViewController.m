@@ -20,6 +20,7 @@ extern NSInteger  const kPageArray_Desc;
 @interface GTPageMenuViewController () <UITableViewDataSource, UITableViewDelegate>
 
 @property (nonatomic, weak) IBOutlet UITableView *tableView;
+@property (nonatomic, strong) GTFileLoader *fileLoader;
 
 - (IBAction)cancel:(id)sender;
 
@@ -27,12 +28,13 @@ extern NSInteger  const kPageArray_Desc;
 
 @implementation GTPageMenuViewController
 
-- (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
+- (instancetype)initWithFileLoader:(GTFileLoader *)fileLoader {
 	
-	self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
+	self = [super initWithNibName:NSStringFromClass([GTPageMenuViewController class]) bundle:nil];
 	
 	if (self) {
 		
+		self.fileLoader = fileLoader;
 		[self addObserver:self forKeyPath:@"pageArray" options:NSKeyValueObservingOptionNew context:nil];
 		
 	}
@@ -97,8 +99,8 @@ extern NSInteger  const kPageArray_Desc;
 
 	cell.selectionStyle			= UITableViewCellSelectionStyleGray;
 	cell.textLabel.textColor	= [UIColor blackColor];
-	cell.textLabel.font			= ( [self.language isEqualToString:@"am-ET"] ? [UIFont fontWithName:@"NotoSansEthiopic" size:14.0] : [UIFont fontWithName:@"Helvetica-Bold" size:14.0] );
-	cell.imageView.image		= [[GTFileLoader fileLoaderWithPackage:self.package language:self.language] imageWithFilename:self.pageArray[kPageArray_Thumb][indexPath.row]];
+	cell.textLabel.font			= ( [self.fileLoader.language isEqualToString:@"am-ET"] ? [UIFont fontWithName:@"NotoSansEthiopic" size:14.0] : [UIFont fontWithName:@"Helvetica-Bold" size:14.0] );
+	cell.imageView.image		= [self.fileLoader imageWithFilename:self.pageArray[kPageArray_Thumb][indexPath.row]];
 	cell.textLabel.text			= self.pageArray[kPageArray_Desc][indexPath.row]; //grab display text
 	
 	//set alternating background color
