@@ -1,6 +1,6 @@
 //
-//  snuffyPageMenuViewController.h
-//  godtools-translation-viewer
+//  GTPageMenuViewController.h
+//  GTViewController
 //
 //  Created by Michael Harrison on 3/11/14.
 //  Copyright (c) 2014 Michael Harrison. All rights reserved.
