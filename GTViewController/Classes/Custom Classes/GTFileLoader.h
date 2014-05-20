@@ -11,24 +11,17 @@
 
 @interface GTFileLoader : NSObject
 
-@property (nonatomic, strong)	NSString			*package;
-@property (nonatomic, strong)	NSString			*language;
+@property (nonatomic, strong)	NSString *language;
 
 + (GTFileLoader *)sharedInstance;
-+ (GTFileLoader *)sharedInstanceWithPackage:(NSString *)pack language:(NSString *)lang;
-+ (instancetype)fileLoaderWithPackage:(NSString *)pack language:(NSString *)lang;
-- (instancetype)initWithPackage:(NSString *)pack language:(NSString *)lang;
++ (instancetype)fileLoader;
 
 + (NSString *)pathOfPackagesDirectory;
-- (NSString *)pathOfConfigFile;
 - (NSString *)pathOfFileWithFilename:(NSString *)filename;
 
 - (UIImage *)imageWithFilename:(NSString *)filename;
 
 - (void)cacheImageWithFileName:(NSString *)filename;
-- (void)cacheSharedImages;
 - (void)clearCache;
-
-+ (BOOL)isRetina;
 
 @end

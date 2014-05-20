@@ -17,6 +17,8 @@
 
 - (UIImage *)imageWithPath:(NSString *)path;
 
++ (BOOL)isRetina;
+
 @end
 
 @implementation GTFileLoader
@@ -38,33 +40,12 @@
 	
 }
 
-+ (instancetype)sharedInstanceWithPackage:(NSString *)pack language:(NSString *)lang {
++ (instancetype)fileLoader {
 	
-	[GTFileLoader sharedInstance].package		= pack;
-	[GTFileLoader sharedInstance].language		= lang;
-	
-	return [GTFileLoader sharedInstance];
+	return [[GTFileLoader alloc] init];
 }
 
-+ (instancetype)fileLoaderWithPackage:(NSString *)pack language:(NSString *)lang {
-	
-	return [[GTFileLoader alloc] initWithPackage:pack language:lang];
-}
-
-- (instancetype)initWithPackage:(NSString *)pack language:(NSString *)lang {
-	
-	self = [super init];
-    if (self) {
-        
-		self.package	= pack;
-		self.language	= lang;
-		
-    }
-	
-    return self;
-}
-
-- (id)init {
+- (instancetype)init {
 	
     self = [super init];
     if (self) {
@@ -105,45 +86,7 @@
 	NSString *path = [[GTFileLoader pathOfPackagesDirectory] stringByAppendingPathComponent:filename];
 	
 	if (![[NSFileManager defaultManager] fileExistsAtPath:path]) {
-		path = [[[GTFileLoader pathOfPackagesDirectory]	stringByAppendingPathComponent:self.package]
-														stringByAppendingPathComponent:filename];
-	}
-	
-	if (![[NSFileManager defaultManager] fileExistsAtPath:path]) {
-		path = [[[[GTFileLoader pathOfPackagesDirectory]	stringByAppendingPathComponent:self.package]
-														stringByAppendingPathComponent:self.language]
-														stringByAppendingPathComponent:filename];
-	}
-	
-	if (![[NSFileManager defaultManager] fileExistsAtPath:path]) {
-		path = [[[[[GTFileLoader pathOfPackagesDirectory]	stringByAppendingPathComponent:self.package]
-														stringByAppendingPathComponent:self.language]
-														stringByAppendingPathComponent:@"thumbs"]
-														stringByAppendingPathComponent:filename];
-	}
-	
-	if (![[NSFileManager defaultManager] fileExistsAtPath:path]) {
-		path = [[[[[GTFileLoader pathOfPackagesDirectory]	stringByAppendingPathComponent:self.package]
-														stringByAppendingPathComponent:self.language]
-														stringByAppendingPathComponent:@"images"]
-														stringByAppendingPathComponent:filename];
-	}
-	
-	if (![[NSFileManager defaultManager] fileExistsAtPath:path]) {
-		path = [[[[GTFileLoader pathOfPackagesDirectory]	stringByAppendingPathComponent:self.package]
-														stringByAppendingPathComponent:@"icons"]
-														stringByAppendingPathComponent:filename];
-	}
-	
-	if (![[NSFileManager defaultManager] fileExistsAtPath:path]) {
-		path = [[[[GTFileLoader pathOfPackagesDirectory]	stringByAppendingPathComponent:self.package]
-				 stringByAppendingPathComponent:@"shared"]
-				stringByAppendingPathComponent:filename];
-	}
-	
-	if (![[NSFileManager defaultManager] fileExistsAtPath:path]) {
-		path = [[[GTFileLoader pathOfPackagesDirectory]	stringByAppendingPathComponent:@"shared"]
-														stringByAppendingPathComponent:filename];
+		path = [[GTFileLoader pathOfPackagesDirectory]	stringByAppendingPathComponent:filename];
 	}
 	
 	if (![[NSFileManager defaultManager] fileExistsAtPath:path]) {
@@ -179,21 +122,6 @@
 		UIImage *image			= [UIImage imageWithContentsOfFile:path];
 		self.imageCache[path]	= image;
 	}
-	
-}
-
-- (void)cacheSharedImages {
-	
-	NSString	*sharedDirectory	= [[GTFileLoader pathOfPackagesDirectory] stringByAppendingPathComponent:@"shared"];
-	
-	NSFileManager *localFileManager	= [[NSFileManager alloc] init];
-	NSDirectoryEnumerator *dirEnum	= [localFileManager enumeratorAtPath:sharedDirectory];
-	
-	NSString *imageFilename;
-	while (imageFilename = [dirEnum nextObject]) {
-		[self imageWithPath:[sharedDirectory stringByAppendingPathComponent:imageFilename]];
-	}
-	
 	
 }
 

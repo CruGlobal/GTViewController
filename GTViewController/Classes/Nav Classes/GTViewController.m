@@ -245,7 +245,6 @@ NSString * const kAttr_filename		= @"filename";
 	self.configFilename	= filename;
 	
 	[self.fileLoader clearCache];
-	[self.fileLoader cacheSharedImages];
 	
 	self.pageArray =  [self pageArrayForConfigFile:filename];
 	
@@ -1874,7 +1873,6 @@ NSString * const kAttr_filename		= @"filename";
 	
 	// Release any cached data, images, etc that aren't in use.
 	[self.fileLoader clearCache];
-	[self.fileLoader cacheSharedImages];
 	[self skipTo:self.activeView];
 }
 

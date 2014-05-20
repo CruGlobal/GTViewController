@@ -73,7 +73,8 @@ NSString *const GTExampleTableViewControllerResourcesKeyConfigFile	= @"org.cru.g
 	if (!_godtoolsViewController) {
 		
 		NSString *configFile	= self.resources[0][GTExampleTableViewControllerResourcesKeyConfigFile];
-		GTFileLoader *fileLoader = [GTFileLoader fileLoaderWithPackage:@"fourlaws" language:@"en"];
+		GTFileLoader *fileLoader = [GTFileLoader fileLoader];
+		fileLoader.language		= @"en";
 		GTShareViewController *shareViewController = [[GTShareViewController alloc] init];
 		GTPageMenuViewController *pageMenuViewController = [[GTPageMenuViewController alloc] initWithFileLoader:fileLoader];
 		GTAboutViewController *aboutViewController = [[GTAboutViewController alloc] initWithDelegate:self fileLoader:fileLoader];
