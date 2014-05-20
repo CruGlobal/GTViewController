@@ -227,14 +227,13 @@ extern NSString * const kAttr_watermark;
 - (void)cacheImagesForPanelWithElement:(TBXMLElement *)panel_el;
 
 //config functions
-- (void)switchTo:(NSString *)packageID language:(NSString *)language;
-- (void)changeLanguageTo:(NSString *)languageCode;
-- (void)changePackageTo:(NSString *)packageID;
 - (NSMutableArray *)pageArrayFromDocumentElement:(TBXMLElement *)element;
 
 @end
 
 @implementation GTViewController
+
+#pragma mark - public methods
 
 - (instancetype)initWithConfigFile:(NSString *)filename fileLoader:(GTFileLoader *)fileLoader shareViewController:(GTShareViewController *)shareViewController pageMenuViewController:(GTPageMenuViewController *)pageMenuViewController aboutViewController:(GTAboutViewController *)aboutViewController delegate:(id<GTViewControllerMenuDelegate>)delegate {
 	
@@ -287,9 +286,20 @@ extern NSString * const kAttr_watermark;
 
 - (void)loadResourceConfigFilename:(NSString *)filename {
 	
-	self.version	= ( versionNumber ? versionNumber : @1 );
+	//clear cache
+	[self.fileLoader clearCache];
+	[self.fileLoader cacheSharedImages];
 	
-	[self switchTo:packageCode language:languageCode];
+	//init the xml
+	TBXML *tempXml = [[TBXML alloc] initWithXMLPath:[self.fileLoader pathOfFileWithFilename:filename]];
+	if (!tempXml.rootXMLElement) {
+		[NSException raise:@"Could not read resource!" format:@"Could not parse config file with name: %@. Try again. If the problem continues please contact support@godtoolsapp.com.", filename];
+	}
+	//load the new page array
+	self.pageArray =  [self pageArrayFromDocumentElement:tempXml.rootXMLElement];
+	
+	//skip to active page
+	[self skipTo:0];
 	
 }
 
@@ -298,6 +308,196 @@ extern NSString * const kAttr_watermark;
 	[self skipTo:pageIndex];
 	
 }
+
+#pragma mark - methods for changing pages
+
+- (void)skipTo:(NSInteger)index {
+	
+	[self skipToIndex:index animated:YES];
+	
+}
+
+- (void)skipToIndex:(NSInteger)index animated:(BOOL)animated {
+	
+	GTPage *newLeftLeftPage, *newLeftPage, *newCenterPage, *newRightPage, *newRightRightPage;
+	
+	//make sure the views aren't animating
+	//if (self.animating == 0) {
+	//if they are in a position to switch and there is a valid index
+	if (index >= 0 && index < [[[self pageArray] objectAtIndex:kPageArray_File] count]) {
+		//make the active view the current index
+		self.activeView = index;
+		
+		//create the new view controllers
+		if (index > 1) {
+			newLeftLeftPage = [[GTPage alloc] initWithFilename:self.pageArray[kPageArray_File][self.activeView - 2]
+														 frame:self.view.frame
+													  delegate:self
+													fileLoader:self.fileLoader];
+		} else {
+			newLeftLeftPage = nil;
+		}
+		
+		if (index > 0) {
+			newLeftPage = [[GTPage alloc] initWithFilename:self.pageArray[kPageArray_File][self.activeView - 1]
+													 frame:self.view.frame
+												  delegate:self
+												fileLoader:self.fileLoader];
+		} else {
+			newLeftPage = nil;
+		}
+		
+		newCenterPage = [[GTPage alloc] initWithFilename:self.pageArray[kPageArray_File][self.activeView]
+												   frame:self.view.frame
+												delegate:self
+											  fileLoader:self.fileLoader];
+		
+		if (index < [[[self pageArray] objectAtIndex:kPageArray_File] count] - 1) {
+			newRightPage = [[GTPage alloc] initWithFilename:self.pageArray[kPageArray_File][self.activeView + 1]
+													  frame:self.view.frame
+												   delegate:self
+												 fileLoader:self.fileLoader];
+		} else {
+			newRightPage = nil;
+		}
+		
+		if (index < [[[self pageArray] objectAtIndex:kPageArray_File] count] - 2) {
+			newRightRightPage = [[GTPage alloc] initWithFilename:self.pageArray[kPageArray_File][self.activeView + 2]
+														   frame:self.view.frame
+														delegate:self
+													  fileLoader:self.fileLoader];
+		} else {
+			newRightRightPage = nil;
+		}
+		
+		
+		//remove the left view
+		if (self.leftPage.superview) {
+			[self.leftPage removeFromSuperview];
+		}
+		self.leftPage = nil;
+		
+		//remove the right view
+		if (self.rightPage.superview != nil) {
+			[self.rightPage removeFromSuperview];
+		}
+		self.rightPage = nil;
+		
+		//add the new center view to the root view
+		newCenterPage.hidden	= YES;
+		newCenterPage.center	= self.inViewInCenterCenter;
+		[self.view insertSubview:newCenterPage belowSubview:self.centerPage];
+		
+		//let the center view's view controller know that it is about to transition
+		[self.centerPage viewWillTransitionOut];
+		
+		if (animated) {
+			
+			//transition between the old center view and the new one
+			CATransition *transition = [CATransition animation];
+			transition.duration = 0.75;
+			transition.removedOnCompletion = YES;
+			transition.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
+			transition.type = kCATransitionFade;
+			transition.delegate = self;
+			[transition setValue:@"skipToTransition" forKey:@"name"];
+			
+			//let other code know that it is animating
+			self.animating = 1;
+			
+			//set the animaiton to go
+			[self.view.layer addAnimation:transition forKey:nil];
+			
+		}
+		
+		// Here we hide view1, and show view2, which will cause Core Animation to animate view1 away and view2 in.
+		self.centerPage.hidden	= YES;
+		newCenterPage.hidden	= NO;
+		
+		//save a reference to the old center view controller so that it can be cleaned up after the animation is over
+		self.oldCenterPage = self.centerPage;
+		
+		//let the view controllers know that they are about to be released
+		[self.leftLeftPage viewControllerWillBeReleased];
+		[self.leftPage viewControllerWillBeReleased];
+		[self.centerPage viewControllerWillBeReleased];
+		[self.rightPage viewControllerWillBeReleased];
+		[self.rightRightPage viewControllerWillBeReleased];
+		
+		//set the left center and right view controllers to the newly created ones
+		self.leftLeftPage = newLeftLeftPage;
+		self.leftPage = newLeftPage;
+		self.centerPage = newCenterPage;
+		self.rightPage = newRightPage;
+		self.rightRightPage = newRightRightPage;
+		
+		//let the page's view controllers know what has happened to their views
+		[self.oldCenterPage viewHasTransitionedOut];
+		[self.centerPage viewHasTransitionedIn];
+		
+	}
+	//}
+}
+
+- (void)skipToTransitionDidStop {
+	
+	//let everyone know that animation as stopped
+	self.animating = 0;
+	
+	//let the page's view controllers know what has happened to their views
+	//[self.oldCenterViewController viewHasTransitionedOut];
+	//[self.centerViewController viewHasTransitionedIn];
+	
+	[self.oldCenterPage removeFromSuperview];
+	self.oldCenterPage.hidden	= NO;
+	self.oldCenterPage			= nil;
+}
+
+#pragma mark - config parsing
+
+-(NSMutableArray *)pageArrayFromDocumentElement:(TBXMLElement *)element {
+	
+	TBXMLElement	*page_el	= [TBXML childElementNamed:kName_Page parentElement:element];
+	TBXMLElement	*about_el	= [TBXML childElementNamed:kName_About parentElement:element];
+	TBXMLElement	*package_el	= [TBXML childElementNamed:kName_Package parentElement:element];
+	NSMutableArray	*pageArr	= [[NSMutableArray alloc] init];
+	NSMutableArray	*fileArr	= [[NSMutableArray alloc] init];
+	NSMutableArray	*thumbArr	= [[NSMutableArray alloc] init];
+	NSMutableArray	*descArr	= [[NSMutableArray alloc] init];
+	
+	if (package_el != nil) {
+		self.packageName = [TBXML textForElement:package_el];	//set the packagename
+	}
+	else {
+		//NSLog(@"Warning: No packagename in %@.xml", [self language]);
+		self.packageName = @"";	//default packagename if not in xml
+	}
+	
+	
+	while (page_el != nil) {
+		
+		[fileArr addObject:[TBXML valueOfAttributeNamed:kAttr_filename	//add filename
+											 forElement:page_el]];
+		[thumbArr addObject:[TBXML valueOfAttributeNamed:kAttr_thumb	//add thumb
+											  forElement:page_el]];
+		[descArr addObject:[TBXML textForElement:page_el]];				//add description
+		
+		//move to next page element
+		page_el = [TBXML nextSiblingNamed:kName_Page searchFromElement:page_el];
+	}
+	
+	[pageArr addObject:fileArr];
+	[pageArr addObject:thumbArr];
+	[pageArr addObject:descArr];
+	
+	//grab file name of about page
+	
+	self.aboutFilename = [TBXML valueOfAttributeNamed:kAttr_filename forElement:about_el];
+	
+	return pageArr;
+}
+
+#pragma mark - custom getters and setters
 
 - (void)setPageMenu:(GTPageMenuViewController *)pageMenu {
 	
@@ -314,6 +514,8 @@ extern NSString * const kAttr_watermark;
 	}];
 	
 }
+
+#pragma mark - notification methods
 
 - (void)registerNotificationHandlers {
 	
@@ -371,8 +573,7 @@ extern NSString * const kAttr_watermark;
 	
 }
 
-#pragma mark -
-#pragma mark Skip Methods
+#pragma mark - Toolbar config and action Methods
 
 - (IBAction)navEmptySelector:(id)sender {
 	//this is a work around to avoid button press issues on a hidden toolbar
@@ -465,9 +666,20 @@ extern NSString * const kAttr_watermark;
 //	}
 //	
 //}
-//
-//-(void)navToolbarHeartbeatSwitch {
-//	
+
+
+
+-(void)navToolbarHeartbeatSwitch {
+
+	//grab active index
+	NSInteger currentIndex = self.activeView;
+	//load the new page array
+	//[self loadResourceWithConfigFile:self.switchToConfigFile];
+
+	//restore active index
+	self.activeView = (NSInteger)fmin((double)[[[self pageArray] objectAtIndex:kPageArray_File] count] - 1, (double)currentIndex);
+	[self skipTo:self.activeView];
+
 //	if ([[self language] isEqualToString:@"en_heartbeat"]) {
 //		
 //		[self changeLanguageTo:@"et_heartbeat"];
@@ -481,8 +693,10 @@ extern NSString * const kAttr_watermark;
 //		[self changeLanguageTo:@"en_heartbeat"];
 //		
 //	}
-//	
-//}
+	
+}
+
+
 
 -(IBAction)navToolbarMenuSelector:(id)sender {
 	
@@ -513,150 +727,10 @@ extern NSString * const kAttr_watermark;
 	}
 }
 
-- (void)skipTo:(NSInteger)index {
-	
-	[self skipToIndex:index animated:YES];
-	
-}
-
-- (void)skipToIndex:(NSInteger)index animated:(BOOL)animated {
-	//NSLog(@"snuffyViewController: skipTo");
-	GTPage *newLeftLeftPage, *newLeftPage, *newCenterPage, *newRightPage, *newRightRightPage;
-	
-	//make sure the views aren't animating
-	//if (self.animating == 0) {
-		//if they are in a position to switch and there is a valid index
-		if (index >= 0 && index < [[[self pageArray] objectAtIndex:kPageArray_File] count]) {
-			//make the active view the current index
-			self.activeView = index;
-			
-			//create the new view controllers
-			if (index > 1) {
-				newLeftLeftPage = [[GTPage alloc] initWithFilename:self.pageArray[kPageArray_File][self.activeView - 2]
-															 frame:self.view.frame
-														  delegate:self
-														fileLoader:self.fileLoader];
-            } else {
-                newLeftLeftPage = nil;
-            }
-			
-			if (index > 0) {
-				newLeftPage = [[GTPage alloc] initWithFilename:self.pageArray[kPageArray_File][self.activeView - 1]
-														 frame:self.view.frame
-													  delegate:self
-													fileLoader:self.fileLoader];
-			} else {
-				newLeftPage = nil;
-			}
-			
-				newCenterPage = [[GTPage alloc] initWithFilename:self.pageArray[kPageArray_File][self.activeView]
-													   frame:self.view.frame
-													delegate:self
-												  fileLoader:self.fileLoader];
-			
-			if (index < [[[self pageArray] objectAtIndex:kPageArray_File] count] - 1) {
-				newRightPage = [[GTPage alloc] initWithFilename:self.pageArray[kPageArray_File][self.activeView + 1]
-														  frame:self.view.frame
-													   delegate:self
-													 fileLoader:self.fileLoader];
-			} else {
-				newRightPage = nil;
-			}
-			
-			if (index < [[[self pageArray] objectAtIndex:kPageArray_File] count] - 2) {
-				newRightRightPage = [[GTPage alloc] initWithFilename:self.pageArray[kPageArray_File][self.activeView + 2]
-															   frame:self.view.frame
-															delegate:self
-														  fileLoader:self.fileLoader];
-			} else {
-				newRightRightPage = nil;
-			}
-
-			
-			//remove the left view
-			if (self.leftPage.superview) {
-				[self.leftPage removeFromSuperview];
-			}
-			self.leftPage = nil;
-			
-			//remove the right view
-			if (self.rightPage.superview != nil) {
-				[self.rightPage removeFromSuperview];
-			}
-			self.rightPage = nil;
-			
-			//add the new center view to the root view
-			newCenterPage.hidden	= YES;
-			newCenterPage.center	= self.inViewInCenterCenter;
-			[self.view insertSubview:newCenterPage belowSubview:self.centerPage];
-			
-			//let the center view's view controller know that it is about to transition
-			[self.centerPage viewWillTransitionOut];
-			
-			if (animated) {
-				
-				//transition between the old center view and the new one
-				CATransition *transition = [CATransition animation];
-				transition.duration = 0.75;
-				transition.removedOnCompletion = YES;
-				transition.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
-				transition.type = kCATransitionFade;
-				transition.delegate = self;
-				[transition setValue:@"skipToTransition" forKey:@"name"];
-				
-				//let other code know that it is animating
-				self.animating = 1;
-				
-				//set the animaiton to go
-				[self.view.layer addAnimation:transition forKey:nil];
-				
-			}
-			
-			// Here we hide view1, and show view2, which will cause Core Animation to animate view1 away and view2 in.
-			self.centerPage.hidden	= YES;
-			newCenterPage.hidden	= NO;
-			
-			//save a reference to the old center view controller so that it can be cleaned up after the animation is over
-			self.oldCenterPage = self.centerPage;
-			
-			//let the view controllers know that they are about to be released
-			[self.leftLeftPage viewControllerWillBeReleased];
-			[self.leftPage viewControllerWillBeReleased];
-			[self.centerPage viewControllerWillBeReleased];
-			[self.rightPage viewControllerWillBeReleased];
-			[self.rightRightPage viewControllerWillBeReleased];
-			
-			//set the left center and right view controllers to the newly created ones
-			self.leftLeftPage = newLeftLeftPage;
-			self.leftPage = newLeftPage;
-			self.centerPage = newCenterPage;
-			self.rightPage = newRightPage;
-			self.rightRightPage = newRightRightPage;
-			
-			//let the page's view controllers know what has happened to their views
-			[self.oldCenterPage viewHasTransitionedOut];
-			[self.centerPage viewHasTransitionedIn];
-
-		}
-	//}
-}
-
-- (void)skipToTransitionDidStop {
-	//NSLog(@"snuffyViewController: skipToTransitionDidStop");
-	//let everyone know that animation as stopped
-	self.animating = 0;
-	
-	//let the page's view controllers know what has happened to their views
-	//[self.oldCenterViewController viewHasTransitionedOut];
-	//[self.centerViewController viewHasTransitionedIn];
-	
-	[self.oldCenterPage removeFromSuperview];
-	self.oldCenterPage.hidden	= NO;
-	self.oldCenterPage			= nil;
-}
+#pragma mark - easter egg
 
 - (void)fiftyTap {
-	//NSLog(@"snuffyViewController: fiftyTap");
+	
 	[UIView beginAnimations:nil context:nil];
 	[UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
 	[UIView setAnimationBeginsFromCurrentState:YES];
@@ -677,22 +751,6 @@ extern NSString * const kAttr_watermark;
 	[self.centerPage.layer addAnimation:zoomFull forKey:@"zoom"];
 	
 	[UIView commitAnimations];
-	/*
-	 NSString* resourcePath = [[NSBundle mainBundle] resourcePath];
-	 resourcePath = [resourcePath stringByAppendingString:@"/Resources/fiftytap.mp3"];
-	 //NSLog(@"Path to play: %@", resourcePath);
-	 NSError* err;
-	 
-	 player = [[AVAudioPlayer alloc] initWithContentsOfURL:[NSURL fileURLWithPath:resourcePath] error:err];
-	 
-	 if (err) {
-	 //NSLog(@"Failed with reson: %@", [err localizedDescription]);
-	 }
-	 else {
-	 player.delegate = self;
-	 [player play];
-	 }
-	 */
 	
 	//NSError *error = nil;
 	NSString *soundPath = [[NSBundle mainBundle] pathForResource:@"fiftytap" ofType:@"mp3"];
@@ -705,6 +763,8 @@ extern NSString * const kAttr_watermark;
 	
 	
 }
+
+#pragma mark - instruction methods (ie show instructions to user)
 
 -(void)runInstructionsIfNecessary {
 	
@@ -1773,127 +1833,7 @@ extern NSString * const kAttr_watermark;
 	
 }
 
--(void)switchTo:(NSString *)packageID language:(NSString *)language {
-	
-	if (language == nil) {
-		language = self.language;
-	}
-	
-	//change package
-	self.package			= packageID;
-	self.fileLoader.package = self.package;
-	
-	//set the active view to the start of the package
-	self.activeView = 0;
-	
-	//change the language to the best match found in this package
-    @try {
-		
-        [self changeLanguageTo:language];
-		
-    }
-    @catch (NSException *exception) {
-        
-        //notify the user of the deletion
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Something was wrong with the resource"
-														message:@"Sorry - there was an error loading the current package."
-													   delegate:nil
-                                              cancelButtonTitle:@"OK"
-											  otherButtonTitles:nil];
-		[alert show];
-		
-    }
-	
-}
-
-
-#pragma mark -
-#pragma mark Mem Management Callbacks
-
-
--(NSMutableArray *)pageArrayFromDocumentElement:(TBXMLElement *)element {
-	
-	//NSLog(@"snuffyViewController - pageArrayFromDocumentElement: %@", [TBXML elementName:element]);
-	TBXMLElement	*page_el	= [TBXML childElementNamed:kName_Page parentElement:element];
-	TBXMLElement	*about_el	= [TBXML childElementNamed:kName_About parentElement:element];
-	TBXMLElement	*package_el	= [TBXML childElementNamed:kName_Package parentElement:element];
-	NSMutableArray	*pageArr	= [[NSMutableArray alloc] init];
-	NSMutableArray	*fileArr	= [[NSMutableArray alloc] init];
-	NSMutableArray	*thumbArr	= [[NSMutableArray alloc] init];
-	NSMutableArray	*descArr	= [[NSMutableArray alloc] init];
-	
-	if (package_el != nil) {
-		self.packageName = [TBXML textForElement:package_el];	//set the packagename
-	}
-	else {
-		//NSLog(@"Warning: No packagename in %@.xml", [self language]);
-		self.packageName = @"";	//default packagename if not in xml
-	}
-
-	
-	while (page_el != nil) {
-		
-		[fileArr addObject:[TBXML valueOfAttributeNamed:kAttr_filename	//add filename
-											 forElement:page_el]];
-		[thumbArr addObject:[TBXML valueOfAttributeNamed:kAttr_thumb	//add thumb
-											  forElement:page_el]];
-		[descArr addObject:[TBXML textForElement:page_el]];				//add description
-		
-		//move to next page element
-		page_el = [TBXML nextSiblingNamed:kName_Page searchFromElement:page_el];
-	}
-	
-	[pageArr addObject:fileArr];
-	[pageArr addObject:thumbArr];
-	[pageArr addObject:descArr];
-	
-	//grab file name of about page
-	
-	self.aboutFilename = [TBXML valueOfAttributeNamed:kAttr_filename forElement:about_el];
-	
-	return pageArr;
-}
-
-- (void)changeLanguageTo:(NSString *)languageCode {
-	
-	//change language
-	self.language = languageCode;
-	self.fileLoader.language = self.language;
-	
-	//grab active index
-	NSInteger currentIndex = self.activeView;
-	
-	//clear cache
-	[self.fileLoader clearCache];
-	[self.fileLoader cacheSharedImages];
-	
-	//init the xml
-	TBXML *tempXml = [[TBXML alloc] initWithXMLPath:self.fileLoader.pathOfConfigFile];
-	if (!tempXml.rootXMLElement) {
-		[NSException raise:@"Could not read resource!" format:@"The resource XML document is empty.\nsnuffyViewController:\n   package=%@\n   language=%@\n   version=%@", self.package, self.language, self.version];
-	}
-	//load the new page array
-	self.pageArray =  [self pageArrayFromDocumentElement:tempXml.rootXMLElement];
-	
-	//restore active index
-	self.activeView = (NSInteger)fmin((double)[[[self pageArray] objectAtIndex:kPageArray_File] count] - 1, (double)currentIndex);
-	
-	[self navToolbarAddRemoveSwitchButtonForPackage:[self package] andLanguage:[self language]];
-	
-	//skip to active page
-	[self skipTo:self.activeView];
-	
-}
- 
-- (void)changePackageTo:(NSString *)packageID {
-	@try {
-        [self switchTo:packageID language:nil];
-    }
-    @catch (NSException *exception) {
-        NSLog(@"%@", exception);
-    }
-	
-}
+#pragma mark - view controller life cycle
 
 - (void)viewWillAppear:(BOOL)animated {
 	
@@ -1975,6 +1915,8 @@ extern NSString * const kAttr_watermark;
 	self.animateNextViewOut = nil;
 }
 
+
+#pragma mark - Memory Management methods
 
 - (void)dealloc {
 	
