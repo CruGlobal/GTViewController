@@ -29,10 +29,10 @@
 		68C595A91912DDCF00BB2AC6 /* GTViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 68C595681912DDCF00BB2AC6 /* GTViewController.m */; };
 		68C595AA1912DDCF00BB2AC6 /* GTViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 68C595691912DDCF00BB2AC6 /* GTViewController.xib */; };
 		68C595AB1912DDCF00BB2AC6 /* GTViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 68C595691912DDCF00BB2AC6 /* GTViewController.xib */; };
-		68C595AC1912DDCF00BB2AC6 /* AboutViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 68C5956C1912DDCF00BB2AC6 /* AboutViewController.m */; };
-		68C595AD1912DDCF00BB2AC6 /* AboutViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 68C5956C1912DDCF00BB2AC6 /* AboutViewController.m */; };
-		68C595AE1912DDCF00BB2AC6 /* AboutViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 68C5956D1912DDCF00BB2AC6 /* AboutViewController.xib */; };
-		68C595AF1912DDCF00BB2AC6 /* AboutViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 68C5956D1912DDCF00BB2AC6 /* AboutViewController.xib */; };
+		68C595AC1912DDCF00BB2AC6 /* GTAboutViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 68C5956C1912DDCF00BB2AC6 /* GTAboutViewController.m */; };
+		68C595AD1912DDCF00BB2AC6 /* GTAboutViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 68C5956C1912DDCF00BB2AC6 /* GTAboutViewController.m */; };
+		68C595AE1912DDCF00BB2AC6 /* GTAboutViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 68C5956D1912DDCF00BB2AC6 /* GTAboutViewController.xib */; };
+		68C595AF1912DDCF00BB2AC6 /* GTAboutViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 68C5956D1912DDCF00BB2AC6 /* GTAboutViewController.xib */; };
 		68C595B01912DDCF00BB2AC6 /* GTInterpreter.m in Sources */ = {isa = PBXBuildFile; fileRef = 68C595701912DDCF00BB2AC6 /* GTInterpreter.m */; };
 		68C595B11912DDCF00BB2AC6 /* GTInterpreter.m in Sources */ = {isa = PBXBuildFile; fileRef = 68C595701912DDCF00BB2AC6 /* GTInterpreter.m */; };
 		68C595B21912DDCF00BB2AC6 /* GTPage.m in Sources */ = {isa = PBXBuildFile; fileRef = 68C595721912DDCF00BB2AC6 /* GTPage.m */; };
@@ -172,9 +172,9 @@
 		68C595671912DDCF00BB2AC6 /* GTViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTViewController.h; sourceTree = "<group>"; };
 		68C595681912DDCF00BB2AC6 /* GTViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GTViewController.m; sourceTree = "<group>"; };
 		68C595691912DDCF00BB2AC6 /* GTViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = GTViewController.xib; sourceTree = "<group>"; };
-		68C5956B1912DDCF00BB2AC6 /* AboutViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AboutViewController.h; sourceTree = "<group>"; };
-		68C5956C1912DDCF00BB2AC6 /* AboutViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AboutViewController.m; sourceTree = "<group>"; };
-		68C5956D1912DDCF00BB2AC6 /* AboutViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AboutViewController.xib; sourceTree = "<group>"; };
+		68C5956B1912DDCF00BB2AC6 /* GTAboutViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTAboutViewController.h; sourceTree = "<group>"; };
+		68C5956C1912DDCF00BB2AC6 /* GTAboutViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GTAboutViewController.m; sourceTree = "<group>"; };
+		68C5956D1912DDCF00BB2AC6 /* GTAboutViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = GTAboutViewController.xib; sourceTree = "<group>"; };
 		68C5956E1912DDCF00BB2AC6 /* GTInterpreter+init.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "GTInterpreter+init.h"; sourceTree = "<group>"; };
 		68C5956F1912DDCF00BB2AC6 /* GTInterpreter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTInterpreter.h; sourceTree = "<group>"; };
 		68C595701912DDCF00BB2AC6 /* GTInterpreter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GTInterpreter.m; sourceTree = "<group>"; };
@@ -328,9 +328,9 @@
 		68C5956A1912DDCF00BB2AC6 /* Parsing Classes */ = {
 			isa = PBXGroup;
 			children = (
-				68C5956B1912DDCF00BB2AC6 /* AboutViewController.h */,
-				68C5956C1912DDCF00BB2AC6 /* AboutViewController.m */,
-				68C5956D1912DDCF00BB2AC6 /* AboutViewController.xib */,
+				68C5956B1912DDCF00BB2AC6 /* GTAboutViewController.h */,
+				68C5956C1912DDCF00BB2AC6 /* GTAboutViewController.m */,
+				68C5956D1912DDCF00BB2AC6 /* GTAboutViewController.xib */,
 				68C5956E1912DDCF00BB2AC6 /* GTInterpreter+init.h */,
 				68C5956F1912DDCF00BB2AC6 /* GTInterpreter.h */,
 				68C595701912DDCF00BB2AC6 /* GTInterpreter.m */,
@@ -596,7 +596,7 @@
 				68C5961A19131A2A00BB2AC6 /* URL_Button@2x.png in Resources */,
 				68C5961819131A2A00BB2AC6 /* URL_Button.png in Resources */,
 				68C595C21912DDCF00BB2AC6 /* arrow@2x.png in Resources */,
-				68C595AE1912DDCF00BB2AC6 /* AboutViewController.xib in Resources */,
+				68C595AE1912DDCF00BB2AC6 /* GTAboutViewController.xib in Resources */,
 				68C595C61912DDCF00BB2AC6 /* GTInstructions_Hand_Pointer.png in Resources */,
 				68C595D61912DDCF00BB2AC6 /* Package_PopUpToolBar_Icon_Export@2x.png in Resources */,
 				68C595DA1912DDCF00BB2AC6 /* Package_PopUpToolBar_Icon_Help@2x.png in Resources */,
@@ -647,7 +647,7 @@
 				68C5961119131A2A00BB2AC6 /* grad_shad_SE.png in Resources */,
 				68C595C71912DDCF00BB2AC6 /* GTInstructions_Hand_Pointer.png in Resources */,
 				68C595E31912DDCF00BB2AC6 /* Package_PopUpToolBar_Icon_Menu@2x.png in Resources */,
-				68C595AF1912DDCF00BB2AC6 /* AboutViewController.xib in Resources */,
+				68C595AF1912DDCF00BB2AC6 /* GTAboutViewController.xib in Resources */,
 				68C595DD1912DDCF00BB2AC6 /* Package_PopUpToolBar_Icon_Info.png in Resources */,
 				68C595C11912DDCF00BB2AC6 /* arrow.png in Resources */,
 				68C595EE1912FCB700BB2AC6 /* Packages in Resources */,
@@ -687,7 +687,7 @@
 				68C595B81912DDCF00BB2AC6 /* GTPageInterpreterAmharic.m in Sources */,
 				68F1F816190B05ED00044CDF /* GTAppDelegate.m in Sources */,
 				68C595B01912DDCF00BB2AC6 /* GTInterpreter.m in Sources */,
-				68C595AC1912DDCF00BB2AC6 /* AboutViewController.m in Sources */,
+				68C595AC1912DDCF00BB2AC6 /* GTAboutViewController.m in Sources */,
 				68C595961912DDCF00BB2AC6 /* GTFileLoader.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -709,7 +709,7 @@
 				68C595A51912DDCF00BB2AC6 /* GTPageMenuViewController.m in Sources */,
 				68F1F831190B05ED00044CDF /* GTViewControllerTests.m in Sources */,
 				68C5959D1912DDCF00BB2AC6 /* UIRoundedView.m in Sources */,
-				68C595AD1912DDCF00BB2AC6 /* AboutViewController.m in Sources */,
+				68C595AD1912DDCF00BB2AC6 /* GTAboutViewController.m in Sources */,
 				68C5959B1912DDCF00BB2AC6 /* UIDisclosureIndicator.m in Sources */,
 				68C595B71912DDCF00BB2AC6 /* GTPageInterpreter.m in Sources */,
 				68C595971912DDCF00BB2AC6 /* GTFileLoader.m in Sources */,

@@ -12,7 +12,7 @@
 #import <AVFoundation/AVFoundation.h>
 #import <MessageUI/MessageUI.h>
 #import "GTPage.h"
-#import "AboutViewController.h"
+#import "GTAboutViewController.h"
 #import "GTPageMenuViewController.h"
 #import "HorizontalGestureRecognizer.h"
 #import "TBXML.h"
@@ -100,7 +100,7 @@ extern NSString * const kName_PanelImage;
 extern NSString * const kAttr_backgroundImage;
 extern NSString * const kAttr_watermark;
 
-@interface GTViewController () <MFMailComposeViewControllerDelegate, UIActionSheetDelegate, AboutViewControllerDelegate, SNInstructionsDelegate, HorizontalGestureRecognizerDelegate, GTPageDelegate>
+@interface GTViewController () <MFMailComposeViewControllerDelegate, UIActionSheetDelegate, GTAboutViewControllerDelegate, SNInstructionsDelegate, HorizontalGestureRecognizerDelegate, GTPageDelegate>
 
 @property (nonatomic, weak)		id<GTViewControllerMenuDelegate> menuDelegate;
 @property (nonatomic, strong)	GTFileLoader *fileLoader;
@@ -448,7 +448,7 @@ extern NSString * const kAttr_watermark;
 
 -(IBAction)navToolbarAboutSelector:(id)sender {
 	
-	AboutViewController *aboutViewController = [[AboutViewController alloc] initWithFilename:self.aboutFilename delegate:self fileLoader:self.fileLoader];
+	GTAboutViewController *aboutViewController = [[GTAboutViewController alloc] initWithFilename:self.aboutFilename delegate:self fileLoader:self.fileLoader];
 
     [self presentViewController:aboutViewController animated:YES completion:nil];
     

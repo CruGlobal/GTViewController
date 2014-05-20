@@ -6,12 +6,13 @@
 //  Copyright 2010 CCCA. All rights reserved.
 //
 
-#import "AboutViewController.h"
+#import "GTAboutViewController.h"
 #import	"GTPage.h"
 
-@interface AboutViewController () <UIActionSheetDelegate, GTPageDelegate>
+@interface GTAboutViewController () <UIActionSheetDelegate, GTPageDelegate>
 
-@property (nonatomic, strong) id<AboutViewControllerDelegate>	aboutDelegate;
+@property (nonatomic, strong) GTPage					*aboutPage;
+@property (nonatomic, strong) id<GTAboutViewControllerDelegate>	aboutDelegate;
 @property (nonatomic, strong) GTFileLoader				*fileLoader;
 @property (nonatomic, strong) NSString					*filename;
 @property (nonatomic, weak  ) IBOutlet UILabel          *share;
@@ -30,9 +31,9 @@
 
 @end
 
-@implementation AboutViewController
+@implementation GTAboutViewController
 
--(instancetype)initWithFilename:(NSString *)file delegate:(id<AboutViewControllerDelegate>)delegate fileLoader:(GTFileLoader *)fileLoader {
+-(instancetype)initWithFilename:(NSString *)file delegate:(id<GTAboutViewControllerDelegate>)delegate fileLoader:(GTFileLoader *)fileLoader {
 	
 	self = [super init];
 	
@@ -45,6 +46,29 @@
 	}
 	
     return self;
+}
+
+- (void)loadAboutPageWithFilename:(NSString *)filename {
+	
+	if (self.aboutPage.superview) {
+		[self.aboutPage removeFromSuperview];
+	}
+	
+	self.filename	= filename;
+	self.aboutPage	= [[GTPage alloc] initWithFilename:self.filename frame:self.view.frame delegate:self fileLoader:self.fileLoader];
+	self.scrollView.backgroundColor = self.aboutPage.backgroundColor;
+	self.navigationBar.tintColor = self.aboutPage.backgroundColor;
+	[self.scrollView addSubview:self.aboutPage];
+	[self.aboutPage viewHasTransitionedIn];
+	
+	//dynamically grab scroll hieght
+	CGFloat maxheight = 0;
+	for (UIView *subview in self.aboutPage.subviews) {
+		maxheight = fmax(maxheight, CGRectGetMaxY(subview.frame));
+	}
+	self.aboutPage.frame = CGRectMake(0, 0, self.view.frame.size.width, maxheight + 10);
+	[self.scrollView setContentSize:CGSizeMake(self.view.frame.size.width, maxheight + 10)];
+	
 }
 
 -(IBAction)dismissAbout:(id)sender {
@@ -64,19 +88,12 @@
 	
     [super viewDidLoad];
     
-	GTPage *aboutPage = [[GTPage alloc] initWithFilename:self.filename frame:self.view.frame delegate:self fileLoader:self.fileLoader];
-	self.scrollView.backgroundColor = aboutPage.backgroundColor;
-	self.navigationBar.tintColor = aboutPage.backgroundColor;
-	[self.scrollView addSubview:aboutPage];
-	[aboutPage viewHasTransitionedIn];
-	
-	//dynamically grab scroll hieght
-	CGFloat maxheight = 0;
-	for (UIView *subview in aboutPage.subviews) {
-		maxheight = fmax(maxheight, CGRectGetMaxY(subview.frame));
+	//if the filename has been set by the initializer but has not been rendered and saved in self.aboutPage then render it.
+	if (self.filename && !self.aboutPage) {
+		
+		[self loadAboutPageWithFilename:self.filename];
+		
 	}
-	aboutPage.frame = CGRectMake(0, 0, self.view.frame.size.width, maxheight + 10);
-	[self.scrollView setContentSize:CGSizeMake(self.view.frame.size.width, maxheight + 10)];
 	
 }
 

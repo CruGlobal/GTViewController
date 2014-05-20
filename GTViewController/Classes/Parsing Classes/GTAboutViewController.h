@@ -9,18 +9,19 @@
 #import <UIKit/UIKit.h>
 #import "GTFileLoader.h"
 
-@protocol AboutViewControllerDelegate;
+@protocol GTAboutViewControllerDelegate;
 
-@interface AboutViewController : UIViewController
+@interface GTAboutViewController : UIViewController
 
 @property (nonatomic, weak  ) IBOutlet UINavigationItem *navigationTitle;
 
-- (instancetype)initWithFilename:(NSString *)file delegate:(id<AboutViewControllerDelegate>)delegate fileLoader:(GTFileLoader *)fileLoader;
+- (instancetype)initWithFilename:(NSString *)file delegate:(id<GTAboutViewControllerDelegate>)delegate fileLoader:(GTFileLoader *)fileLoader;
+- (void)loadAboutPageWithFilename:(NSString *)filename;
 
 @end
 
 
-@protocol AboutViewControllerDelegate <NSObject>
+@protocol GTAboutViewControllerDelegate <NSObject>
 
 - (UIView *)viewOfPageViewController;
 
