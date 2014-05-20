@@ -51,7 +51,7 @@ extern NSString *const GTViewControllerNotificationResourceDidOpen;
  *
  *  @param filename filename of the configureation file of the resource you would like to display.
  */
-- (void)loadResourceConfigFilename:(NSString *)filename;
+- (void)loadResourceWithConfigFilename:(NSString *)filename;
 
 /**
  *  Each God Tools resource has multiple pages. This lets you switch the current page to the page you would like.

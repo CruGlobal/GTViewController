@@ -87,9 +87,9 @@ NSString * const kAttr_filename		= @"filename";
 
 @property (nonatomic, weak)		IBOutlet UIButton	*navToolbarButton;
 @property (nonatomic, weak)		IBOutlet UIToolbar *navToolbar;
-@property (nonatomic, weak)		IBOutlet UIBarButtonItem *menuButton;
-@property (nonatomic, weak)		IBOutlet UIBarButtonItem *shareButton;
-@property (nonatomic, weak)		IBOutlet UIBarButtonItem *aboutButton;
+@property (nonatomic, strong)	IBOutlet UIBarButtonItem *menuButton;
+@property (nonatomic, strong)	IBOutlet UIBarButtonItem *shareButton;
+@property (nonatomic, strong)	IBOutlet UIBarButtonItem *aboutButton;
 @property (nonatomic, strong)	UIBarButtonItem *switchButton;
 @property (nonatomic, assign)	BOOL navToolbarIsShown;
 
@@ -232,7 +232,7 @@ NSString * const kAttr_filename		= @"filename";
 		
 		self.gestureRecognizer	= [[HorizontalGestureRecognizer alloc] initWithDelegate:self target:self.view];
 		
-		[self loadResourceConfigFilename:filename];
+		[self loadResourceWithConfigFilename:filename];
 		
 	}
 	
@@ -240,7 +240,7 @@ NSString * const kAttr_filename		= @"filename";
 	
 }
 
-- (void)loadResourceConfigFilename:(NSString *)filename {
+- (void)loadResourceWithConfigFilename:(NSString *)filename {
 	
 	self.configFilename	= filename;
 	
@@ -567,21 +567,39 @@ NSString * const kAttr_filename		= @"filename";
 - (void)configureToolbar {
 	
 	//configure top toolbar
-	UIBarButtonItem	*helpButton				= [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Package_PopUpToolBar_Icon_Help"] style:UIBarButtonItemStyleBordered target:self action:@selector(showInstructions)];
+	UIBarButtonItem	*helpButton				= [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Package_PopUpToolBar_Icon_Help"]
+																	  style:UIBarButtonItemStyleBordered
+																	 target:self
+																	 action:@selector(showInstructions)];
 	self.navigationItem.rightBarButtonItem	= helpButton;
 	
 	//configure bottom toolbar
 	NSMutableArray *buttons = [NSMutableArray arrayWithObject:[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil]];
 	
 	if (self.shareSheet) {
+		
+		self.shareButton	= [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Package_PopUpToolBar_Icon_Export"]
+															style:UIBarButtonItemStyleBordered
+														   target:self
+														   action:@selector(navToolbarShareSelector:)];
 		[buttons addObject:self.shareButton];
 	}
 	
 	if (self.pageMenu) {
+		
+		self.menuButton	= [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Package_PopUpToolBar_Icon_Menu"]
+															style:UIBarButtonItemStyleBordered
+														   target:self
+														   action:@selector(navToolbarMenuSelector:)];
 		[buttons addObject:self.menuButton];
 	}
 	
 	if (self.aboutPage) {
+		
+		self.aboutButton	= [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Package_PopUpToolBar_Icon_Info"]
+															style:UIBarButtonItemStyleBordered
+														   target:self
+														   action:@selector(navToolbarAboutSelector:)];
 		[buttons addObject:self.aboutButton];
 	}
 	

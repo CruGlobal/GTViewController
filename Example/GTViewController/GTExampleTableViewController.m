@@ -9,14 +9,16 @@
 #import "GTExampleTableViewController.h"
 
 #import "GTViewController.h"
+#import "GTFileLoader.h"
+#import "GTShareViewController.h"
+#import "GTPageMenuViewController.h"
+#import "GTAboutViewController.h"
 
 NSString *const GTExampleTableViewControllerCellReuseIdentifier			= @"org.cru.godtools.gtviewcontroller.example.gtexampletableviewcontroller.cell.reuseIdentifier";
 NSString *const GTExampleTableViewControllerResourcesKeyResourceName	= @"org.cru.godtools.gtviewcontroller.example.gtexampletableviewcontroller.resources.keys.resourceName";
-NSString *const GTExampleTableViewControllerResourcesKeyLanguageCode	= @"org.cru.godtools.gtviewcontroller.example.gtexampletableviewcontroller.resources.keys.languageCode";
-NSString *const GTExampleTableViewControllerResourcesKeyPackageCode		= @"org.cru.godtools.gtviewcontroller.example.gtexampletableviewcontroller.resources.keys.packageCode";
-NSString *const GTExampleTableViewControllerResourcesKeyVersionNumber	= @"org.cru.godtools.gtviewcontroller.example.gtexampletableviewcontroller.resources.keys.versionNumber";
+NSString *const GTExampleTableViewControllerResourcesKeyConfigFile	= @"org.cru.godtools.gtviewcontroller.example.gtexampletableviewcontroller.resources.keys.configFile";
 
-@interface GTExampleTableViewController () <GTViewControllerMenuDelegate>
+@interface GTExampleTableViewController () <GTViewControllerMenuDelegate, GTAboutViewControllerDelegate>
 
 @property (nonatomic, strong) NSArray *resources;
 @property (nonatomic, strong) GTViewController *godtoolsViewController;
@@ -34,9 +36,7 @@ NSString *const GTExampleTableViewControllerResourcesKeyVersionNumber	= @"org.cr
 	self.resources = @[
 					   @{
 						   GTExampleTableViewControllerResourcesKeyResourceName	: @"The Four Spiritual Laws",
-						   GTExampleTableViewControllerResourcesKeyLanguageCode	: @"en",
-						   GTExampleTableViewControllerResourcesKeyPackageCode	: @"fourlaws",
-						   GTExampleTableViewControllerResourcesKeyVersionNumber: @1
+						   GTExampleTableViewControllerResourcesKeyConfigFile	: @"en.xml"
 						 }
 					   ];
 	
@@ -72,12 +72,19 @@ NSString *const GTExampleTableViewControllerResourcesKeyVersionNumber	= @"org.cr
 	
 	if (!_godtoolsViewController) {
 		
-		NSString *package	= self.resources[0][GTExampleTableViewControllerResourcesKeyPackageCode];
-		NSString *language	= self.resources[0][GTExampleTableViewControllerResourcesKeyLanguageCode];
-		NSNumber *version	= self.resources[0][GTExampleTableViewControllerResourcesKeyVersionNumber];
+		NSString *configFile	= self.resources[0][GTExampleTableViewControllerResourcesKeyConfigFile];
+		GTFileLoader *fileLoader = [GTFileLoader fileLoaderWithPackage:@"fourlaws" language:@"en"];
+		GTShareViewController *shareViewController = [[GTShareViewController alloc] init];
+		GTPageMenuViewController *pageMenuViewController = [[GTPageMenuViewController alloc] initWithFileLoader:fileLoader];
+		GTAboutViewController *aboutViewController = [[GTAboutViewController alloc] initWithDelegate:self fileLoader:fileLoader];
 		
 		[self willChangeValueForKey:@"godtoolsViewController"];
-		_godtoolsViewController	= [[GTViewController alloc] initWithPackageCode:package languageCode:language versionNumber:version delegate:self];
+		_godtoolsViewController	= [[GTViewController alloc] initWithConfigFile:configFile
+																	fileLoader:fileLoader
+														   shareViewController:shareViewController
+														pageMenuViewController:pageMenuViewController
+														   aboutViewController:aboutViewController
+																	  delegate:self];
 		[self didChangeValueForKey:@"godtoolsViewController"];
 		
 	}
@@ -112,16 +119,19 @@ NSString *const GTExampleTableViewControllerResourcesKeyVersionNumber	= @"org.cr
 	
 	[self.tableView deselectRowAtIndexPath:indexPath animated:YES];
 	
-	NSString *package	= self.resources[indexPath.row][GTExampleTableViewControllerResourcesKeyPackageCode];
-	NSString *language	= self.resources[indexPath.row][GTExampleTableViewControllerResourcesKeyLanguageCode];
-	NSNumber *version	= self.resources[indexPath.row][GTExampleTableViewControllerResourcesKeyVersionNumber];
+	NSString *configFile	= self.resources[0][GTExampleTableViewControllerResourcesKeyConfigFile];
 	
-	[self.godtoolsViewController loadResourceWithPackageCode:package
-												languageCode:language
-											   versionNumber:version];
+	[self.godtoolsViewController loadResourceWithConfigFilename:configFile];
 	
 	[self.navigationController pushViewController:self.godtoolsViewController animated:YES];
 	
+}
+
+#pragma mark - GTAboutViewControllerDelegate
+
+- (UIView *)viewOfPageViewController {
+	
+	return _godtoolsViewController.view;
 }
 
 @end

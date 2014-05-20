@@ -15,7 +15,7 @@
 
 @property (nonatomic, weak  ) IBOutlet UINavigationItem *navigationTitle;
 
-- (instancetype)initWithFilename:(NSString *)file delegate:(id<GTAboutViewControllerDelegate>)delegate fileLoader:(GTFileLoader *)fileLoader;
+- (instancetype)initWithDelegate:(id<GTAboutViewControllerDelegate>)delegate fileLoader:(GTFileLoader *)fileLoader;
 - (void)loadAboutPageWithFilename:(NSString *)filename;
 
 @end

@@ -33,13 +33,12 @@
 
 @implementation GTAboutViewController
 
--(instancetype)initWithFilename:(NSString *)file delegate:(id<GTAboutViewControllerDelegate>)delegate fileLoader:(GTFileLoader *)fileLoader {
+- (instancetype)initWithDelegate:(id<GTAboutViewControllerDelegate>)delegate fileLoader:(GTFileLoader *)fileLoader {
 	
 	self = [super init];
 	
 	if (self) {
 		
-		self.filename		= file;
 		self.aboutDelegate	= delegate;
 		self.fileLoader		= fileLoader;
 		
