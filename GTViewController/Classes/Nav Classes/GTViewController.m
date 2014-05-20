@@ -14,6 +14,7 @@
 #import "GTPage.h"
 #import "GTAboutViewController.h"
 #import "GTPageMenuViewController.h"
+#import "GTShareViewController.h"
 #import "HorizontalGestureRecognizer.h"
 #import "TBXML.h"
 #import "GTFileLoader.h"
@@ -159,17 +160,17 @@ extern NSString * const kAttr_watermark;
 @property (nonatomic, assign)	BOOL activeViewMasked;
 @property (nonatomic, assign)	BOOL isRotated;
 @property (nonatomic, assign)	BOOL instructionsAreRunning;
-@property (nonatomic, assign)	BOOL aboutViewControllerWasShown;
 
+@property (nonatomic, strong)	GTAboutViewController		*aboutPage;
 @property (nonatomic, strong)	GTPageMenuViewController	*pageMenu;
-@property (nonatomic, assign)	BOOL							isFirstRunSinceCreation;
-@property (nonatomic, strong)	NSArray							*allURLsButtonArray;
+@property (nonatomic, strong)	GTShareViewController		*shareSheet;
+@property (nonatomic, assign)	BOOL childViewControllerWasShown;
+
+@property (nonatomic, assign)	BOOL						isFirstRunSinceCreation;
+@property (nonatomic, strong)	NSArray						*allURLsButtonArray;
 
 - (void)registerNotificationHandlers;
 - (void)removeNotificationHandlers;
-
-- (NSString *)produceShareLink;
-- (NSString *)produceLinkForCampaign:(NSString *)campaign source:(NSString *)source medium:(NSString *)medium;
 
 - (void)skipToIndex:(NSInteger)index animated:(BOOL)animated;
 
@@ -180,6 +181,7 @@ extern NSString * const kAttr_watermark;
 - (void)copyAllLinks;
 
 //naviagation methods
+- (void)configureToolbar;
 -(IBAction)toggleToolbar:(id)sender;
 -(void)showNavToolbar;
 -(void)showNavToolbarDidStop;
@@ -234,11 +236,17 @@ extern NSString * const kAttr_watermark;
 
 @implementation GTViewController
 
-- (instancetype)initWithPackageCode:(NSString *)packageCode languageCode:(NSString *)languageCode versionNumber:(NSNumber *)versionNumber delegate:(id<GTViewControllerMenuDelegate>)delegate {
+- (instancetype)initWithConfigFile:(NSString *)filename fileLoader:(GTFileLoader *)fileLoader shareViewController:(GTShareViewController *)shareViewController pageMenuViewController:(GTPageMenuViewController *)pageMenuViewController aboutViewController:(GTAboutViewController *)aboutViewController delegate:(id<GTViewControllerMenuDelegate>)delegate {
 	
 	if ((self = [super initWithNibName:NSStringFromClass([self class]) bundle:nil])) {
 		
 		[self registerNotificationHandlers];
+		
+		self.pageMenu						= pageMenuViewController;
+		self.aboutPage						= aboutViewController;
+		self.shareSheet						= shareViewController;
+		
+		[self configureToolbar];
 		
 		self.transitionAnimationDuration	= NORMAL_TRANSITION_ANIMATION_DURATION;
 		self.resistedDragMultiplier			= RESISTED_DRAG_MULTIPLIER;
@@ -277,7 +285,7 @@ extern NSString * const kAttr_watermark;
 	
 }
 
-- (void)loadResourceWithPackageCode:(NSString *)packageCode languageCode:(NSString *)languageCode versionNumber:(NSNumber *)versionNumber {
+- (void)loadResourceConfigFilename:(NSString *)filename {
 	
 	self.version	= ( versionNumber ? versionNumber : @1 );
 	
@@ -291,25 +299,19 @@ extern NSString * const kAttr_watermark;
 	
 }
 
-- (GTPageMenuViewController *)pageMenu {
+- (void)setPageMenu:(GTPageMenuViewController *)pageMenu {
 	
-	if (_pageMenu == nil) {
-		
-		[self willChangeValueForKey:@"pageMenu"];
-		_pageMenu = [[GTPageMenuViewController alloc] initWithNibName:@"GTPageMenuViewController" bundle:nil];
-		[self didChangeValueForKey:@"pageMenu"];
-		
-		__weak GTViewController *weakSelf = self;
-		[[NSNotificationCenter defaultCenter] addObserverForName:GTTPageMenuViewControllerSwitchPage object:_pageMenu queue:nil usingBlock:^(NSNotification *note) {
-			
-			NSNumber *pageNumber = note.userInfo[GTTPageMenuViewControllerPageNumber];
-			[weakSelf skipTo:[pageNumber integerValue]];
-			
-		}];
-		
-	}
+	[self willChangeValueForKey:@"pageMenu"];
+	_pageMenu = pageMenu;
+	[self didChangeValueForKey:@"pageMenu"];
 	
-	return _pageMenu;
+	__weak GTViewController *weakSelf = self;
+	[[NSNotificationCenter defaultCenter] addObserverForName:GTTPageMenuViewControllerSwitchPage object:_pageMenu queue:nil usingBlock:^(NSNotification *note) {
+		
+		NSNumber *pageNumber = note.userInfo[GTTPageMenuViewControllerPageNumber];
+		[weakSelf skipTo:[pageNumber integerValue]];
+		
+	}];
 	
 }
 
@@ -376,80 +378,29 @@ extern NSString * const kAttr_watermark;
 	//this is a work around to avoid button press issues on a hidden toolbar
 }
 
-- (NSString *)produceShareLink {
-	
-	return [NSString stringWithFormat:@"http://www.godtoolsapp.com"];
-}
-
-- (NSString *)produceLinkForCampaign:(NSString *)campaign source:(NSString *)source medium:(NSString *)medium {
-	
-	NSString *appVersionNumber	= [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"];
-	
-	return [self.produceShareLink stringByAppendingFormat:@"?package=%@&language=%@&utm_source=%@&utm_medium=%@&utm_content=%@&utm_campaign=%@", self.package, self.language, source, medium, appVersionNumber, campaign];
-}
-
 -(IBAction)navToolbarShareSelector:(id)sender {
 	
 	[self hideNavToolbar];
 	
-	if ([MFMailComposeViewController canSendMail]) {
+	if (self.shareSheet) {
 		
-		NSString *campaignLink				= [self produceLinkForCampaign:	snuffyViewControllerCampaignLinkCampaignName
-														  source:			snuffyViewControllerCampaignLinkCampaignSource
-														  medium:			snuffyViewControllerCampaignLinkCampaignMedium];
+		[self presentViewController:self.shareSheet animated:YES completion:nil];
+		self.childViewControllerWasShown = YES;
 		
-        MFMailComposeViewController *mailer = [[MFMailComposeViewController alloc] init];
-		mailer.mailComposeDelegate			= self;
-        NSString *emailBody					= [NSString stringWithFormat:@"Hey!<br /><br />Here is the link for the app we were talking about<a href=\"%@\">%@</a>", campaignLink, self.produceShareLink];
-		
-        [mailer setSubject:self.packageName];
-        [mailer setMessageBody:emailBody isHTML:YES];
-		
-        [self presentViewController:mailer animated:YES completion:nil];
-		
-    }
-}
-
-- (void)mailComposeController:(MFMailComposeViewController*)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError*)error
-{
-    switch (result)
-    {
-        case MFMailComposeResultCancelled:
-            NSLog(@"Mail cancelled: you cancelled the operation and no email message was queued.");
-            break;
-        case MFMailComposeResultSaved:
-            NSLog(@"Mail saved: you saved the email message in the drafts folder.");
-            break;
-        case MFMailComposeResultSent:
-            NSLog(@"Mail send: the email message is queued in the outbox. It is ready to send.");
-			
-			[[NSNotificationCenter defaultCenter] postNotificationName:GTViewControllerNotificationUserDidShareResource
-																object:self
-															  userInfo:@{GTViewControllerNotificationUserInfoLanguageKey:	self.language,
-																		 GTViewControllerNotificationUserInfoPackageKey:	self.package,
-																		 GTViewControllerNotificationUserInfoVersionKey:	self.version}];
-			
-            break;
-        case MFMailComposeResultFailed:
-            NSLog(@"Mail failed: the email message was not saved or queued, possibly due to an error.");
-            break;
-        default:
-            NSLog(@"Mail not sent.");
-            break;
-    }
-	
-	// Remove the mail view
-    [self dismissViewControllerAnimated:YES completion:nil];
+	}
 }
 
 -(IBAction)navToolbarAboutSelector:(id)sender {
 	
-	GTAboutViewController *aboutViewController = [[GTAboutViewController alloc] initWithFilename:self.aboutFilename delegate:self fileLoader:self.fileLoader];
-
-    [self presentViewController:aboutViewController animated:YES completion:nil];
-    
-    aboutViewController.navigationTitle.title = self.packageName;
-	self.aboutViewControllerWasShown = YES;
+	if (self.aboutPage) {
+		
+		[self.aboutPage loadAboutPageWithFilename:self.aboutFilename];
+		[self presentViewController:self.aboutPage animated:YES completion:nil];
+		
+		self.aboutPage.navigationTitle.title = self.packageName;
+		self.childViewControllerWasShown = YES;
+		
+	}
     
 }
 
@@ -458,67 +409,94 @@ extern NSString * const kAttr_watermark;
 	[self skipTo:0];
 }
 
--(void)navToolbarAddRemoveSwitchButtonForPackage:(NSString *)package andLanguage:(NSString *)language {
+- (void)configureToolbar {
 	
-	if ( [package isEqualToString:@"kgp"] && ( [language isEqualToString:@"en_heartbeat"] || [language isEqualToString:@"et_heartbeat"] ) ) {
-		
-		//if button not already there then add button
-		if (self.switchButton == nil) {
-			
-			UIBarButtonItem *switchButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Package_PopUpToolBar_Icon_Switch"]
-																			 style:UIBarButtonItemStyleBordered
-																			target:self
-																			action:@selector(navToolbarHeartbeatSwitch)];
-			
-			self.switchButton = switchButton;
-			
-			[self.navToolbar setItems:[NSArray arrayWithObjects:[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil], self.shareButton, self.menuButton, self.switchButton, self.aboutButton, [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil], nil] animated:YES];
-			
-		}
-		
-		
-	} else {
-		
-		//if button already there then remove button
-		if (self.switchButton != nil) {
-			
-			[self.navToolbar setItems:[NSArray arrayWithObjects:[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil], self.shareButton, self.menuButton, self.aboutButton, [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil], nil] animated:YES];
-			
-			self.switchButton	= nil;
-			
-		}
-		
-		
+	NSMutableArray *buttons = [NSMutableArray arrayWithObject:[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil]];
+	
+	if (self.shareSheet) {
+		[buttons addObject:self.shareButton];
 	}
+	
+	if (self.pageMenu) {
+		[buttons addObject:self.menuButton];
+	}
+	
+	if (self.aboutPage) {
+		[buttons addObject:self.aboutButton];
+	}
+	
+	[buttons addObject:[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil]];
+	
+	[self.navToolbar setItems:[NSArray arrayWithArray:buttons] animated:YES];
 	
 }
 
--(void)navToolbarHeartbeatSwitch {
-	
-	if ([[self language] isEqualToString:@"en_heartbeat"]) {
-		
-		[self changeLanguageTo:@"et_heartbeat"];
-		
-	} else if ([[self language] isEqualToString:@"et_heartbeat"]) {
-	
-		[self changeLanguageTo:@"en_heartbeat"];
-		
-	} else {
-		
-		[self changeLanguageTo:@"en_heartbeat"];
-		
-	}
-	
-}
+//-(void)navToolbarAddRemoveSwitchButtonForPackage:(NSString *)package andLanguage:(NSString *)language {
+//	
+//	if ( [package isEqualToString:@"kgp"] && ( [language isEqualToString:@"en_heartbeat"] || [language isEqualToString:@"et_heartbeat"] ) ) {
+//		
+//		//if button not already there then add button
+//		if (self.switchButton == nil) {
+//			
+//			UIBarButtonItem *switchButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Package_PopUpToolBar_Icon_Switch"]
+//																			 style:UIBarButtonItemStyleBordered
+//																			target:self
+//																			action:@selector(navToolbarHeartbeatSwitch)];
+//			
+//			self.switchButton = switchButton;
+//			
+//			[self.navToolbar setItems:[NSArray arrayWithObjects:[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil], self.shareButton, self.menuButton, self.switchButton, self.aboutButton, [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil], nil] animated:YES];
+//			
+//		}
+//		
+//		
+//	} else {
+//		
+//		//if button already there then remove button
+//		if (self.switchButton != nil) {
+//			
+//			[self.navToolbar setItems:[NSArray arrayWithObjects:[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil], self.shareButton, self.menuButton, self.aboutButton, [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil], nil] animated:YES];
+//			
+//			self.switchButton	= nil;
+//			
+//		}
+//		
+//		
+//	}
+//	
+//}
+//
+//-(void)navToolbarHeartbeatSwitch {
+//	
+//	if ([[self language] isEqualToString:@"en_heartbeat"]) {
+//		
+//		[self changeLanguageTo:@"et_heartbeat"];
+//		
+//	} else if ([[self language] isEqualToString:@"et_heartbeat"]) {
+//	
+//		[self changeLanguageTo:@"en_heartbeat"];
+//		
+//	} else {
+//		
+//		[self changeLanguageTo:@"en_heartbeat"];
+//		
+//	}
+//	
+//}
 
 -(IBAction)navToolbarMenuSelector:(id)sender {
 	
 	[self hideNavToolbar];
 	
-	self.pageMenu.language	= self.language;
-	self.pageMenu.package	= self.package;
-	self.pageMenu.pageArray = self.pageArray;
-	[self presentViewController:self.pageMenu animated:YES completion:nil];
+	if (self.pageMenu) {
+		
+		self.pageMenu.language	= self.language;
+		self.pageMenu.package	= self.package;
+		self.pageMenu.pageArray = self.pageArray;
+		[self presentViewController:self.pageMenu animated:YES completion:nil];
+		self.childViewControllerWasShown = YES;
+		
+	}
 	
 }
 
@@ -1959,7 +1937,7 @@ extern NSString * const kAttr_watermark;
 		
 	}
 	
-	if (!self.aboutViewControllerWasShown) {
+	if (!self.childViewControllerWasShown) {
 		
 		[[NSNotificationCenter defaultCenter] postNotificationName:GTViewControllerNotificationResourceDidOpen
 															object:self
@@ -1969,7 +1947,7 @@ extern NSString * const kAttr_watermark;
 		
 	} else {
 		
-		self.aboutViewControllerWasShown = NO;
+		self.childViewControllerWasShown = NO;
 		
 	}
 	
