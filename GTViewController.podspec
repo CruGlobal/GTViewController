@@ -16,7 +16,7 @@ Pod::Spec.new do |s|
   s.authors      = { "Harro" => "michael.harrison@cru.org" }
 
   s.platform     = :ios, "6.0"
-  s.source       = { :git => "https://github.com/CruGlobal/GTViewController.git", :tag => "3.1.1" }
+  s.source       = { :git => "https://github.com/CruGlobal/GTViewController.git", :tag => "3.1.2" }
   s.source_files  = "GTViewController/Classes/**/*.{h,m}", "GTViewController/Headers/*.h"
   s.public_header_files = "GTViewController/Classes/Nav\ Classes/GTViewController.h", "GTViewController/Classes/Custom\ Classes/GTFileLoader.h"
   s.resources = "GTViewController/Resources/*", "GTViewController/Classes/**/*.xib"
