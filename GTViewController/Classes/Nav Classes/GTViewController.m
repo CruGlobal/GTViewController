@@ -28,10 +28,6 @@ NSString *const GTViewControllerNotificationUserInfoVersionKey			= @"org.cru.god
 NSString *const GTViewControllerNotificationResourceDidOpen				= @"org.cru.godtools.gtviewcontroller.notifications.resourcedidopen";
 NSString *const GTViewControllerNotificationUserDidShareResource		= @"org.cru.godtools.gtviewcontroller.notifications.userdidshareresource";
 
-NSString *const snuffyViewControllerCampaignLinkCampaignSource        = @"godtools-ios";
-NSString *const snuffyViewControllerCampaignLinkCampaignMedium        = @"email";
-NSString *const snuffyViewControllerCampaignLinkCampaignName          = @"app-sharing";
-
 /**
  *  Touch Notification Key Names
  */

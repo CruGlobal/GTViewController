@@ -17,11 +17,12 @@ Pod::Spec.new do |s|
 
   s.platform     = :ios, "6.0"
   s.source       = { :git => "https://github.com/CruGlobal/GTViewController.git", :tag => "3.1.1" }
-  s.source_files  = "GTViewController/Classes/**/*.{h,m}", "GTViewController/Headers/*.h"
+  s.source_files = "GTViewController/Classes/**/*.{h,m}", "GTViewController/Headers/*.h"
   s.public_header_files = "GTViewController/Classes/Nav\ Classes/GTViewController.h", "GTViewController/Classes/Custom\ Classes/GTFileLoader.h"
-  s.resources = "GTViewController/Resources/*", "GTViewController/Classes/**/*.xib"
-  s.frameworks = "QuartzCore", "AVFoundation"
-  s.libraries = "z"
+  s.resources    = "GTViewController/Resources/*", "GTViewController/Classes/**/*.xib"
+  s.frameworks   = "QuartzCore", "AVFoundation"
+  s.libraries    = "z"
+  s.dependency   = 'SSCWhatsAppActivity', '~> 1.0'
 
   s.requires_arc = true
 
