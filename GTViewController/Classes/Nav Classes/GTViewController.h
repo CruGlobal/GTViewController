@@ -9,27 +9,20 @@
 #import <UIKit/UIKit.h>
 
 /**
- *  UserInfo Keys for all GTViewControllerNotification's these keys let you know what language, package, version combo
- *  were loaded when the action occured
+ *  UserInfo Keys for all GTViewControllerNotification's these keys let you know what config file was loaded when the action occured
  */
-extern NSString *const GTViewControllerNotificationUserInfoLanguageKey;
-extern NSString *const GTViewControllerNotificationUserInfoPackageKey;
-extern NSString *const GTViewControllerNotificationUserInfoVersionKey;
+extern NSString *const GTViewControllerNotificationUserInfoConfigFilenameKey;
 
 /**
  *  Notification name for Opening a resource. Called on viewDidAppear
+ *  (Note: will not be called if viewDidAppear happens after dismissing a child view controller.)
  */
 extern NSString *const GTViewControllerNotificationResourceDidOpen;
 
-/**
- *  Notification name for Sharing a resource. Called after a successful share.
- */
-extern NSString *const GTViewControllerNotificationUserDidShareResource;
 
 
 
-
-@class GTFileLoader;
+@class GTFileLoader, GTShareViewController, GTPageMenuViewController, GTAboutViewController;
 @protocol GTViewControllerMenuDelegate;
 
 
@@ -38,27 +31,27 @@ extern NSString *const GTViewControllerNotificationUserDidShareResource;
 @interface GTViewController : UIViewController
 
 /**
- *  Initaliser of GTViewController. Once initialised this class loads and provides navigation for a God Tools package.
- *  
- *  Note: Don't use initWithNibName:bundle:
- *
- *  @param packageCode   unique string that identifies the package you would like
- *  @param languageCode  unique string that identifies the langue you would like the package in
- *  @param versionNumber NSNumber that represents the version of the package langauge combo
- *  @param delegate      usually the naviagation controller that pushed this object. The delegate should get it's menus (navigation/toolbars out of view when asked by this class.
- *
- *  @return the initialized self
- */
-- (instancetype)initWithPackageCode:(NSString *)packageCode languageCode:(NSString *)languageCode versionNumber:(NSNumber *)versionNumber delegate:(id<GTViewControllerMenuDelegate>)delegate;
+*  Initaliser of GTViewController. Once initialised this class loads and provides navigation for a God Tools package.
+*
+*  Note: Don't use initWithNibName:bundle:
+*
+*  @param filename               filename of the configureation file of the resource you would like to display.
+*  @param fileLoader             object that can be asked for paths given a filename. It also caches images.
+*  @param shareViewController    A view controller that give the user options for sharing the current resource.
+*  @param pageMenuViewController A view controller that lets the user switch between pages.
+*  @param aboutViewController    A view controller that displays the about info for the current resource.
+*  @param delegate               usually the naviagation controller that pushed this object. The delegate should get it's menus (navigation/toolbars out of view when asked by this class.
+*
+*  @return the initialized self
+*/
+- (instancetype)initWithConfigFile:(NSString *)filename fileLoader:(GTFileLoader *)fileLoader shareViewController:(GTShareViewController *)shareViewController pageMenuViewController:(GTPageMenuViewController *)pageMenuViewController aboutViewController:(GTAboutViewController *)aboutViewController delegate:(id<GTViewControllerMenuDelegate>)delegate;
 
 /**
- *  loads and parses the assets for a resource with the package code, language code and version number provided.
+ *  loads and parses the assets for a resource defined by the config file passed to this method.
  *
- *  @param packageCode   unique string that identifies the package you would like
- *  @param languageCode  unique string that identifies the langue you would like the package in
- *  @param versionNumber NSNumber that represents the version of the package langauge combo
+ *  @param filename filename of the configureation file of the resource you would like to display.
  */
-- (void)loadResourceWithPackageCode:(NSString *)packageCode languageCode:(NSString *)languageCode versionNumber:(NSNumber *)versionNumber;
+- (void)loadResourceConfigFilename:(NSString *)filename;
 
 /**
  *  Each God Tools resource has multiple pages. This lets you switch the current page to the page you would like.
