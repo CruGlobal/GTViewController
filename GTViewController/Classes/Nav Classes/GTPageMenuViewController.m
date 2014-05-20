@@ -6,7 +6,7 @@
 //  Copyright (c) 2014 Michael Harrison. All rights reserved.
 //
 
-#import "snuffyPageMenuViewController.h"
+#import "GTPageMenuViewController.h"
 
 #import "GTFileLoader.h"
 
@@ -17,7 +17,7 @@ extern NSInteger  const kPageArray_File;
 extern NSInteger  const kPageArray_Thumb;
 extern NSInteger  const kPageArray_Desc;
 
-@interface snuffyPageMenuViewController () <UITableViewDataSource, UITableViewDelegate>
+@interface GTPageMenuViewController () <UITableViewDataSource, UITableViewDelegate>
 
 @property (nonatomic, weak) IBOutlet UITableView *tableView;
 
@@ -25,7 +25,7 @@ extern NSInteger  const kPageArray_Desc;
 
 @end
 
-@implementation snuffyPageMenuViewController
+@implementation GTPageMenuViewController
 
 - (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
 	

@@ -21,10 +21,10 @@
 		68C595A11912DDCF00BB2AC6 /* UISnufflePanel.m in Sources */ = {isa = PBXBuildFile; fileRef = 68C595601912DDCF00BB2AC6 /* UISnufflePanel.m */; };
 		68C595A21912DDCF00BB2AC6 /* HorizontalGestureRecognizer.m in Sources */ = {isa = PBXBuildFile; fileRef = 68C595631912DDCF00BB2AC6 /* HorizontalGestureRecognizer.m */; };
 		68C595A31912DDCF00BB2AC6 /* HorizontalGestureRecognizer.m in Sources */ = {isa = PBXBuildFile; fileRef = 68C595631912DDCF00BB2AC6 /* HorizontalGestureRecognizer.m */; };
-		68C595A41912DDCF00BB2AC6 /* snuffyPageMenuViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 68C595651912DDCF00BB2AC6 /* snuffyPageMenuViewController.m */; };
-		68C595A51912DDCF00BB2AC6 /* snuffyPageMenuViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 68C595651912DDCF00BB2AC6 /* snuffyPageMenuViewController.m */; };
-		68C595A61912DDCF00BB2AC6 /* snuffyPageMenuViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 68C595661912DDCF00BB2AC6 /* snuffyPageMenuViewController.xib */; };
-		68C595A71912DDCF00BB2AC6 /* snuffyPageMenuViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 68C595661912DDCF00BB2AC6 /* snuffyPageMenuViewController.xib */; };
+		68C595A41912DDCF00BB2AC6 /* GTPageMenuViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 68C595651912DDCF00BB2AC6 /* GTPageMenuViewController.m */; };
+		68C595A51912DDCF00BB2AC6 /* GTPageMenuViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 68C595651912DDCF00BB2AC6 /* GTPageMenuViewController.m */; };
+		68C595A61912DDCF00BB2AC6 /* GTPageMenuViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 68C595661912DDCF00BB2AC6 /* GTPageMenuViewController.xib */; };
+		68C595A71912DDCF00BB2AC6 /* GTPageMenuViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 68C595661912DDCF00BB2AC6 /* GTPageMenuViewController.xib */; };
 		68C595A81912DDCF00BB2AC6 /* GTViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 68C595681912DDCF00BB2AC6 /* GTViewController.m */; };
 		68C595A91912DDCF00BB2AC6 /* GTViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 68C595681912DDCF00BB2AC6 /* GTViewController.m */; };
 		68C595AA1912DDCF00BB2AC6 /* GTViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 68C595691912DDCF00BB2AC6 /* GTViewController.xib */; };
@@ -166,9 +166,9 @@
 		68C595601912DDCF00BB2AC6 /* UISnufflePanel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UISnufflePanel.m; sourceTree = "<group>"; };
 		68C595621912DDCF00BB2AC6 /* HorizontalGestureRecognizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HorizontalGestureRecognizer.h; sourceTree = "<group>"; };
 		68C595631912DDCF00BB2AC6 /* HorizontalGestureRecognizer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HorizontalGestureRecognizer.m; sourceTree = "<group>"; };
-		68C595641912DDCF00BB2AC6 /* snuffyPageMenuViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = snuffyPageMenuViewController.h; sourceTree = "<group>"; };
-		68C595651912DDCF00BB2AC6 /* snuffyPageMenuViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = snuffyPageMenuViewController.m; sourceTree = "<group>"; };
-		68C595661912DDCF00BB2AC6 /* snuffyPageMenuViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = snuffyPageMenuViewController.xib; sourceTree = "<group>"; };
+		68C595641912DDCF00BB2AC6 /* GTPageMenuViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTPageMenuViewController.h; sourceTree = "<group>"; };
+		68C595651912DDCF00BB2AC6 /* GTPageMenuViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GTPageMenuViewController.m; sourceTree = "<group>"; };
+		68C595661912DDCF00BB2AC6 /* GTPageMenuViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = GTPageMenuViewController.xib; sourceTree = "<group>"; };
 		68C595671912DDCF00BB2AC6 /* GTViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTViewController.h; sourceTree = "<group>"; };
 		68C595681912DDCF00BB2AC6 /* GTViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GTViewController.m; sourceTree = "<group>"; };
 		68C595691912DDCF00BB2AC6 /* GTViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = GTViewController.xib; sourceTree = "<group>"; };
@@ -315,9 +315,9 @@
 			children = (
 				68C595621912DDCF00BB2AC6 /* HorizontalGestureRecognizer.h */,
 				68C595631912DDCF00BB2AC6 /* HorizontalGestureRecognizer.m */,
-				68C595641912DDCF00BB2AC6 /* snuffyPageMenuViewController.h */,
-				68C595651912DDCF00BB2AC6 /* snuffyPageMenuViewController.m */,
-				68C595661912DDCF00BB2AC6 /* snuffyPageMenuViewController.xib */,
+				68C595641912DDCF00BB2AC6 /* GTPageMenuViewController.h */,
+				68C595651912DDCF00BB2AC6 /* GTPageMenuViewController.m */,
+				68C595661912DDCF00BB2AC6 /* GTPageMenuViewController.xib */,
 				68C595671912DDCF00BB2AC6 /* GTViewController.h */,
 				68C595681912DDCF00BB2AC6 /* GTViewController.m */,
 				68C595691912DDCF00BB2AC6 /* GTViewController.xib */,
@@ -583,7 +583,7 @@
 				68C5961419131A2A00BB2AC6 /* grad_shad_top.png in Resources */,
 				68C5960C19131A2A00BB2AC6 /* grad_shad_NE.png in Resources */,
 				68C595D41912DDCF00BB2AC6 /* Package_PopUpToolBar_Icon_Export.png in Resources */,
-				68C595A61912DDCF00BB2AC6 /* snuffyPageMenuViewController.xib in Resources */,
+				68C595A61912DDCF00BB2AC6 /* GTPageMenuViewController.xib in Resources */,
 				68C595DC1912DDCF00BB2AC6 /* Package_PopUpToolBar_Icon_Info.png in Resources */,
 				68C5960419131A2A00BB2AC6 /* Buttonlines_large.png in Resources */,
 				68C5961619131A2A00BB2AC6 /* line.png in Resources */,
@@ -639,7 +639,7 @@
 				68C595D11912DDCF00BB2AC6 /* NotoSansEthiopic-Bold.ttf in Resources */,
 				68C595CF1912DDCF00BB2AC6 /* GTInstructions_Hand_Pointer_Tap_Circle.png in Resources */,
 				68C595CD1912DDCF00BB2AC6 /* GTInstructions_Hand_Pointer_Shadow@2x.png in Resources */,
-				68C595A71912DDCF00BB2AC6 /* snuffyPageMenuViewController.xib in Resources */,
+				68C595A71912DDCF00BB2AC6 /* GTPageMenuViewController.xib in Resources */,
 				68C595C31912DDCF00BB2AC6 /* arrow@2x.png in Resources */,
 				68C5961919131A2A00BB2AC6 /* URL_Button.png in Resources */,
 				68C5960D19131A2A00BB2AC6 /* grad_shad_NE.png in Resources */,
@@ -681,7 +681,7 @@
 				68C595A01912DDCF00BB2AC6 /* UISnufflePanel.m in Sources */,
 				68C595B21912DDCF00BB2AC6 /* GTPage.m in Sources */,
 				68C5959C1912DDCF00BB2AC6 /* UIRoundedView.m in Sources */,
-				68C595A41912DDCF00BB2AC6 /* snuffyPageMenuViewController.m in Sources */,
+				68C595A41912DDCF00BB2AC6 /* GTPageMenuViewController.m in Sources */,
 				68C595B61912DDCF00BB2AC6 /* GTPageInterpreter.m in Sources */,
 				68C595BA1912DDCF00BB2AC6 /* NSDataAdditions.m in Sources */,
 				68C595B81912DDCF00BB2AC6 /* GTPageInterpreterAmharic.m in Sources */,
@@ -706,7 +706,7 @@
 				68C5959F1912DDCF00BB2AC6 /* UISnuffleButton.m in Sources */,
 				68C595BD1912DDCF00BB2AC6 /* TBXML.m in Sources */,
 				68C595B31912DDCF00BB2AC6 /* GTPage.m in Sources */,
-				68C595A51912DDCF00BB2AC6 /* snuffyPageMenuViewController.m in Sources */,
+				68C595A51912DDCF00BB2AC6 /* GTPageMenuViewController.m in Sources */,
 				68F1F831190B05ED00044CDF /* GTViewControllerTests.m in Sources */,
 				68C5959D1912DDCF00BB2AC6 /* UIRoundedView.m in Sources */,
 				68C595AD1912DDCF00BB2AC6 /* AboutViewController.m in Sources */,

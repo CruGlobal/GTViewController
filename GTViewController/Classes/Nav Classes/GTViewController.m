@@ -13,7 +13,7 @@
 #import <MessageUI/MessageUI.h>
 #import "GTPage.h"
 #import "AboutViewController.h"
-#import "snuffyPageMenuViewController.h"
+#import "GTPageMenuViewController.h"
 #import "HorizontalGestureRecognizer.h"
 #import "TBXML.h"
 #import "GTFileLoader.h"
@@ -165,7 +165,7 @@ extern NSString * const kAttr_watermark;
 @property (nonatomic, assign)	BOOL instructionsAreRunning;
 @property (nonatomic, assign)	BOOL aboutViewControllerWasShown;
 
-@property (nonatomic, strong)	snuffyPageMenuViewController	*pageMenu;
+@property (nonatomic, strong)	GTPageMenuViewController	*pageMenu;
 @property (nonatomic, assign)	BOOL							isFirstRunSinceCreation;
 @property (nonatomic, strong)	NSArray							*allURLsButtonArray;
 
@@ -295,12 +295,12 @@ extern NSString * const kAttr_watermark;
 	
 }
 
-- (snuffyPageMenuViewController *)pageMenu {
+- (GTPageMenuViewController *)pageMenu {
 	
 	if (_pageMenu == nil) {
 		
 		[self willChangeValueForKey:@"pageMenu"];
-		_pageMenu = [[snuffyPageMenuViewController alloc] initWithNibName:@"snuffyPageMenuViewController" bundle:nil];
+		_pageMenu = [[GTPageMenuViewController alloc] initWithNibName:@"GTPageMenuViewController" bundle:nil];
 		[self didChangeValueForKey:@"pageMenu"];
 		
 		__weak GTViewController *weakSelf = self;

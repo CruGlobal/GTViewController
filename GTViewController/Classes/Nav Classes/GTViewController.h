@@ -22,7 +22,7 @@ extern NSString *const GTViewControllerNotificationResourceDidOpen;
 
 
 
-@class GTFileLoader, GTShareViewController, GTPageMenuViewController, GTAboutViewController;
+//@class GTFileLoader, GTShareViewController, GTPageMenuViewController, GTAboutViewController;
 @protocol GTViewControllerMenuDelegate;
 
 
@@ -44,7 +44,7 @@ extern NSString *const GTViewControllerNotificationResourceDidOpen;
 *
 *  @return the initialized self
 */
-- (instancetype)initWithConfigFile:(NSString *)filename fileLoader:(GTFileLoader *)fileLoader shareViewController:(GTShareViewController *)shareViewController pageMenuViewController:(GTPageMenuViewController *)pageMenuViewController aboutViewController:(GTAboutViewController *)aboutViewController delegate:(id<GTViewControllerMenuDelegate>)delegate;
+//- (instancetype)initWithConfigFile:(NSString *)filename fileLoader:(GTFileLoader *)fileLoader shareViewController:(GTShareViewController *)shareViewController pageMenuViewController:(GTPageMenuViewController *)pageMenuViewController aboutViewController:(GTAboutViewController *)aboutViewController delegate:(id<GTViewControllerMenuDelegate>)delegate;
 
 /**
  *  loads and parses the assets for a resource defined by the config file passed to this method.

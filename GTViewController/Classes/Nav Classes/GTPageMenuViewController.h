@@ -11,7 +11,7 @@
 extern NSString * const GTTPageMenuViewControllerSwitchPage;
 extern NSString * const GTTPageMenuViewControllerPageNumber;
 
-@interface snuffyPageMenuViewController : UIViewController
+@interface GTPageMenuViewController : UIViewController
 
 @property (nonatomic, strong) NSMutableArray *pageArray;
 @property (nonatomic, strong) NSString *package;
