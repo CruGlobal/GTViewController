@@ -22,7 +22,7 @@ Pod::Spec.new do |s|
   s.resources    = "GTViewController/Resources/*", "GTViewController/Classes/**/*.xib"
   s.frameworks   = "QuartzCore", "AVFoundation"
   s.libraries    = "z"
-  s.dependency   = 'SSCWhatsAppActivity', '~> 1.0'
+  s.dependency 'SSCWhatsAppActivity', '~> 1.0'
 
   s.requires_arc = true
 

@@ -157,6 +157,7 @@
 
 /* Begin PBXFileReference section */
 		1A44A8CF92AB420FB766F984 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		28E91EFD01A90DF9A37D0C7C /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 		68C595551912DDCF00BB2AC6 /* GTFileLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTFileLoader.h; sourceTree = "<group>"; };
 		68C595561912DDCF00BB2AC6 /* GTFileLoader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GTFileLoader.m; sourceTree = "<group>"; };
 		68C595571912DDCF00BB2AC6 /* SNInstructions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SNInstructions.h; sourceTree = "<group>"; };
@@ -257,7 +258,7 @@
 		68F1F830190B05ED00044CDF /* GTViewControllerTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GTViewControllerTests.m; sourceTree = "<group>"; };
 		68FEC61F192BDD1700FC21F2 /* GTShareViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTShareViewController.h; sourceTree = "<group>"; };
 		68FEC620192BDD1700FC21F2 /* GTShareViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GTShareViewController.m; sourceTree = "<group>"; };
-		6AD21ECA752346C48E0136B7 /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = "<group>"; };
+		83CD8D45BA216E540E238E04 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -429,7 +430,7 @@
 				68F1F82A190B05ED00044CDF /* GTViewControllerTests */,
 				68F1F804190B05ED00044CDF /* Frameworks */,
 				68F1F803190B05ED00044CDF /* Products */,
-				6AD21ECA752346C48E0136B7 /* Pods.xcconfig */,
+				96304115D6552D9797F76B8F /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -502,6 +503,15 @@
 				68F1F82D190B05ED00044CDF /* InfoPlist.strings */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		96304115D6552D9797F76B8F /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				83CD8D45BA216E540E238E04 /* Pods.debug.xcconfig */,
+				28E91EFD01A90DF9A37D0C7C /* Pods.release.xcconfig */,
+			);
+			name = Pods;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -696,7 +706,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Pods-resources.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods/Pods-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		8D064CC1346C4BB291DF596C /* Check Pods Manifest.lock */ = {
@@ -726,7 +736,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Pods-resources.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods/Pods-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		F5E0AE34333B4A89A2DE136F /* Check Pods Manifest.lock */ = {
@@ -910,7 +920,7 @@
 		};
 		68F1F835190B05ED00044CDF /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 6AD21ECA752346C48E0136B7 /* Pods.xcconfig */;
+			baseConfigurationReference = 83CD8D45BA216E540E238E04 /* Pods.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
@@ -930,7 +940,7 @@
 		};
 		68F1F836190B05ED00044CDF /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 6AD21ECA752346C48E0136B7 /* Pods.xcconfig */;
+			baseConfigurationReference = 28E91EFD01A90DF9A37D0C7C /* Pods.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
@@ -950,7 +960,7 @@
 		};
 		68F1F838190B05ED00044CDF /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 6AD21ECA752346C48E0136B7 /* Pods.xcconfig */;
+			baseConfigurationReference = 83CD8D45BA216E540E238E04 /* Pods.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/GTViewController.app/GTViewController";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -973,7 +983,7 @@
 		};
 		68F1F839190B05ED00044CDF /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 6AD21ECA752346C48E0136B7 /* Pods.xcconfig */;
+			baseConfigurationReference = 28E91EFD01A90DF9A37D0C7C /* Pods.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/GTViewController.app/GTViewController";
 				FRAMEWORK_SEARCH_PATHS = (
