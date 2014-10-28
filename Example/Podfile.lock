@@ -1,10 +1,13 @@
 PODS:
   - SSCWhatsAppActivity (1.0)
+  - TBXML (1.5)
 
 DEPENDENCIES:
   - SSCWhatsAppActivity (~> 1.0)
+  - TBXML (~> 1.5)
 
 SPEC CHECKSUMS:
   SSCWhatsAppActivity: a0194b86913400fbb05605ac9f0c83874f3ca377
+  TBXML: a279440030ba55c40e1455cafba3b0a44e1963d4
 
 COCOAPODS: 0.34.4

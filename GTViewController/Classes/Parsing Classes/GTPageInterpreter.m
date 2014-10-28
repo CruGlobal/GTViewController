@@ -186,7 +186,8 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 		self.buttonDelegate		= buttonDelegate;
 		
 		//parse and store xml
-		self.xmlRepresentation	= [[TBXML alloc] initWithXMLPath:xmlPath];
+		NSData *data			= [NSData dataWithContentsOfFile:xmlPath];
+		self.xmlRepresentation	= [[TBXML alloc] initWithXMLData:data error:nil];
 		
 		//holds a reference to the view that will hold this page
 		self.pageView			= view;

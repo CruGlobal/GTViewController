@@ -407,7 +407,8 @@ NSString * const kAttr_filename		= @"filename";
 - (NSMutableArray *)pageArrayForConfigFile:(NSString *)filename {
 	
 	//init the xml
-	TBXML *tempXml = [[TBXML alloc] initWithXMLPath:[self.fileLoader pathOfFileWithFilename:filename]];
+	NSData *data				= [NSData dataWithContentsOfFile:[self.fileLoader pathOfFileWithFilename:filename]];
+	TBXML *tempXml				= [[TBXML alloc] initWithXMLData:data error:nil];
 	if (!tempXml.rootXMLElement) {
 		[NSException raise:@"Could not read resource!" format:@"Could not parse config file with name: %@. Try again. If the problem continues please contact support@godtoolsapp.com.", filename];
 	}

@@ -44,10 +44,6 @@
 		68C595B71912DDCF00BB2AC6 /* GTPageInterpreter.m in Sources */ = {isa = PBXBuildFile; fileRef = 68C595751912DDCF00BB2AC6 /* GTPageInterpreter.m */; };
 		68C595B81912DDCF00BB2AC6 /* GTPageInterpreterAmharic.m in Sources */ = {isa = PBXBuildFile; fileRef = 68C595771912DDCF00BB2AC6 /* GTPageInterpreterAmharic.m */; settings = {COMPILER_FLAGS = "-Wno-enum-conversion"; }; };
 		68C595B91912DDCF00BB2AC6 /* GTPageInterpreterAmharic.m in Sources */ = {isa = PBXBuildFile; fileRef = 68C595771912DDCF00BB2AC6 /* GTPageInterpreterAmharic.m */; };
-		68C595BA1912DDCF00BB2AC6 /* NSDataAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 68C5957A1912DDCF00BB2AC6 /* NSDataAdditions.m */; };
-		68C595BB1912DDCF00BB2AC6 /* NSDataAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 68C5957A1912DDCF00BB2AC6 /* NSDataAdditions.m */; };
-		68C595BC1912DDCF00BB2AC6 /* TBXML.m in Sources */ = {isa = PBXBuildFile; fileRef = 68C5957C1912DDCF00BB2AC6 /* TBXML.m */; };
-		68C595BD1912DDCF00BB2AC6 /* TBXML.m in Sources */ = {isa = PBXBuildFile; fileRef = 68C5957C1912DDCF00BB2AC6 /* TBXML.m */; };
 		68C595BE1912DDCF00BB2AC6 /* AbyssinicaSIL-R.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 68C595811912DDCF00BB2AC6 /* AbyssinicaSIL-R.ttf */; };
 		68C595BF1912DDCF00BB2AC6 /* AbyssinicaSIL-R.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 68C595811912DDCF00BB2AC6 /* AbyssinicaSIL-R.ttf */; };
 		68C595C01912DDCF00BB2AC6 /* arrow.png in Resources */ = {isa = PBXBuildFile; fileRef = 68C595821912DDCF00BB2AC6 /* arrow.png */; };
@@ -191,10 +187,6 @@
 		68C595751912DDCF00BB2AC6 /* GTPageInterpreter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GTPageInterpreter.m; sourceTree = "<group>"; };
 		68C595761912DDCF00BB2AC6 /* GTPageInterpreterAmharic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTPageInterpreterAmharic.h; sourceTree = "<group>"; };
 		68C595771912DDCF00BB2AC6 /* GTPageInterpreterAmharic.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GTPageInterpreterAmharic.m; sourceTree = "<group>"; };
-		68C595791912DDCF00BB2AC6 /* NSDataAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSDataAdditions.h; sourceTree = "<group>"; };
-		68C5957A1912DDCF00BB2AC6 /* NSDataAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSDataAdditions.m; sourceTree = "<group>"; };
-		68C5957B1912DDCF00BB2AC6 /* TBXML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TBXML.h; sourceTree = "<group>"; };
-		68C5957C1912DDCF00BB2AC6 /* TBXML.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TBXML.m; sourceTree = "<group>"; };
 		68C5957E1912DDCF00BB2AC6 /* GTTrackerNotifications.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTTrackerNotifications.h; sourceTree = "<group>"; };
 		68C5957F1912DDCF00BB2AC6 /* snuffyViewControllerTouchNotifications.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = snuffyViewControllerTouchNotifications.h; sourceTree = "<group>"; };
 		68C595811912DDCF00BB2AC6 /* AbyssinicaSIL-R.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "AbyssinicaSIL-R.ttf"; sourceTree = "<group>"; };
@@ -296,7 +288,6 @@
 				68C595541912DDCF00BB2AC6 /* Custom Classes */,
 				68C595611912DDCF00BB2AC6 /* Nav Classes */,
 				68C5956A1912DDCF00BB2AC6 /* Parsing Classes */,
-				68C595781912DDCF00BB2AC6 /* TBXML */,
 			);
 			name = Classes;
 			path = ../../GTViewController/Classes;
@@ -356,17 +347,6 @@
 				68C595771912DDCF00BB2AC6 /* GTPageInterpreterAmharic.m */,
 			);
 			path = "Parsing Classes";
-			sourceTree = "<group>";
-		};
-		68C595781912DDCF00BB2AC6 /* TBXML */ = {
-			isa = PBXGroup;
-			children = (
-				68C595791912DDCF00BB2AC6 /* NSDataAdditions.h */,
-				68C5957A1912DDCF00BB2AC6 /* NSDataAdditions.m */,
-				68C5957B1912DDCF00BB2AC6 /* TBXML.h */,
-				68C5957C1912DDCF00BB2AC6 /* TBXML.m */,
-			);
-			path = TBXML;
 			sourceTree = "<group>";
 		};
 		68C5957D1912DDCF00BB2AC6 /* Headers */ = {
@@ -768,14 +748,12 @@
 				68C595A81912DDCF00BB2AC6 /* GTViewController.m in Sources */,
 				68C595981912DDCF00BB2AC6 /* SNInstructions.m in Sources */,
 				68C5959A1912DDCF00BB2AC6 /* UIDisclosureIndicator.m in Sources */,
-				68C595BC1912DDCF00BB2AC6 /* TBXML.m in Sources */,
 				68C595A01912DDCF00BB2AC6 /* UISnufflePanel.m in Sources */,
 				68C595B21912DDCF00BB2AC6 /* GTPage.m in Sources */,
 				68C5959C1912DDCF00BB2AC6 /* UIRoundedView.m in Sources */,
 				68FEC621192BDD1700FC21F2 /* GTShareViewController.m in Sources */,
 				68C595A41912DDCF00BB2AC6 /* GTPageMenuViewController.m in Sources */,
 				68C595B61912DDCF00BB2AC6 /* GTPageInterpreter.m in Sources */,
-				68C595BA1912DDCF00BB2AC6 /* NSDataAdditions.m in Sources */,
 				68C595B81912DDCF00BB2AC6 /* GTPageInterpreterAmharic.m in Sources */,
 				68F1F816190B05ED00044CDF /* GTAppDelegate.m in Sources */,
 				68C595B01912DDCF00BB2AC6 /* GTInterpreter.m in Sources */,
@@ -795,9 +773,7 @@
 				68C595A31912DDCF00BB2AC6 /* HorizontalGestureRecognizer.m in Sources */,
 				68C595B91912DDCF00BB2AC6 /* GTPageInterpreterAmharic.m in Sources */,
 				68C595991912DDCF00BB2AC6 /* SNInstructions.m in Sources */,
-				68C595BB1912DDCF00BB2AC6 /* NSDataAdditions.m in Sources */,
 				68C5959F1912DDCF00BB2AC6 /* UISnuffleButton.m in Sources */,
-				68C595BD1912DDCF00BB2AC6 /* TBXML.m in Sources */,
 				68C595B31912DDCF00BB2AC6 /* GTPage.m in Sources */,
 				68C595A51912DDCF00BB2AC6 /* GTPageMenuViewController.m in Sources */,
 				68F1F831190B05ED00044CDF /* GTViewControllerTests.m in Sources */,
