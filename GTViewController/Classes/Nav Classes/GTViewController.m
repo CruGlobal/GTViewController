@@ -644,6 +644,49 @@ NSString * const kAttr_filename		= @"filename";
 //	
 //}
 
+-(void)navToolbarAddRemoveSwitchButton{
+
+		//if button not already there then add button
+		if (self.switchButton == nil && self.parallelConfigFile !=nil) {
+
+			UIBarButtonItem *switchButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Package_PopUpToolBar_Icon_Switch"]
+																			 style:UIBarButtonItemStyleBordered
+																			target:self
+																			action:@selector(nabvToolbarLanguageSwitch)];
+
+			self.switchButton = switchButton;
+
+			[self.navToolbar setItems:[NSArray arrayWithObjects:[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil], self.shareButton, self.menuButton, self.switchButton, self.aboutButton, [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil], nil] animated:YES];
+
+		}
+
+		//if button already there then remove button
+		else if (self.switchButton != nil && self.parallelConfigFile == nil) {
+
+			[self.navToolbar setItems:[NSArray arrayWithObjects:[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil], self.shareButton, self.menuButton, self.aboutButton, [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil], nil] animated:YES];
+			
+			self.switchButton	= nil;
+			
+		}
+		
+}
+
+-(void)nabvToolbarLanguageSwitch{
+    NSString *current = self.configFilename;
+    self.configFilename = self.parallelConfigFile;
+    self.parallelConfigFile = current;
+    
+    //Used this instead of 	[self loadResourceWithConfigFilename:self.configFilename]; because we have to skipToTheCurrentIndex
+    [self.fileLoader clearCache];
+    
+    self.pageArray =  [self pageArrayForConfigFile:self.configFilename];
+    
+    //restore active index
+    NSInteger currentIndex = self.activeView;
+    self.activeView = (NSInteger)fmin((double)[[[self pageArray] objectAtIndex:kPageArray_File] count] - 1, (double)currentIndex);
+    [self skipTo:self.activeView];
+
+}
 
 
 -(void)navToolbarHeartbeatSwitch {
@@ -1829,6 +1872,7 @@ NSString * const kAttr_filename		= @"filename";
 	[self.view bringSubviewToFront:self.navToolbar];
 	[self.view bringSubviewToFront:self.navToolbarButton];
 	
+	[self navToolbarAddRemoveSwitchButton];
 	[self showNavToolbar];
 	
 }
