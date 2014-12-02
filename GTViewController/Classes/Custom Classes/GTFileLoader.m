@@ -60,8 +60,8 @@
 #pragma mark - path methods
 
 + (NSString *)pathOfPackagesDirectory {
-	return [[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/Packages"];
-	//return [[NSHomeDirectory() stringByAppendingPathComponent:  @"Documents"] stringByAppendingPathComponent:@"Packages"];
+	//return [[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/Packages"];
+	return [[NSHomeDirectory() stringByAppendingPathComponent:  @"Documents"] stringByAppendingPathComponent:@"Packages"];
 }
 
 - (NSString *)pathOfConfigFile {
