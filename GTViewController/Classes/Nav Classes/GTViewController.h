@@ -70,6 +70,8 @@ extern NSString *const GTViewControllerNotificationResourceDidOpen;
  */
 - (void)switchToPageWithIndex:(NSUInteger)pageIndex;
 
+- (void)refreshView;
+
 @end
 
 @protocol GTViewControllerMenuDelegate <NSObject>

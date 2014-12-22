@@ -551,14 +551,17 @@ NSString * const kAttr_filename		= @"filename";
 
 -(IBAction)navToolbarShareSelector:(id)sender {
     
+    NSLog(@"navtoolbarShareselector");
     [self hideNavToolbar];
     
-    if (self.shareSheet) {
-        
-        [self presentViewController:self.shareSheet animated:YES completion:nil];
-        self.childViewControllerWasShown = YES;
-        
-    }
+    //if (self.shareSheet) {
+    
+    self.shareSheet = [[GTShareViewController alloc]init];
+    
+    [self presentViewController:self.shareSheet animated:YES completion:nil];
+    self.childViewControllerWasShown = YES;
+    
+    //}
 }
 
 -(IBAction)navToolbarAboutSelector:(id)sender {
@@ -665,10 +668,12 @@ NSString * const kAttr_filename		= @"filename";
     //if button not already there then add button
     if (self.switchButton == nil && self.isDraft) {
         
-        UIBarButtonItem *refreshButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Package_PopUpToolBar_Icon_Switch"]
-                                                                          style:UIBarButtonItemStyleBordered
-                                                                         target:self
-                                                                         action:@selector(refreshCurrentPage)];
+        UIBarButtonItem *refreshButton = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(refreshCurrentPage)];
+        
+        /* [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Package_PopUpToolBar_Icon_Switch"]
+         style:UIBarButtonItemStyleBordered
+         target:self
+         action:@selector(refreshCurrentPage)];*/
         
         self.refreshButton = refreshButton;
         
@@ -685,6 +690,19 @@ NSString * const kAttr_filename		= @"filename";
         }
         self.refreshButton	= nil;
     }
+    
+}
+
+-(void)refreshView{
+    //Used this instead of 	[self loadResourceWithConfigFilename:self.configFilename]; because we have to skipToTheCurrentIndex
+    [self.fileLoader clearCache];
+    
+    self.pageArray =  [self pageArrayForConfigFile:self.configFilename];
+    
+    //restore active index
+    NSInteger currentIndex = self.activeView;
+    self.activeView = (NSInteger)fmin((double)[[[self pageArray] objectAtIndex:kPageArray_File] count] - 1, (double)currentIndex);
+    [self skipTo:self.activeView];
     
 }
 
@@ -730,15 +748,7 @@ NSString * const kAttr_filename		= @"filename";
     self.configFilename = self.parallelConfigFilename;
     self.parallelConfigFilename = current;
     
-    //Used this instead of 	[self loadResourceWithConfigFilename:self.configFilename]; because we have to skipToTheCurrentIndex
-    [self.fileLoader clearCache];
-    
-    self.pageArray =  [self pageArrayForConfigFile:self.configFilename];
-    
-    //restore active index
-    NSInteger currentIndex = self.activeView;
-    self.activeView = (NSInteger)fmin((double)[[[self pageArray] objectAtIndex:kPageArray_File] count] - 1, (double)currentIndex);
-    [self skipTo:self.activeView];
+    [self refreshView];
     
 }
 
@@ -1943,6 +1953,8 @@ NSString * const kAttr_filename		= @"filename";
 - (void)viewDidAppear:(BOOL)animated {
     
     [super viewDidAppear:animated];
+    
+    NSLog(@"gtviewcontroller viewdidappear");
     
     if (self.isFirstRunSinceCreation) {
         
