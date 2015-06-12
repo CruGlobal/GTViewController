@@ -1920,7 +1920,9 @@ NSString * const kAttr_filename		= @"filename";
 - (void)viewWillAppear:(BOOL)animated {
     
     [super viewWillAppear:animated];
-    
+	
+	[UIApplication sharedApplication].idleTimerDisabled = YES;
+	
     //[self setUpViewController];
     
     //calculate the positions the views will have during animation
@@ -1940,6 +1942,12 @@ NSString * const kAttr_filename		= @"filename";
     [self navToolbarAddRemoveRefreshButton];
     [self showNavToolbar];
     
+}
+
+- (void)viewDidDisappear:(BOOL)animated {
+	[super viewDidDisappear:animated];
+	
+	[UIApplication sharedApplication].idleTimerDisabled = NO;
 }
 
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
