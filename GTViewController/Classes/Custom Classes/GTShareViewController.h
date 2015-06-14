@@ -10,4 +10,6 @@
 
 @interface GTShareViewController : UIActivityViewController
 
++ (instancetype)shareController;
+
 @end

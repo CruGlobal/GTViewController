@@ -20,16 +20,18 @@ NSString *const GTShareViewControllerCampaignLinkCampaignName          = @"app-s
 
 @implementation GTShareViewController
 
-- (instancetype)init {
++ (instancetype)shareController {
 	
-	NSString *campaignLink				= [self produceLinkForCampaign: GTShareViewControllerCampaignLinkCampaignName source:GTShareViewControllerCampaignLinkCampaignSource medium:GTShareViewControllerCampaignLinkCampaignMedium];
+	NSString *campaignLink				= [self produceLinkForCampaign:GTShareViewControllerCampaignLinkCampaignName
+													  source:GTShareViewControllerCampaignLinkCampaignSource
+													  medium:GTShareViewControllerCampaignLinkCampaignMedium];
 	
 	SSCWhatsAppActivity *whatsAppActivity	= [[SSCWhatsAppActivity alloc] init];
 	
-	self = [super initWithActivityItems:@[[NSURL URLWithString:campaignLink]] applicationActivities:@[whatsAppActivity]];
-	if (self) {
+	GTShareViewController *shareController = [[self alloc] initWithActivityItems:@[[NSURL URLWithString:campaignLink]] applicationActivities:@[whatsAppActivity]];
+	if (shareController) {
 		
-		self.excludedActivityTypes	= @[
+		shareController.excludedActivityTypes	= @[
 										//UIActivityTypePostToFacebook,
 										//UIActivityTypePostToTwitter,
 										//UIActivityTypePostToWeibo,
@@ -48,15 +50,15 @@ NSString *const GTShareViewControllerCampaignLinkCampaignName          = @"app-s
 		
 	}
 	
-	return self;
+	return shareController;
 }
 
-- (NSString *)produceShareLink {
++ (NSString *)produceShareLink {
 	
 	return [NSString stringWithFormat:@"http://www.godtoolsapp.com"];
 }
 
-- (NSString *)produceLinkForCampaign:(NSString *)campaign source:(NSString *)source medium:(NSString *)medium {
++ (NSString *)produceLinkForCampaign:(NSString *)campaign source:(NSString *)source medium:(NSString *)medium {
 	
 	NSString *appVersionNumber	= [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"];
 	

@@ -84,7 +84,7 @@ NSInteger const HorizontalGestureRecognizerMinSwipeSpeed	= 400;
 		double deltaT = currentTimeStamp - self.lastTimeStamp;
 		
 		//add the current change in distance to the total distance
-		self.totalHorizontalDistance += fabsf(deltaX);
+		self.totalHorizontalDistance += fabs(deltaX);
 		
 		//calculate instantanious speeds
 		self.horizontalSpeed  = deltaX / deltaT;
@@ -136,7 +136,7 @@ NSInteger const HorizontalGestureRecognizerMinSwipeSpeed	= 400;
 			self.totalHorizontalSpeed = self.totalHorizontalDistance / (endTimeStamp - self.startTimeStamp);
 			
 			//check if it was fast enough to be a swipe
-			if (fabsf(self.horizontalSpeed) > HorizontalGestureRecognizerMinSwipeSpeed) {
+			if (fabs(self.horizontalSpeed) > HorizontalGestureRecognizerMinSwipeSpeed) {
 				//check direction
 				if (self.startTouchPosition.x < endTouchPosition.x) {
 					if ([self.delegate respondsToSelector:@selector(processRightSwipe:withEvent:)]) {

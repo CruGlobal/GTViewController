@@ -549,19 +549,17 @@ NSString * const kAttr_filename		= @"filename";
     //this is a work around to avoid button press issues on a hidden toolbar
 }
 
--(IBAction)navToolbarShareSelector:(id)sender {
+- (IBAction)navToolbarShareSelector:(id)sender {
     
     NSLog(@"navtoolbarShareselector");
     [self hideNavToolbar];
     
-    //if (self.shareSheet) {
+    if (self.shareSheet) {
     
-    self.shareSheet = [[GTShareViewController alloc]init];
+		[self presentViewController:self.shareSheet animated:YES completion:nil];
+		self.childViewControllerWasShown = YES;
     
-    [self presentViewController:self.shareSheet animated:YES completion:nil];
-    self.childViewControllerWasShown = YES;
-    
-    //}
+    }
 }
 
 -(IBAction)navToolbarAboutSelector:(id)sender {
@@ -711,7 +709,7 @@ NSString * const kAttr_filename		= @"filename";
 }
 
 -(void)refreshCurrentPage{
-    NSLog(@"active View: %d",self.activeView);
+    NSLog(@"active View: %ld",self.activeView);
     // NSLog(@"package[0]: %@",[self.pageArray objectAtIndex:0]);
     [self refreshCurrentPage:[[self.pageArray objectAtIndex:kPageArray_File]objectAtIndex:self.activeView]];
 }
@@ -724,7 +722,7 @@ NSString * const kAttr_filename		= @"filename";
         UIBarButtonItem *switchButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Package_PopUpToolBar_Icon_Switch"]
                                                                          style:UIBarButtonItemStyleBordered
                                                                         target:self
-                                                                        action:@selector(nabvToolbarLanguageSwitch)];
+                                                                        action:@selector(navToolbarLanguageSwitch)];
         
         self.switchButton = switchButton;
         
@@ -743,7 +741,7 @@ NSString * const kAttr_filename		= @"filename";
     
 }
 
--(void)nabvToolbarLanguageSwitch{
+-(void)navToolbarLanguageSwitch{
     NSString *current = self.configFilename;
     self.configFilename = self.parallelConfigFilename;
     self.parallelConfigFilename = current;
