@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "GTViewController"
-  s.version      = "3.1.2"
+  s.version      = "4.0"
   s.summary      = "A View Controller that renders God Tools xml packages"
   s.description  = <<-DESC
                    GTViewController takes a God Tools xml package and renders it for iOS devices.
@@ -16,7 +16,7 @@ Pod::Spec.new do |s|
   s.authors      = { "Harro" => "michael.harrison@cru.org" }
 
   s.platform     = :ios, "6.0"
-  s.source       = { :git => "https://github.com/CruGlobal/GTViewController.git", :branch => "dev4.0" }
+  s.source       = { :git => "https://github.com/CruGlobal/GTViewController.git", :tag => s.version }
   s.source_files = "GTViewController/Classes/**/*.{h,m}", "GTViewController/Headers/*.h"
   s.public_header_files = "GTViewController/Classes/Nav\ Classes/GTViewController.h", "GTViewController/Classes/Custom\ Classes/GTFileLoader.h", "GTViewController/Classes/Nav\ Classes/GTPageMenuViewController.h", "GTViewController/Classes/Custom\ Classes/GTShareViewController.h", "GTViewController/Classes/Parsing\ Classes/GTAboutViewController.h"
   s.resources    = "GTViewController/Resources/*", "GTViewController/Classes/**/*.xib"
