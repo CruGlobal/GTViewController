@@ -4,5 +4,4 @@ platform :ios, '6.0'
 
 link_with 'GTViewController', 'GTViewControllerTests'
 
-pod 'TBXML', '~> 1.5', :inhibit_warnings => true
 pod 'SSCWhatsAppActivity', '~> 1.0'
