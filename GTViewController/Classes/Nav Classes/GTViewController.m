@@ -709,7 +709,7 @@ NSString * const kAttr_filename		= @"filename";
 }
 
 -(void)refreshCurrentPage{
-    NSLog(@"active View: %ld",self.activeView);
+    NSLog(@"active View: %ld", (long)self.activeView);
     // NSLog(@"package[0]: %@",[self.pageArray objectAtIndex:0]);
     [self refreshCurrentPage:[[self.pageArray objectAtIndex:kPageArray_File]objectAtIndex:self.activeView]];
 }

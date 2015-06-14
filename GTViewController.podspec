@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "GTViewController"
-  s.version      = "4.0.1"
+  s.version      = "4.0.2"
   s.summary      = "A View Controller that renders God Tools xml packages"
   s.description  = <<-DESC
                    GTViewController takes a God Tools xml package and renders it for iOS devices.
@@ -23,7 +23,6 @@ Pod::Spec.new do |s|
   s.frameworks   = "QuartzCore", "AVFoundation"
   s.libraries    = "z"
   s.dependency 'SSCWhatsAppActivity', '~> 1.0'
-  s.dependency 'TBXML', '~> 1.5'
 
   s.requires_arc = true
 

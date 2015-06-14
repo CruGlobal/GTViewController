@@ -151,7 +151,7 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 - (id)createButtonLinesFromButtonElement:		(TBXMLElement *)element		buttonTag:(NSInteger)buttonTag	yPos:(CGFloat)yPos		container:(UIView *)container;
 - (id)createDisclosureIndicatorFromButtonTag:	(NSInteger)buttonTag		container:(UIView *)container;
 - (id)createImageFromElement:					(TBXMLElement *)element		xPos:(CGFloat)xpostion			yPos:(CGFloat)ypostion	container:(UIView *)container;
-- (id)createLabelFromElement:					(TBXMLElement *)element		parentTextAlignment:(UITextAlignment)panelAlign			xPos:(CGFloat)xpostion			yPos:(CGFloat)ypostion	container:(UIView *)container;
+- (id)createLabelFromElement:					(TBXMLElement *)element		parentTextAlignment:(NSTextAlignment)panelAlign			xPos:(CGFloat)xpostion			yPos:(CGFloat)ypostion	container:(UIView *)container;
 - (id)createPanelFromElement:					(TBXMLElement *)element		buttonTag:(NSInteger)buttonTag;
 - (id)createQuestionFromElement:				(TBXMLElement *)element		container:(UIView *)container;
 - (id)createQuestionLabelFromElement:			(TBXMLElement *)element		container:(UIView *)container;
@@ -160,7 +160,7 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 - (id)createTitleNumberFromElement:				(TBXMLElement *)element		titleMode:(NSString *)titleMode;
 - (id)createTitleHeadingFromElement:			(TBXMLElement *)element		titleMode:(NSString *)titleMode;
 - (id)createTitleSubheadingFromElement:			(TBXMLElement *)element		titleMode:(NSString *)titleMode;
-- (UILabel *)createLabelWithFrame:				(CGRect)frame				autoResize:(BOOL)resize			text:(NSString *)text	color:(UIColor *)color	bgColor:(UIColor *)bgColor	alpha:(CGFloat)alpha	alignment:(UITextAlignment)textAlignment	font:(NSString *)font	size:(NSUInteger)size;
+- (UILabel *)createLabelWithFrame:				(CGRect)frame				autoResize:(BOOL)resize			text:(NSString *)text	color:(UIColor *)color	bgColor:(UIColor *)bgColor	alpha:(CGFloat)alpha	alignment:(NSTextAlignment)textAlignment	font:(NSString *)font	size:(NSUInteger)size;
 
 //attribute parsing functions
 - (UIColor *)colorForHex:						(NSString *)hexColor;
@@ -1450,7 +1450,7 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
  *	Parameters:		Element:	The TBXMLElement for the label
  *	Returns:		A UILabel object from the attributes specified in the passed TBXML element.
  */
-- (id)createLabelFromElement:(TBXMLElement *)element parentTextAlignment:(UITextAlignment)panelAlign xPos:(CGFloat)xpostion yPos:(CGFloat)ypostion container:(UIView *)container {
+- (id)createLabelFromElement:(TBXMLElement *)element parentTextAlignment:(NSTextAlignment)panelAlign xPos:(CGFloat)xpostion yPos:(CGFloat)ypostion container:(UIView *)container {
 	
 	//set container to the page if not set
 	if (container == nil) {
@@ -1485,7 +1485,7 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 		
 		//init variables for object parameters
 		CGRect			frame			= CGRectZero;
-		UITextAlignment textAlignment	= panelAlign;
+		NSTextAlignment textAlignment	= panelAlign;
 		BOOL			resize			= YES;
 		UIColor			*bgColor		= nil;
 		NSUInteger		textSize		= DEFAULT_TEXTSIZE_LABEL;
@@ -1560,7 +1560,7 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 		
 		//Fetch and store the panel's text alignment
 		NSString		*panel_alignment	= [TBXML valueOfAttributeNamed:kAttr_textalign	forElement:element];
-		UITextAlignment	panelAlign;
+		NSTextAlignment	panelAlign;
 		if ([panel_alignment isEqual:kAlignment_left]) {
 			panelAlign = NSTextAlignmentLeft;
 		} else if ([panel_alignment isEqual:kAlignment_center]) {
@@ -1825,7 +1825,7 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 					mode		=						(mode == nil ? @"" : mode);
 		
 		CGRect			frame			= CGRectZero;
-		UITextAlignment textAlignment	= NSTextAlignmentRight;
+		NSTextAlignment textAlignment	= NSTextAlignmentRight;
 		BOOL			resize			= YES;
 		UIColor			*bgColor		= nil;
 		NSUInteger		textSize		= DEFAULT_TEXTSIZE_QUESTION_NORMAL;
@@ -2088,7 +2088,7 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 			
 			//init variables for object parameters
 			CGRect			frame			= CGRectZero;
-			UITextAlignment textAlignment	= NSTextAlignmentLeft;
+			NSTextAlignment textAlignment	= NSTextAlignmentLeft;
 			BOOL			resize			= YES;
 			UIColor			*bgColor		= nil;
 			NSUInteger		textSize		= DEFAULT_TEXTSIZE_TITLE_SUBHEADING;
@@ -2188,7 +2188,7 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 		NSString	*h		=						[TBXML valueOfAttributeNamed:kAttr_height	forElement:element];
 		
 		CGRect			frame			= CGRectZero;
-		UITextAlignment textAlignment	= NSTextAlignmentRight;
+		NSTextAlignment textAlignment	= NSTextAlignmentRight;
 		BOOL			resize			= YES;
 		UIColor			*bgColor		= nil;
 		NSUInteger		textSize		= DEFAULT_TEXTSIZE_TITLE_NUMBER;
@@ -2244,7 +2244,7 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 		NSString	*h		=						[TBXML valueOfAttributeNamed:kAttr_height	forElement:element];
 		
 		CGRect			frame			= CGRectZero;
-		UITextAlignment textAlignment	= ([titleMode isEqual:kTitleMode_peek] ? NSTextAlignmentRight : NSTextAlignmentLeft);
+		NSTextAlignment textAlignment	= ([titleMode isEqual:kTitleMode_peek] ? NSTextAlignmentRight : NSTextAlignmentLeft);
 		BOOL			resize			= YES;
 		UIColor			*bgColor		= nil;
 		NSUInteger		textSize		= ([titleMode isEqual:kTitleMode_peek] ? DEFAULT_TEXTSIZE_TITLE_HEADING_PEEKMODE : DEFAULT_TEXTSIZE_TITLE_HEADING_NORMALMODE );
@@ -2321,7 +2321,7 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 	
 	//init title parameters with defaults
 	CGRect			frame			= CGRectZero;
-	UITextAlignment textAlignment	= ([titleMode isEqual:kTitleMode_peek] ? NSTextAlignmentLeft : NSTextAlignmentRight);
+	NSTextAlignment textAlignment	= ([titleMode isEqual:kTitleMode_peek] ? NSTextAlignmentLeft : NSTextAlignmentRight);
 	BOOL			resize			= YES;
 	UIColor			*bgColor		= nil;
 	NSUInteger		textSize		= DEFAULT_TEXTSIZE_TITLE_SUBHEADING;
@@ -2394,7 +2394,7 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 }
 
 //Returns a label given label attributes
-- (UILabel *)createLabelWithFrame:(CGRect)frame autoResize:(BOOL)resize text:(NSString *)text color:(UIColor *)color bgColor:(UIColor *)bgColor alpha:(CGFloat)alpha alignment:(UITextAlignment)textAlignment font:(NSString *)font size:(NSUInteger)size {
+- (UILabel *)createLabelWithFrame:(CGRect)frame autoResize:(BOOL)resize text:(NSString *)text color:(UIColor *)color bgColor:(UIColor *)bgColor alpha:(CGFloat)alpha alignment:(NSTextAlignment)textAlignment font:(NSString *)font size:(NSUInteger)size {
 	UILabel *tempLabel = [[UILabel alloc] initWithFrame:frame];
 	
 	//Colors
