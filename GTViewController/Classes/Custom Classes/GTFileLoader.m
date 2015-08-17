@@ -59,8 +59,7 @@
 
 #pragma mark - path methods
 
-+ (NSString *)pathOfPackagesDirectory {
-    //return [[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/Packages"];
+- (NSString *)pathOfPackagesDirectory {
     return [[NSHomeDirectory() stringByAppendingPathComponent:  @"Documents"] stringByAppendingPathComponent:@"Packages"];
 }
 
@@ -83,10 +82,10 @@
 
 - (NSString *)findPathForFileWithFilename:(NSString *)filename {
     
-    NSString *path = [[GTFileLoader pathOfPackagesDirectory] stringByAppendingPathComponent:filename];
+    NSString *path = [self.pathOfPackagesDirectory stringByAppendingPathComponent:filename];
     
     if (![[NSFileManager defaultManager] fileExistsAtPath:path]) {
-        path = [[GTFileLoader pathOfPackagesDirectory]	stringByAppendingPathComponent:filename];
+        path = [self.pathOfPackagesDirectory	stringByAppendingPathComponent:filename];
     }
     
     if (![[NSFileManager defaultManager] fileExistsAtPath:path]) {

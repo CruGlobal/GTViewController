@@ -16,7 +16,7 @@
 + (GTFileLoader *)sharedInstance;
 + (instancetype)fileLoader;
 
-+ (NSString *)pathOfPackagesDirectory;
+- (NSString *)pathOfPackagesDirectory;
 - (NSString *)pathOfFileWithFilename:(NSString *)filename;
 
 - (UIImage *)imageWithFilename:(NSString *)filename;

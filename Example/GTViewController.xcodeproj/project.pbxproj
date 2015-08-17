@@ -8,6 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		3EA257A72B8B446AA8362101 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A44A8CF92AB420FB766F984 /* libPods.a */; };
+		686D73291B8258EC00444718 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 686D732C1B8258EC00444718 /* Localizable.strings */; };
+		686D732A1B8258EC00444718 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 686D732C1B8258EC00444718 /* Localizable.strings */; };
+		686D73301B82659800444718 /* GTFileLoaderExample.m in Sources */ = {isa = PBXBuildFile; fileRef = 686D732F1B82659800444718 /* GTFileLoaderExample.m */; };
+		686D73311B82659800444718 /* GTFileLoaderExample.m in Sources */ = {isa = PBXBuildFile; fileRef = 686D732F1B82659800444718 /* GTFileLoaderExample.m */; };
 		687A32241B2D3DC80098ACE6 /* TBXML+Compression.m in Sources */ = {isa = PBXBuildFile; fileRef = 687A321F1B2D3DC80098ACE6 /* TBXML+Compression.m */; };
 		687A32251B2D3DC80098ACE6 /* TBXML+HTTP.m in Sources */ = {isa = PBXBuildFile; fileRef = 687A32211B2D3DC80098ACE6 /* TBXML+HTTP.m */; };
 		687A32261B2D3DC80098ACE6 /* TBXML.m in Sources */ = {isa = PBXBuildFile; fileRef = 687A32231B2D3DC80098ACE6 /* TBXML.m */; };
@@ -157,6 +161,10 @@
 /* Begin PBXFileReference section */
 		1A44A8CF92AB420FB766F984 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		28E91EFD01A90DF9A37D0C7C /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
+		686D732B1B8258EC00444718 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/Localizable.strings; sourceTree = "<group>"; };
+		686D732D1B82643700444718 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		686D732E1B82659800444718 /* GTFileLoaderExample.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTFileLoaderExample.h; sourceTree = "<group>"; };
+		686D732F1B82659800444718 /* GTFileLoaderExample.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GTFileLoaderExample.m; sourceTree = "<group>"; };
 		687A321E1B2D3DC80098ACE6 /* TBXML+Compression.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "TBXML+Compression.h"; sourceTree = "<group>"; };
 		687A321F1B2D3DC80098ACE6 /* TBXML+Compression.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "TBXML+Compression.m"; sourceTree = "<group>"; };
 		687A32201B2D3DC80098ACE6 /* TBXML+HTTP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "TBXML+HTTP.h"; sourceTree = "<group>"; };
@@ -472,6 +480,8 @@
 				68F1F817190B05ED00044CDF /* Main.storyboard */,
 				68C5962219131CAB00BB2AC6 /* GTExampleTableViewController.h */,
 				68C5962319131CAB00BB2AC6 /* GTExampleTableViewController.m */,
+				686D732E1B82659800444718 /* GTFileLoaderExample.h */,
+				686D732F1B82659800444718 /* GTFileLoaderExample.m */,
 				68C595EC1912FCB700BB2AC6 /* Packages */,
 				68F1F81D190B05ED00044CDF /* Images.xcassets */,
 				68F1F80C190B05ED00044CDF /* Supporting Files */,
@@ -486,6 +496,7 @@
 				68F1F80E190B05ED00044CDF /* InfoPlist.strings */,
 				68F1F811190B05ED00044CDF /* main.m */,
 				68F1F813190B05ED00044CDF /* GTViewController-Prefix.pch */,
+				686D732C1B8258EC00444718 /* Localizable.strings */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -638,6 +649,7 @@
 				68C595E01912DDCF00BB2AC6 /* Package_PopUpToolBar_Icon_Menu.png in Resources */,
 				68C595C41912DDCF00BB2AC6 /* fiftytap.mp3 in Resources */,
 				68C5961019131A2A00BB2AC6 /* grad_shad_SE.png in Resources */,
+				686D73291B8258EC00444718 /* Localizable.strings in Resources */,
 				68C5960619131A2A00BB2AC6 /* Buttonlines.png in Resources */,
 				68C5960E19131A2A00BB2AC6 /* grad_shad_S.png in Resources */,
 				68C595B41912DDCF00BB2AC6 /* GTPage.xib in Resources */,
@@ -657,6 +669,7 @@
 				68C595E11912DDCF00BB2AC6 /* Package_PopUpToolBar_Icon_Menu.png in Resources */,
 				68C595CB1912DDCF00BB2AC6 /* GTInstructions_Hand_Pointer_Shadow.png in Resources */,
 				68C595D51912DDCF00BB2AC6 /* Package_PopUpToolBar_Icon_Export.png in Resources */,
+				686D732A1B8258EC00444718 /* Localizable.strings in Resources */,
 				68C595D31912DDCF00BB2AC6 /* NotoSansEthiopic-Regular.ttf in Resources */,
 				68C5960F19131A2A00BB2AC6 /* grad_shad_S.png in Resources */,
 				68C5961719131A2A00BB2AC6 /* line.png in Resources */,
@@ -770,6 +783,7 @@
 				68C5962419131CAB00BB2AC6 /* GTExampleTableViewController.m in Sources */,
 				68C595A81912DDCF00BB2AC6 /* GTViewController.m in Sources */,
 				68C595981912DDCF00BB2AC6 /* SNInstructions.m in Sources */,
+				686D73301B82659800444718 /* GTFileLoaderExample.m in Sources */,
 				687A32261B2D3DC80098ACE6 /* TBXML.m in Sources */,
 				68C5959A1912DDCF00BB2AC6 /* UIDisclosureIndicator.m in Sources */,
 				68C595A01912DDCF00BB2AC6 /* UISnufflePanel.m in Sources */,
@@ -798,6 +812,7 @@
 				68C595A91912DDCF00BB2AC6 /* GTViewController.m in Sources */,
 				68C595A31912DDCF00BB2AC6 /* HorizontalGestureRecognizer.m in Sources */,
 				68C595B91912DDCF00BB2AC6 /* GTPageInterpreterAmharic.m in Sources */,
+				686D73311B82659800444718 /* GTFileLoaderExample.m in Sources */,
 				68C595991912DDCF00BB2AC6 /* SNInstructions.m in Sources */,
 				68C5959F1912DDCF00BB2AC6 /* UISnuffleButton.m in Sources */,
 				68C595B31912DDCF00BB2AC6 /* GTPage.m in Sources */,
@@ -823,6 +838,15 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
+		686D732C1B8258EC00444718 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				686D732B1B8258EC00444718 /* Base */,
+				686D732D1B82643700444718 /* en */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
 		68F1F80E190B05ED00044CDF /* InfoPlist.strings */ = {
 			isa = PBXVariantGroup;
 			children = (

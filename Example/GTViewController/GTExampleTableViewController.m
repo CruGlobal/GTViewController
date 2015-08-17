@@ -9,7 +9,7 @@
 #import "GTExampleTableViewController.h"
 
 #import "GTViewController.h"
-#import "GTFileLoader.h"
+#import "GTFileLoaderExample.h"
 #import "GTShareViewController.h"
 #import "GTPageMenuViewController.h"
 #import "GTAboutViewController.h"
@@ -73,7 +73,7 @@ NSString *const GTExampleTableViewControllerResourcesKeyConfigFile	= @"org.cru.g
 	if (!_godtoolsViewController) {
 		
 		NSString *configFile	= self.resources[0][GTExampleTableViewControllerResourcesKeyConfigFile];
-		GTFileLoader *fileLoader = [GTFileLoader fileLoader];
+		GTFileLoader *fileLoader = [GTFileLoaderExample fileLoader];
 		fileLoader.language		= @"en";
 		GTShareViewController *shareViewController = [GTShareViewController shareController];
 		GTPageMenuViewController *pageMenuViewController = [[GTPageMenuViewController alloc] initWithFileLoader:fileLoader];
