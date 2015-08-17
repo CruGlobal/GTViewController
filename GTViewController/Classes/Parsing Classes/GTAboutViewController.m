@@ -142,9 +142,9 @@
 	
 	UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:url.absoluteString
 															 delegate:self
-													cancelButtonTitle:@"Cancel"
+													cancelButtonTitle:NSLocalizedString(@"GTViewController_urlButton_cancel", nil)
 											   destructiveButtonTitle:nil
-													otherButtonTitles:@"Open", @"Email", @"Copy", nil];
+													otherButtonTitles:NSLocalizedString(@"GTViewController_urlButton_open", nil), NSLocalizedString(@"GTViewController_urlButton_email", nil), NSLocalizedString(@"GTViewController_urlButton_copy", nil), nil];
 	actionSheet.actionSheetStyle = UIActionSheetStyleDefault;
 	
 	[actionSheet showInView:self.view];
@@ -170,11 +170,11 @@
 	self.allURLsButtonArray	= urlArray;
 	
 	// open a dialog with two custom buttons
-	UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:@"All Websites"
+	UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"GTViewController_allUrlsButton_title", nil)
 															 delegate:self
-													cancelButtonTitle:@"Cancel"
+													cancelButtonTitle:NSLocalizedString(@"GTViewController_allUrlsButton_cancel", nil)
 											   destructiveButtonTitle:nil
-													otherButtonTitles:@"Email", @"Copy", nil];
+													otherButtonTitles:NSLocalizedString(@"GTViewController_allUrlsButton_email", nil), NSLocalizedString(@"GTViewController_allUrlsButton_copy", nil), nil];
 	actionSheet.actionSheetStyle = UIActionSheetStyleDefault;
 	
 	[actionSheet showInView:self.view];
@@ -183,7 +183,7 @@
 
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
 	
-	if ([[actionSheet title] isEqual:@"All Websites"]) {
+	if ([[actionSheet title] isEqual:NSLocalizedString(@"GTViewController_allUrlsButton_title", nil)]) {
 		switch (buttonIndex) {
 			case 0://email
 				[self emailAllLinks];
@@ -213,7 +213,7 @@
 }
 
 -(void)emailLink:(NSString *)website {
-	NSString *emailString = [[NSString alloc] initWithFormat:@"mailto:?subject=A website to assist you&body=http://%@",website];
+	NSString *emailString = [[NSString alloc] initWithFormat:@"mailto:?subject=%@&body=http://%@", NSLocalizedString(@"GTViewController_shareEmail_subject", nil), website];
 	NSString *escaped = [emailString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
 	[[UIApplication sharedApplication] openURL:[NSURL URLWithString:escaped]];
 }
@@ -240,7 +240,7 @@
 		[websiteString appendFormat:@"%@ - http://%@,\n", [dictObj valueForKey:@"title"],[dictObj valueForKey:@"url"]];
 	}
 	
-	NSString *emailString = [[NSString alloc] initWithFormat:@"mailto:?subject=Websites to assist you&body=%@",[websiteString substringFromIndex:0]];
+	NSString *emailString = [[NSString alloc] initWithFormat:@"mailto:?subject=%@&body=%@", NSLocalizedString(@"GTViewController_shareAllEmail_subject", nil), [websiteString substringFromIndex:0]];
 	NSString *escaped = [emailString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
 	[[UIApplication sharedApplication] openURL:[NSURL URLWithString:escaped]];
 }

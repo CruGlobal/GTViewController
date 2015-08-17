@@ -677,8 +677,8 @@ NSString * const  GTPageInterpreterAmharicFont_bolditalicslabel	= @"NotoSansEthi
 	} else {
 		//throw exception if pre requiste functions have not been called
 		if (!self.pageElement) {
-			NSException* parseException = [NSException exceptionWithName:@"parseException"
-																  reason:@"The initialiser may not have been called yet, please check this!"
+			NSException* parseException = [NSException exceptionWithName:NSLocalizedString(@"GTPageInterpreter_parseException_name", nil)
+																  reason:NSLocalizedString(@"GTPageInterpreter_parseException_message", nil)
 																userInfo:nil];
 			@throw parseException;
 		}
@@ -986,16 +986,16 @@ NSString * const  GTPageInterpreterAmharicFont_bolditalicslabel	= @"NotoSansEthi
 	} else {
 		//throw exception if pre requiste functions have not been called
 		if (!self.pageElement) {
-			NSException* parseException = [NSException exceptionWithName:@"parseException"
-																  reason:@"The initialiser may not have been called yet, please check this!"
+			NSException* parseException = [NSException exceptionWithName:NSLocalizedString(@"GTPageInterpreter_parseException_name", nil)
+																  reason:NSLocalizedString(@"GTPageInterpreter_parseException_message", nil)
 																userInfo:nil];
 			@throw parseException;
 		}
 		
 		//throw exception if pre requiste functions have not been called
 		if (!self.pageElementsHaveBeenParsed) {
-			NSException* parseException = [NSException exceptionWithName:@"parseException"
-																  reason:@"The parseXMLPage function may not have been called yet, please check this!"
+			NSException* parseException = [NSException exceptionWithName:NSLocalizedString(@"GTPageInterpreter_parseException_name", nil)
+																  reason:NSLocalizedString(@"GTPageInterpreter_parseXMLPageException_message", nil)
 																userInfo:nil];
 			@throw parseException;
 		}
@@ -1029,16 +1029,16 @@ NSString * const  GTPageInterpreterAmharicFont_bolditalicslabel	= @"NotoSansEthi
 	} else {
 		//throw exception if pre requiste functions have not been called
 		if (!self.pageElement) {
-			NSException* parseException = [NSException exceptionWithName:@"parseException"
-																  reason:@"The initialiser may not have been called yet, please check this!"
+			NSException* parseException = [NSException exceptionWithName:NSLocalizedString(@"GTPageInterpreter_parseException_name", nil)
+																  reason:NSLocalizedString(@"GTPageInterpreter_parseException_message", nil)
 																userInfo:nil];
 			@throw parseException;
 		}
 		
 		//throw exception if pre requiste functions have not been called
 		if (!self.buttonElementsHaveBeenParsed) {
-			NSException* parseException = [NSException exceptionWithName:@"parseException"
-																  reason:@"The parseXMLButtons function may not have been called yet, please check this!"
+			NSException* parseException = [NSException exceptionWithName:NSLocalizedString(@"GTPageInterpreter_parseException_name", nil)
+																  reason:NSLocalizedString(@"GTPageInterpreter_parseXMLButtonsException_message", nil)
 																userInfo:nil];
 			@throw parseException;
 		}
