@@ -10,6 +10,6 @@
 
 @interface GTShareViewController : UIActivityViewController
 
-+ (instancetype)shareController;
+-(id) initWithPackageCode:(NSString *) packageCode languageCode:(NSString*)languageCode;
 
 @end

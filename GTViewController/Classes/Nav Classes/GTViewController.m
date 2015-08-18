@@ -21,6 +21,10 @@
 #import "SNInstructions.h"
 #import "GTPage.h"
 
+#import "GAITracker.h"
+#import "GAI.h"
+#import "GAIFields.h"
+#import "GAIDictionaryBuilder.h"
 
 NSString *const GTViewControllerNotificationUserInfoConfigFilenameKey			= @"org.cru.godtools.gtviewcontroller.notifications.all.key.configfilename";
 
@@ -80,8 +84,14 @@ NSString * const kAttr_filename		= @"filename";
 @property (nonatomic, strong)	NSString *parallelConfigFilename;
 @property (nonatomic, assign)	NSInteger activeView;
 
+@property (nonatomic, assign)	NSInteger lastTrackedView;
+@property (nonatomic, strong)   NSString *lastTrackedPackage;
+@property (nonatomic, strong)   NSString *lastTrackedLanguage;
+
 @property (nonatomic, strong)	NSString *aboutFilename;
 @property (nonatomic, strong)	NSString *packageName;
+@property (nonatomic, strong)	NSString *languageCode;
+@property (nonatomic, strong)	NSString *packageCode;
 
 @property (nonatomic, strong)	NSArray *packageArray;
 @property (nonatomic, strong)	NSMutableArray *pageArray;
@@ -399,7 +409,7 @@ NSString * const kAttr_filename		= @"filename";
         //let the page's view controllers know what has happened to their views
         [self.oldCenterPage viewHasTransitionedOut];
         [self.centerPage viewHasTransitionedIn];
-        
+        [self trackPageView :index];
     }
     //}
 }
@@ -549,17 +559,15 @@ NSString * const kAttr_filename		= @"filename";
     //this is a work around to avoid button press issues on a hidden toolbar
 }
 
-- (IBAction)navToolbarShareSelector:(id)sender {
+-(IBAction)navToolbarShareSelector:(id)sender {
     
     NSLog(@"navtoolbarShareselector");
     [self hideNavToolbar];
     
-    if (self.shareSheet) {
+    self.shareSheet = [[GTShareViewController alloc]initWithPackageCode: self.packageCode languageCode:self.languageCode];
     
-		[self presentViewController:self.shareSheet animated:YES completion:nil];
-		self.childViewControllerWasShown = YES;
-    
-    }
+    [self presentViewController:self.shareSheet animated:YES completion:nil];
+    self.childViewControllerWasShown = YES;
 }
 
 -(IBAction)navToolbarAboutSelector:(id)sender {
@@ -626,41 +634,6 @@ NSString * const kAttr_filename		= @"filename";
     
 }
 
-//-(void)navToolbarAddRemoveSwitchButtonForPackage:(NSString *)package andLanguage:(NSString *)language {
-//
-//	if ( [package isEqualToString:@"kgp"] && ( [language isEqualToString:@"en_heartbeat"] || [language isEqualToString:@"et_heartbeat"] ) ) {
-//
-//		//if button not already there then add button
-//		if (self.switchButton == nil) {
-//
-//			UIBarButtonItem *switchButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Package_PopUpToolBar_Icon_Switch"]
-//																			 style:UIBarButtonItemStyleBordered
-//																			target:self
-//																			action:@selector(navToolbarHeartbeatSwitch)];
-//
-//			self.switchButton = switchButton;
-//
-//			[self.navToolbar setItems:[NSArray arrayWithObjects:[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil], self.shareButton, self.menuButton, self.switchButton, self.aboutButton, [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil], nil] animated:YES];
-//
-//		}
-//
-//
-//	} else {
-//
-//		//if button already there then remove button
-//		if (self.switchButton != nil) {
-//
-//			[self.navToolbar setItems:[NSArray arrayWithObjects:[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil], self.shareButton, self.menuButton, self.aboutButton, [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil], nil] animated:YES];
-//
-//			self.switchButton	= nil;
-//
-//		}
-//
-//
-//	}
-//
-//}
-
 -(void)navToolbarAddRemoveRefreshButton{
     
     //if button not already there then add button
@@ -709,7 +682,7 @@ NSString * const kAttr_filename		= @"filename";
 }
 
 -(void)refreshCurrentPage{
-    NSLog(@"active View: %ld", (long)self.activeView);
+    NSLog(@"active View: %d",self.activeView);
     // NSLog(@"package[0]: %@",[self.pageArray objectAtIndex:0]);
     [self refreshCurrentPage:[[self.pageArray objectAtIndex:kPageArray_File]objectAtIndex:self.activeView]];
 }
@@ -722,7 +695,7 @@ NSString * const kAttr_filename		= @"filename";
         UIBarButtonItem *switchButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Package_PopUpToolBar_Icon_Switch"]
                                                                          style:UIBarButtonItemStyleBordered
                                                                         target:self
-                                                                        action:@selector(navToolbarLanguageSwitch)];
+                                                                        action:@selector(nabvToolbarLanguageSwitch)];
         
         self.switchButton = switchButton;
         
@@ -741,7 +714,7 @@ NSString * const kAttr_filename		= @"filename";
     
 }
 
--(void)navToolbarLanguageSwitch{
+-(void)nabvToolbarLanguageSwitch{
     NSString *current = self.configFilename;
     self.configFilename = self.parallelConfigFilename;
     self.parallelConfigFilename = current;
@@ -756,26 +729,10 @@ NSString * const kAttr_filename		= @"filename";
     //grab active index
     NSInteger currentIndex = self.activeView;
     //load the new page array
-    //[self loadResourceWithConfigFile:self.switchToConfigFile];
     
     //restore active index
     self.activeView = (NSInteger)fmin((double)[[[self pageArray] objectAtIndex:kPageArray_File] count] - 1, (double)currentIndex);
     [self skipTo:self.activeView];
-    
-    //	if ([[self language] isEqualToString:@"en_heartbeat"]) {
-    //
-    //		[self changeLanguageTo:@"et_heartbeat"];
-    //
-    //	} else if ([[self language] isEqualToString:@"et_heartbeat"]) {
-    //
-    //		[self changeLanguageTo:@"en_heartbeat"];
-    //
-    //	} else {
-    //
-    //		[self changeLanguageTo:@"en_heartbeat"];
-    //
-    //	}
-    
 }
 
 
@@ -805,6 +762,11 @@ NSString * const kAttr_filename		= @"filename";
     } else {
         [self showNavToolbar];
     }
+}
+
+-(void)setCodes :packageCode :languageCode {
+    self.packageCode = packageCode;
+    self.languageCode = languageCode;
 }
 
 #pragma mark - easter egg
@@ -969,21 +931,6 @@ NSString * const kAttr_filename		= @"filename";
 #pragma mark - GTPageDelegate
 
 - (void)page:(GTPage *)page didReceiveTapOnURL:(NSURL *)url {
-    
-    //	UIActivityViewController *controller = [[UIActivityViewController alloc] initWithActivityItems:@[[NSURL URLWithString:website]]
-    //																			 applicationActivities:nil];
-    //
-    //	controller.excludedActivityTypes	= @[UIActivityTypePostToWeibo,
-    //											UIActivityTypePrint,
-    //											UIActivityTypeAssignToContact,
-    //											UIActivityTypeSaveToCameraRoll,
-    //											UIActivityTypePostToFlickr,
-    //											UIActivityTypePostToVimeo,
-    //											UIActivityTypePostToTencentWeibo,
-    //											UIActivityTypeAirDrop];
-    //
-    //	[self.navigationController presentViewController:controller animated:YES completion:nil];
-    
     UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:url.absoluteString
                                                              delegate:self
                                                     cancelButtonTitle:@"Cancel"
@@ -1776,8 +1723,10 @@ NSString * const kAttr_filename		= @"filename";
         }
         
         [self animationCleanUp];
+        [self trackPageView :self.activeView];
     } else {
         self.animateNextViewIn = nil;
+        [self trackPageView :(self.activeView - 1)];
     }
 }
 
@@ -1850,8 +1799,10 @@ NSString * const kAttr_filename		= @"filename";
         }
         
         [self animationCleanUp];
+        [self trackPageView :self.activeView];
     } else {
         self.animateNextViewIn = nil;
+        [self trackPageView :(self.activeView + 1)];
     }
 }
 
@@ -1889,14 +1840,12 @@ NSString * const kAttr_filename		= @"filename";
     
     [self.rightPage viewHasTransitionedIn];
     [self.centerPage viewHasTransitionedOut];
-    
 }
 
 - (void)centerViewHasTransitionedOutToRight {
     
     [self.leftPage viewHasTransitionedIn];
     [self.centerPage viewHasTransitionedOut];
-    
 }
 
 - (void)cacheImagesForPage:(GTPage *)pageToCache {
@@ -1918,9 +1867,7 @@ NSString * const kAttr_filename		= @"filename";
 - (void)viewWillAppear:(BOOL)animated {
     
     [super viewWillAppear:animated];
-	
-	[UIApplication sharedApplication].idleTimerDisabled = YES;
-	
+    
     //[self setUpViewController];
     
     //calculate the positions the views will have during animation
@@ -1930,6 +1877,7 @@ NSString * const kAttr_filename		= @"filename";
     
     self.centerPage.center	= self.inViewInCenterCenter;
     [self.view addSubview:self.centerPage];
+
     [self.centerPage viewHasTransitionedIn];
     
     //bring toolbars to front again now that more views have been added
@@ -1942,18 +1890,12 @@ NSString * const kAttr_filename		= @"filename";
     
 }
 
-- (void)viewDidDisappear:(BOOL)animated {
-	[super viewDidDisappear:animated];
-	
-	[UIApplication sharedApplication].idleTimerDisabled = NO;
-}
-
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad {
     
     [super viewDidLoad];
     
-    
+    self.lastTrackedView = -1;
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -1981,8 +1923,7 @@ NSString * const kAttr_filename		= @"filename";
         
     }
     
-    [self runInstructionsIfNecessary];
-    
+    [self runInstructionsIfNecessary];    
 }
 
 - (void)didReceiveMemoryWarning {
@@ -2016,4 +1957,28 @@ NSString * const kAttr_filename		= @"filename";
     
 }
 
+#pragma mark - page view tracking
+
+- (void) trackPageView:(NSInteger) pageNumber{
+    if(self.lastTrackedView != pageNumber
+       || ![self.packageCode isEqualToString:self.lastTrackedPackage]
+       || ![self.languageCode isEqualToString:self.lastTrackedLanguage]) {
+        id tracker = [[GAI sharedInstance] defaultTracker];
+
+        [tracker set:[GAIFields customDimensionForIndex:1]
+           value:self.packageCode];
+
+        [tracker set:[GAIFields customDimensionForIndex:2]
+           value:self.languageCode];
+
+        [tracker set:kGAIScreenName
+           value:[self.packageCode stringByAppendingString:[@"-" stringByAppendingString:[@(pageNumber) stringValue]]]];
+
+        [tracker send:[[GAIDictionaryBuilder createScreenView] build]];
+
+        self.lastTrackedView = pageNumber;
+        self.lastTrackedPackage = self.packageCode;
+        self.lastTrackedLanguage = self.languageCode;
+    }
+}
 @end

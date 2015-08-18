@@ -15,6 +15,12 @@
 #import "UIRoundedView.h"
 #import	"UIDisclosureIndicator.h"
 
+#define UITextAlignmentLeft NSTextAlignmentLeft
+#define UITextAlignmentRight NSTextAlignmentRight
+#define UITextAlignmentCenter NSTextAlignmentCenter
+#define UILineBreakModeWordWrap NSLineBreakByWordWrapping
+#define UILineBreakModeTailTruncation NSLineBreakByTruncatingTail
+
 //////////Compiler Constants///////////
 #define DEFAULTOFFSET 10.0
 #define DEFAULT_PANEL_OFFSET_X 0.0
@@ -152,7 +158,7 @@ NSString * const  GTPageInterpreterAmharicFont_bolditalicslabel	= @"NotoSansEthi
 - (id)createButtonLinesFromButtonElement:		(TBXMLElement *)element		buttonTag:(NSInteger)buttonTag	yPos:(CGFloat)yPos		container:(UIView *)container;
 - (id)createDisclosureIndicatorFromButtonTag:	(NSInteger)buttonTag		container:(UIView *)container;
 - (id)createImageFromElement:					(TBXMLElement *)element		xPos:(CGFloat)xpostion			yPos:(CGFloat)ypostion	container:(UIView *)container;
-- (id)createLabelFromElement:					(TBXMLElement *)element		parentTextAlignment:(NSTextAlignment)panelAlign			xPos:(CGFloat)xpostion			yPos:(CGFloat)ypostion	container:(UIView *)container;
+- (id)createLabelFromElement:					(TBXMLElement *)element		parentTextAlignment:(UITextAlignment)panelAlign			xPos:(CGFloat)xpostion			yPos:(CGFloat)ypostion	container:(UIView *)container;
 - (id)createPanelFromElement:					(TBXMLElement *)element		buttonTag:(NSInteger)buttonTag;
 - (id)createQuestionFromElement:				(TBXMLElement *)element		container:(UIView *)container;
 - (id)createQuestionLabelFromElement:			(TBXMLElement *)element		container:(UIView *)container;
@@ -161,7 +167,7 @@ NSString * const  GTPageInterpreterAmharicFont_bolditalicslabel	= @"NotoSansEthi
 - (id)createTitleNumberFromElement:				(TBXMLElement *)element		titleMode:(NSString *)titleMode;
 - (id)createTitleHeadingFromElement:			(TBXMLElement *)element		titleMode:(NSString *)titleMode;
 - (id)createTitleSubheadingFromElement:			(TBXMLElement *)element		titleMode:(NSString *)titleMode;
-- (UILabel *)createLabelWithFrame:				(CGRect)frame				autoResize:(BOOL)resize			text:(NSString *)text	color:(UIColor *)color	bgColor:(UIColor *)bgColor	alpha:(CGFloat)alpha	alignment:(NSTextAlignment)textAlignment	font:(NSString *)font	size:(NSUInteger)size;
+- (UILabel *)createLabelWithFrame:				(CGRect)frame				autoResize:(BOOL)resize			text:(NSString *)text	color:(UIColor *)color	bgColor:(UIColor *)bgColor	alpha:(CGFloat)alpha	alignment:(UITextAlignment)textAlignment	font:(NSString *)font	size:(NSUInteger)size;
 
 //attribute parsing functions
 - (UIColor *)colorForHex:						(NSString *)hexColor;
@@ -749,7 +755,7 @@ NSString * const  GTPageInterpreterAmharicFont_bolditalicslabel	= @"NotoSansEthi
                 //note: because of the unpredictable height of text labels, we need to calculate their combined height
 				
                 //create a temporary text label and add it's height to the tally
-                labelLabel = [self createLabelFromElement:object_el parentTextAlignment:NSTextAlignmentLeft xPos:0 yPos:0 container:nil];
+                labelLabel = [self createLabelFromElement:object_el parentTextAlignment:UITextAlignmentLeft xPos:0 yPos:0 container:nil];
                 combinedHeightOfTextLabels += fmaxf(labelLabel.frame.size.height,40);
                 
             }
@@ -866,7 +872,7 @@ NSString * const  GTPageInterpreterAmharicFont_bolditalicslabel	= @"NotoSansEthi
             ////TEXT LABEL - note: some defaults are overridden here since existing text label defaults are for within panels, not page objects.
             if ([[TBXML elementName:object_el] isEqual:kName_Label]) {
                 
-                labelLabel = [self createLabelFromElement:object_el parentTextAlignment:NSTextAlignmentLeft xPos:object_xpos yPos:object_ypos container:nil];
+                labelLabel = [self createLabelFromElement:object_el parentTextAlignment:UITextAlignmentLeft xPos:object_xpos yPos:object_ypos container:nil];
                 
                 [labelLabel setTag:(800+labelCount)];
                 if (labelLabel.alpha == 1) {
@@ -1450,7 +1456,7 @@ NSString * const  GTPageInterpreterAmharicFont_bolditalicslabel	= @"NotoSansEthi
  *	Parameters:		Element:	The TBXMLElement for the label
  *	Returns:		A UILabel object from the attributes specified in the passed TBXML element.
  */
-- (id)createLabelFromElement:(TBXMLElement *)element parentTextAlignment:(NSTextAlignment)panelAlign xPos:(CGFloat)xpostion yPos:(CGFloat)ypostion container:(UIView *)container {
+- (id)createLabelFromElement:(TBXMLElement *)element parentTextAlignment:(UITextAlignment)panelAlign xPos:(CGFloat)xpostion yPos:(CGFloat)ypostion container:(UIView *)container {
 	
 	//set container to the page if not set
 	if (container == nil) {
@@ -1485,7 +1491,7 @@ NSString * const  GTPageInterpreterAmharicFont_bolditalicslabel	= @"NotoSansEthi
 		
 		//init variables for object parameters
 		CGRect			frame			= CGRectZero;
-		NSTextAlignment textAlignment	= panelAlign;
+		UITextAlignment textAlignment	= panelAlign;
 		BOOL			resize			= YES;
 		UIColor			*bgColor		= nil;
 		NSUInteger		textSize		= DEFAULT_TEXTSIZE_LABEL;
@@ -1534,9 +1540,9 @@ NSString * const  GTPageInterpreterAmharicFont_bolditalicslabel	= @"NotoSansEthi
 		}
 		
 		if (textalign) {
-			if		([textalign isEqual:kAlignment_right])	{textAlignment		= NSTextAlignmentRight;}
-			else if ([textalign isEqual:kAlignment_center])	{textAlignment		= NSTextAlignmentCenter;}
-			else if ([textalign isEqual:kAlignment_left])	{textAlignment		= NSTextAlignmentLeft;}
+			if		([textalign isEqual:kAlignment_right])	{textAlignment		= UITextAlignmentRight;}
+			else if ([textalign isEqual:kAlignment_center])	{textAlignment		= UITextAlignmentCenter;}
+			else if ([textalign isEqual:kAlignment_left])	{textAlignment		= UITextAlignmentLeft;}
 		}
 		
 		
@@ -1560,15 +1566,15 @@ NSString * const  GTPageInterpreterAmharicFont_bolditalicslabel	= @"NotoSansEthi
 		
 		//Fetch and store the panel's text alignment
 		NSString		*panel_alignment	= [TBXML valueOfAttributeNamed:kAttr_textalign	forElement:element];
-		NSTextAlignment	panelAlign;
+		UITextAlignment	panelAlign;
 		if ([panel_alignment isEqual:kAlignment_left]) {
-			panelAlign = NSTextAlignmentLeft;
+			panelAlign = UITextAlignmentLeft;
 		} else if ([panel_alignment isEqual:kAlignment_center]) {
-			panelAlign = NSTextAlignmentCenter;
+			panelAlign = UITextAlignmentCenter;
 		} else if ([panel_alignment isEqual:kAlignment_right]) {
-			panelAlign = NSTextAlignmentRight;
+			panelAlign = UITextAlignmentRight;
 		} else {
-			panelAlign = NSTextAlignmentLeft;
+			panelAlign = UITextAlignmentLeft;
 		}
 		
 		//init objects that will be used to add interpreted elements to the page
@@ -1825,7 +1831,7 @@ NSString * const  GTPageInterpreterAmharicFont_bolditalicslabel	= @"NotoSansEthi
 		mode		=						(mode == nil ? @"" : mode);
 		
 		CGRect			frame			= CGRectZero;
-		NSTextAlignment textAlignment	= NSTextAlignmentRight;
+		UITextAlignment textAlignment	= UITextAlignmentRight;
 		BOOL			resize			= YES;
 		UIColor			*bgColor		= nil;
 		NSUInteger		textSize		= DEFAULT_TEXTSIZE_QUESTION_NORMAL;
@@ -1848,10 +1854,10 @@ NSString * const  GTPageInterpreterAmharicFont_bolditalicslabel	= @"NotoSansEthi
 		}
 		
 		if (textalign) {
-			if		([textalign isEqual:kAlignment_right])	{textAlignment		= NSTextAlignmentRight;}
-			else if ([textalign isEqual:kAlignment_center])	{textAlignment		= NSTextAlignmentCenter;}
-			else if ([textalign isEqual:kAlignment_left])	{textAlignment		= NSTextAlignmentLeft;}
-		}																										else	{textAlignment		= NSTextAlignmentRight;}
+			if		([textalign isEqual:kAlignment_right])	{textAlignment		= UITextAlignmentRight;}
+			else if ([textalign isEqual:kAlignment_center])	{textAlignment		= UITextAlignmentCenter;}
+			else if ([textalign isEqual:kAlignment_left])	{textAlignment		= UITextAlignmentLeft;}
+		}																										else	{textAlignment		= UITextAlignmentRight;}
 		
 		if		([mode isEqual:kTitleMode_straight]) {
 			bgColor = [UIColor whiteColor];
@@ -1859,7 +1865,7 @@ NSString * const  GTPageInterpreterAmharicFont_bolditalicslabel	= @"NotoSansEthi
 			textSize = round(DEFAULT_TEXTSIZE_QUESTION_STRAIGHT * [size floatValue] / 100);
 			font =  GTPageInterpreterAmharicFont_straightquestion;
 			frame = CGRectMake(0, frame.origin.y, 320, frame.size.height);
-			textAlignment = NSTextAlignmentCenter;
+			textAlignment = UITextAlignmentCenter;
 		}
 		
 		//if the question can be aligned then align it
@@ -1936,7 +1942,7 @@ NSString * const  GTPageInterpreterAmharicFont_bolditalicslabel	= @"NotoSansEthi
 				tempFont = [tempFont fontWithSize:i];
 				CGSize constraintSize = CGSizeMake(tempHeading.frame.size.width, MAXFLOAT);
 				//NSLog(@"Constraint Width: %f",constraintSize.width);
-				labelsize = [tempHeading.text sizeWithFont:tempFont constrainedToSize:constraintSize lineBreakMode:NSLineBreakByWordWrapping];
+				labelsize = [tempHeading.text sizeWithFont:tempFont constrainedToSize:constraintSize lineBreakMode:UILineBreakModeWordWrap];
 				
 				if (labelsize.height <= (numberoflines*tempFont.pointSize+10)){
 					//NSLog(@"Final Width: %f",labelsize.width);
@@ -2088,7 +2094,7 @@ NSString * const  GTPageInterpreterAmharicFont_bolditalicslabel	= @"NotoSansEthi
 			
 			//init variables for object parameters
 			CGRect			frame			= CGRectZero;
-			NSTextAlignment textAlignment	= NSTextAlignmentLeft;
+			UITextAlignment textAlignment	= UITextAlignmentLeft;
 			BOOL			resize			= YES;
 			UIColor			*bgColor		= nil;
 			NSUInteger		textSize		= DEFAULT_TEXTSIZE_TITLE_SUBHEADING;
@@ -2117,9 +2123,9 @@ NSString * const  GTPageInterpreterAmharicFont_bolditalicslabel	= @"NotoSansEthi
 			}
 			
 			if (align) {
-				if		([align isEqual:kAlignment_right])	{textAlignment		= NSTextAlignmentRight;}
-				else if ([align isEqual:kAlignment_center])	{textAlignment		= NSTextAlignmentCenter;}
-				else if ([align isEqual:kAlignment_left])	{textAlignment		= NSTextAlignmentLeft;}
+				if		([align isEqual:kAlignment_right])	{textAlignment		= UITextAlignmentRight;}
+				else if ([align isEqual:kAlignment_center])	{textAlignment		= UITextAlignmentCenter;}
+				else if ([align isEqual:kAlignment_left])	{textAlignment		= UITextAlignmentLeft;}
 			}
 			
 			UILabel			*tempSubTitleText		= nil;
@@ -2146,7 +2152,7 @@ NSString * const  GTPageInterpreterAmharicFont_bolditalicslabel	= @"NotoSansEthi
 														 tapDelegate:self.panelDelegate];
 			
 			CGRect peekPanelArrowFrame = CGRectMake((subTitleFrame.size.width / 2) - 5 ,subTitleFrame.size.height - 8 , 10, 10);
-			UILabel	*peekPanelArrow = [self createLabelWithFrame:peekPanelArrowFrame autoResize:NO text:@"▼" color:[UIColor whiteColor] bgColor: [UIColor clearColor] alpha:1.0 alignment:NSTextAlignmentCenter font: GTPageInterpreterAmharicFont_label size:8];
+			UILabel	*peekPanelArrow = [self createLabelWithFrame:peekPanelArrowFrame autoResize:NO text:@"▼" color:[UIColor whiteColor] bgColor: [UIColor clearColor] alpha:1.0 alignment:UITextAlignmentCenter font: GTPageInterpreterAmharicFont_label size:8];
 			peekPanelArrow.shadowColor = [UIColor darkGrayColor];
 			
 			
@@ -2188,7 +2194,7 @@ NSString * const  GTPageInterpreterAmharicFont_bolditalicslabel	= @"NotoSansEthi
 		NSString	*h		=						[TBXML valueOfAttributeNamed:kAttr_height	forElement:element];
 		
 		CGRect			frame			= CGRectZero;
-		NSTextAlignment textAlignment	= NSTextAlignmentRight;
+		UITextAlignment textAlignment	= UITextAlignmentRight;
 		BOOL			resize			= YES;
 		UIColor			*bgColor		= nil;
 		NSUInteger		textSize		= DEFAULT_TEXTSIZE_TITLE_NUMBER;
@@ -2210,10 +2216,10 @@ NSString * const  GTPageInterpreterAmharicFont_bolditalicslabel	= @"NotoSansEthi
 		}
 		
 		if (align) {
-			if		([align isEqual:kAlignment_right])	{textAlignment		= NSTextAlignmentRight;}
-			else if ([align isEqual:kAlignment_center])	{textAlignment		= NSTextAlignmentCenter;}
-			else if ([align isEqual:kAlignment_left])	{textAlignment		= NSTextAlignmentLeft;}
-		}																										else	{textAlignment		= NSTextAlignmentRight;}
+			if		([align isEqual:kAlignment_right])	{textAlignment		= UITextAlignmentRight;}
+			else if ([align isEqual:kAlignment_center])	{textAlignment		= UITextAlignmentCenter;}
+			else if ([align isEqual:kAlignment_left])	{textAlignment		= UITextAlignmentLeft;}
+		}																										else	{textAlignment		= UITextAlignmentRight;}
 		
 		if (titleMode) {
 			if		([titleMode isEqual:kTitleMode_clear])	{bgColor			= [UIColor clearColor];}
@@ -2244,7 +2250,7 @@ NSString * const  GTPageInterpreterAmharicFont_bolditalicslabel	= @"NotoSansEthi
 		NSString	*h		=						[TBXML valueOfAttributeNamed:kAttr_height	forElement:element];
 		
 		CGRect			frame			= CGRectZero;
-		NSTextAlignment textAlignment	= ([titleMode isEqual:kTitleMode_peek] ? NSTextAlignmentRight : NSTextAlignmentLeft);
+		UITextAlignment textAlignment	= ([titleMode isEqual:kTitleMode_peek] ? UITextAlignmentRight : UITextAlignmentLeft);
 		BOOL			resize			= YES;
 		UIColor			*bgColor		= nil;
 		NSUInteger		textSize		= ([titleMode isEqual:kTitleMode_peek] ? DEFAULT_TEXTSIZE_TITLE_HEADING_PEEKMODE : DEFAULT_TEXTSIZE_TITLE_HEADING_NORMALMODE );
@@ -2276,15 +2282,15 @@ NSString * const  GTPageInterpreterAmharicFont_bolditalicslabel	= @"NotoSansEthi
 		}
 		
 		if (align) {
-			if		([align isEqual:kAlignment_right])	{textAlignment		= NSTextAlignmentRight;}
-			else if ([align isEqual:kAlignment_center])	{textAlignment		= NSTextAlignmentCenter;}
-			else if ([align isEqual:kAlignment_left])	{textAlignment		= NSTextAlignmentLeft;}
+			if		([align isEqual:kAlignment_right])	{textAlignment		= UITextAlignmentRight;}
+			else if ([align isEqual:kAlignment_center])	{textAlignment		= UITextAlignmentCenter;}
+			else if ([align isEqual:kAlignment_left])	{textAlignment		= UITextAlignmentLeft;}
 		}
 		
 		if (titleMode) {
 			if		([titleMode isEqual:kTitleMode_clear])		{bgColor			= [UIColor clearColor];}
 			else if ([titleMode isEqual:kTitleMode_straight])	{
-				textAlignment=NSTextAlignmentCenter;
+				textAlignment=UITextAlignmentCenter;
 				UILabel *temp = [self createLabelWithFrame:frame autoResize:resize text:text color:color bgColor:bgColor alpha:labelAlpha alignment:textAlignment font:font size:textSize];
 				frame = temp.frame;
 				frame.origin.x		= 0;
@@ -2321,7 +2327,7 @@ NSString * const  GTPageInterpreterAmharicFont_bolditalicslabel	= @"NotoSansEthi
 	
 	//init title parameters with defaults
 	CGRect			frame			= CGRectZero;
-	NSTextAlignment textAlignment	= ([titleMode isEqual:kTitleMode_peek] ? NSTextAlignmentLeft : NSTextAlignmentCenter);
+	UITextAlignment textAlignment	= ([titleMode isEqual:kTitleMode_peek] ? UITextAlignmentLeft : UITextAlignmentCenter);
 	BOOL			resize			= YES;
 	UIColor			*bgColor		= nil;
 	NSUInteger		textSize		= DEFAULT_TEXTSIZE_TITLE_SUBHEADING;
@@ -2359,9 +2365,9 @@ NSString * const  GTPageInterpreterAmharicFont_bolditalicslabel	= @"NotoSansEthi
 	}
 	
 	if (align) {
-		if		([align isEqual:kAlignment_right])	{textAlignment		= NSTextAlignmentRight;}
-		else if ([align isEqual:kAlignment_center])	{textAlignment		= NSTextAlignmentCenter;}
-		else if ([align isEqual:kAlignment_left])	{textAlignment		= NSTextAlignmentLeft;}
+		if		([align isEqual:kAlignment_right])	{textAlignment		= UITextAlignmentRight;}
+		else if ([align isEqual:kAlignment_center])	{textAlignment		= UITextAlignmentCenter;}
+		else if ([align isEqual:kAlignment_left])	{textAlignment		= UITextAlignmentLeft;}
 	}
 	
 	//**added to remove multiple return points**
@@ -2377,8 +2383,8 @@ NSString * const  GTPageInterpreterAmharicFont_bolditalicslabel	= @"NotoSansEthi
 		}
 		//straight
 		else if ([titleMode isEqual:kTitleMode_straight]) {
-			textAlignment=NSTextAlignmentCenter;
-			tempLabel.textAlignment = NSTextAlignmentCenter;
+			textAlignment=UITextAlignmentCenter;
+			tempLabel.textAlignment = UITextAlignmentCenter;
 			//**CONFIRM REDUNDANCY**	UILabel *temp = [self createLabelWithFrame:frame autoResize:resize text:text color:color bgColor:bgColor alpha:labelAlpha alignment:textAlignment font:font size:textSize];
 			frame = tempLabel.frame;
 			frame.origin.x		= 0;
@@ -2394,7 +2400,7 @@ NSString * const  GTPageInterpreterAmharicFont_bolditalicslabel	= @"NotoSansEthi
 }
 
 //Returns a label given label attributes
-- (UILabel *)createLabelWithFrame:(CGRect)frame autoResize:(BOOL)resize text:(NSString *)text color:(UIColor *)color bgColor:(UIColor *)bgColor alpha:(CGFloat)alpha alignment:(NSTextAlignment)textAlignment font:(NSString *)font size:(NSUInteger)size {
+- (UILabel *)createLabelWithFrame:(CGRect)frame autoResize:(BOOL)resize text:(NSString *)text color:(UIColor *)color bgColor:(UIColor *)bgColor alpha:(CGFloat)alpha alignment:(UITextAlignment)textAlignment font:(NSString *)font size:(NSUInteger)size {
 	UILabel *tempLabel = [[UILabel alloc] initWithFrame:frame];
 	
 	//Colors
@@ -2411,7 +2417,7 @@ NSString * const  GTPageInterpreterAmharicFont_bolditalicslabel	= @"NotoSansEthi
 	[tempLabel setText:text];
 	[tempLabel setFont:[UIFont fontWithName:font size:size]];
 	[tempLabel setTextAlignment:textAlignment];
-	[tempLabel setLineBreakMode:NSLineBreakByWordWrapping];
+	[tempLabel setLineBreakMode:UILineBreakModeWordWrap];
 	
 	//Size
 	[tempLabel setNumberOfLines:0];

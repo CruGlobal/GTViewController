@@ -99,7 +99,7 @@ extern NSString * const kButtonMode_allurl;
         NSTimeInterval currentTimeStamp = [touch timestamp];
 
 		//calculate changes in direction and time since last call to touchesMoved
-        double deltaX                   = fabs(currentTouchPosition.x - self.lastTouchPosition.x);
+        double deltaX                   = fabsf(currentTouchPosition.x - self.lastTouchPosition.x);
         double deltaT                   = currentTimeStamp - self.lastTimeStamp;
 
 		//add the current change in distance to the total distance
