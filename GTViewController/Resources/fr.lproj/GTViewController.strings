@@ -6,14 +6,14 @@
   Copyright (c) 2015 Michael Harrison. All rights reserved.
 */
 
-"GTViewController_urlButton_cancel"                  = "Cancel";
-"GTViewController_urlButton_copy"                    = "Copy";
-"GTViewController_urlButton_email"                   = "Email";
-"GTViewController_urlButton_open"                    = "Open";
-"GTViewController_allUrlsButton_title"               = "All Websites";
-"GTViewController_allUrlsButton_cancel"              = "Cancel";
-"GTViewController_allUrlsButton_copy"                = "Copy";
-"GTViewController_allUrlsButton_email"               = "Email";
+"GTViewController_urlButton_cancel"                  = "blue";
+"GTViewController_urlButton_copy"                    = "red";
+"GTViewController_urlButton_email"                   = "yellow";
+"GTViewController_urlButton_open"                    = "purple";
+"GTViewController_allUrlsButton_title"               = "grey";
+"GTViewController_allUrlsButton_cancel"              = "orange";
+"GTViewController_allUrlsButton_copy"                = "teal";
+"GTViewController_allUrlsButton_email"               = "silver";
 "GTViewController_shareEmail_subject"                = "A website to assist you";
 "GTViewController_shareAllEmail_subject"             = "Websites to assist you";
 "GTViewController_configParseException_title"        = "Could not read resource!";

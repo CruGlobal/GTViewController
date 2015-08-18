@@ -676,8 +676,8 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 	} else {
 		//throw exception if pre requiste functions have not been called
 		if (!self.pageElement) {
-			NSException* parseException = [NSException exceptionWithName:NSLocalizedString(@"GTPageInterpreter_parseException_name", nil)
-																  reason:NSLocalizedString(@"GTPageInterpreter_parseException_message", nil)
+			NSException* parseException = [NSException exceptionWithName:[self.fileLoader localizedString:@"GTPageInterpreter_parseException_name"]
+																  reason:[self.fileLoader localizedString:@"GTPageInterpreter_parseException_message"]
 																userInfo:nil];
 			@throw parseException;
 		}
@@ -985,16 +985,16 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 	} else {
 		//throw exception if pre requiste functions have not been called
 		if (!self.pageElement) {
-			NSException* parseException = [NSException exceptionWithName:NSLocalizedString(@"GTPageInterpreter_parseException_name", nil)
-																  reason:NSLocalizedString(@"GTPageInterpreter_parseException_message", nil)
+			NSException* parseException = [NSException exceptionWithName:[self.fileLoader localizedString:@"GTPageInterpreter_parseException_name"]
+																  reason:[self.fileLoader localizedString:@"GTPageInterpreter_parseException_message"]
 																userInfo:nil];
 			@throw parseException;
 		}
 		
 		//throw exception if pre requiste functions have not been called
 		if (!self.pageElementsHaveBeenParsed) {
-			NSException* parseException = [NSException exceptionWithName:NSLocalizedString(@"GTPageInterpreter_parseException_name", nil)
-																  reason:NSLocalizedString(@"GTPageInterpreter_parseXMLPageException_message", nil)
+			NSException* parseException = [NSException exceptionWithName:[self.fileLoader localizedString:@"GTPageInterpreter_parseException_name"]
+																  reason:[self.fileLoader localizedString:@"GTPageInterpreter_parseXMLPageException_message"]
 																userInfo:nil];
 			@throw parseException;
 		}
@@ -1028,16 +1028,16 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 	} else {
 		//throw exception if pre requiste functions have not been called
 		if (!self.pageElement) {
-			NSException* parseException = [NSException exceptionWithName:NSLocalizedString(@"GTPageInterpreter_parseException_name", nil)
-																  reason:NSLocalizedString(@"GTPageInterpreter_parseException_message", nil)
+			NSException* parseException = [NSException exceptionWithName:[self.fileLoader localizedString:@"GTPageInterpreter_parseException_name"]
+																  reason:[self.fileLoader localizedString:@"GTPageInterpreter_parseException_message"]
 																userInfo:nil];
 			@throw parseException;
 		}
 		
 		//throw exception if pre requiste functions have not been called
 		if (!self.buttonElementsHaveBeenParsed) {
-			NSException* parseException = [NSException exceptionWithName:NSLocalizedString(@"GTPageInterpreter_parseException_name", nil)
-																  reason:NSLocalizedString(@"GTPageInterpreter_parseXMLButtonsException_message", nil)
+			NSException* parseException = [NSException exceptionWithName:[self.fileLoader localizedString:@"GTPageInterpreter_parseException_name"]
+																  reason:[self.fileLoader localizedString:@"GTPageInterpreter_parseXMLButtonsException_message"]
 																userInfo:nil];
 			@throw parseException;
 		}

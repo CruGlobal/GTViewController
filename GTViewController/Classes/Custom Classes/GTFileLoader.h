@@ -11,7 +11,8 @@
 
 @interface GTFileLoader : NSObject
 
-@property (nonatomic, strong)	NSString *language;
+@property (nonatomic, strong, readonly)	NSBundle *bundle;
+@property (nonatomic, strong)			NSString *language;
 
 + (GTFileLoader *)sharedInstance;
 + (instancetype)fileLoader;
@@ -19,6 +20,7 @@
 - (NSString *)pathOfPackagesDirectory;
 - (NSString *)pathOfFileWithFilename:(NSString *)filename;
 
+- (NSString *)localizedString:(NSString *)key;
 - (UIImage *)imageWithFilename:(NSString *)filename;
 
 - (void)cacheImageWithFileName:(NSString *)filename;
