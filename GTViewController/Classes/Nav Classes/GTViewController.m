@@ -28,6 +28,7 @@ NSString *const GTViewControllerNotificationResourceDidOpen				= @"org.cru.godto
 NSString *const GTViewControllerNotificationPageView					= @"org.cru.godtools.gtviewcontroller.notifications.pageview";
 NSString *const GTViewControllerNotificationPageViewUserInfoKeyLanguage	= @"org.cru.godtools.gtviewcontroller.notifications.pageview.key.language";
 NSString *const GTViewControllerNotificationPageViewUserInfoKeyPackage	= @"org.cru.godtools.gtviewcontroller.notifications.pageview.key.package";
+NSString *const GTViewControllerNotificationPageViewUserInfoKeyPageNumber= @"org.cru.godtools.gtviewcontroller.notifications.pageview.key.pagenumber";;
 
 /**
  *  Touch Notification Key Names
@@ -1991,7 +1992,8 @@ NSString * const kAttr_filename		= @"filename";
 		NSDictionary *userInfo = nil;
 		if (self.packageCode && self.languageCode) {
 			userInfo = @{GTViewControllerNotificationPageViewUserInfoKeyPackage: self.packageCode,
-						 GTViewControllerNotificationPageViewUserInfoKeyLanguage: self.languageCode};
+						 GTViewControllerNotificationPageViewUserInfoKeyLanguage: self.languageCode,
+						 GTViewControllerNotificationPageViewUserInfoKeyPageNumber: @(pageNumber)};
 		}
 		
 		[[NSNotificationCenter defaultCenter] postNotificationName:GTViewControllerNotificationPageView

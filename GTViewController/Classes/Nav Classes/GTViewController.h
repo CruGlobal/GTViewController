@@ -25,6 +25,7 @@ extern NSString *const GTViewControllerNotificationResourceDidOpen;
 extern NSString *const GTViewControllerNotificationPageView;
 extern NSString *const GTViewControllerNotificationPageViewUserInfoKeyLanguage;
 extern NSString *const GTViewControllerNotificationPageViewUserInfoKeyPackage;
+extern NSString *const GTViewControllerNotificationPageViewUserInfoKeyPageNumber;
 
 
 
