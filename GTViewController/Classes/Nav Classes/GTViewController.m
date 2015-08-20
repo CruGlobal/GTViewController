@@ -433,9 +433,19 @@ NSString * const kAttr_filename		= @"filename";
     
     //init the xml
     NSData *data				= [NSData dataWithContentsOfFile:[self.fileLoader pathOfFileWithFilename:filename]];
+	if (!data) {
+		[NSException raise:[self.fileLoader localizedString:@"GTViewController_configParseException_title"]
+					format:@"%@: %@. %@",	[self.fileLoader localizedString:@"GTViewController_configParseException_description"],
+											filename,
+											[self.fileLoader localizedString:@"error_message_contact_support"]];
+	}
+	
     TBXML *tempXml				= [[TBXML alloc] initWithXMLData:data error:nil];
     if (!tempXml.rootXMLElement) {
-        [NSException raise:@"Could not read resource!" format:@"Could not parse config file with name: %@. Try again. If the problem continues please contact support@godtoolsapp.com.", filename];
+        [NSException raise:[self.fileLoader localizedString:@"GTViewController_configParseException_title"]
+					format:@"%@: %@. %@",	[self.fileLoader localizedString:@"GTViewController_configParseException_description"],
+											filename,
+											[self.fileLoader localizedString:@"error_message_contact_support"]];
     }
     TBXMLElement	*element	= tempXml.rootXMLElement;
     TBXMLElement	*page_el	= [TBXML childElementNamed:kName_Page parentElement:element];
@@ -794,7 +804,7 @@ NSString * const kAttr_filename		= @"filename";
     [UIView commitAnimations];
     
     //NSError *error = nil;
-    NSString *soundPath = [[NSBundle mainBundle] pathForResource:@"fiftytap" ofType:@"mp3"];
+    NSString *soundPath = [self.fileLoader.bundle pathForResource:@"fiftytap" ofType:@"mp3"];
     NSURL		*soundURL	= [[NSURL alloc] initFileURLWithPath:soundPath];
     self.AVPlayer = [[AVAudioPlayer alloc] initWithContentsOfURL:soundURL error:NULL];
     
@@ -932,9 +942,11 @@ NSString * const kAttr_filename		= @"filename";
 - (void)page:(GTPage *)page didReceiveTapOnURL:(NSURL *)url {
     UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:url.absoluteString
                                                              delegate:self
-                                                    cancelButtonTitle:@"Cancel"
+                                                    cancelButtonTitle:[self.fileLoader localizedString:@"GTViewController_urlButton_cancel"]
                                                destructiveButtonTitle:nil
-                                                    otherButtonTitles:@"Open", @"Email", @"Copy", nil];
+                                                    otherButtonTitles:[self.fileLoader localizedString:@"GTViewController_urlButton_open"],
+																	  [self.fileLoader localizedString:@"GTViewController_urlButton_email"],
+																	  [self.fileLoader localizedString:@"GTViewController_urlButton_copy"], nil];
     actionSheet.actionSheetStyle = UIActionSheetStyleDefault;
     
     [actionSheet showInView:self.view];
@@ -960,11 +972,12 @@ NSString * const kAttr_filename		= @"filename";
     self.allURLsButtonArray	= urlArray;
     
     // open a dialog with two custom buttons
-    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:@"All Websites"
+    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:[self.fileLoader localizedString:@"GTViewController_allUrlsButton_title"]
                                                              delegate:self
-                                                    cancelButtonTitle:@"Cancel"
+                                                    cancelButtonTitle:[self.fileLoader localizedString:@"GTViewController_allUrlsButton_cancel"]
                                                destructiveButtonTitle:nil
-                                                    otherButtonTitles:@"Email", @"Copy", nil];
+                                                    otherButtonTitles:[self.fileLoader localizedString:@"GTViewController_allUrlsButton_email"],
+																	  [self.fileLoader localizedString:@"GTViewController_allUrlsButton_copy"], nil];
     actionSheet.actionSheetStyle = UIActionSheetStyleDefault;
     
     [actionSheet showInView:self.view];
@@ -973,7 +986,7 @@ NSString * const kAttr_filename		= @"filename";
 
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
     
-    if ([[actionSheet title] isEqual:@"All Websites"]) {
+    if ([[actionSheet title] isEqual:[self.fileLoader localizedString:@"GTViewController_allUrlsButton_title"]]) {
         switch (buttonIndex) {
             case 0://email
                 [self emailAllLinks];
@@ -1003,7 +1016,7 @@ NSString * const kAttr_filename		= @"filename";
 }
 
 -(void)emailLink:(NSString *)website {
-    NSString *emailString = [[NSString alloc] initWithFormat:@"mailto:?subject=A website to assist you&body=http://%@",website];
+    NSString *emailString = [[NSString alloc] initWithFormat:@"mailto:?subject=%@&body=http://%@", [self.fileLoader localizedString:@"GTViewController_shareEmail_subject"], website];
     NSString *escaped = [emailString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:escaped]];
 }
@@ -1030,7 +1043,7 @@ NSString * const kAttr_filename		= @"filename";
         [websiteString appendFormat:@"%@ - http://%@,\n", [dictObj valueForKey:@"title"],[dictObj valueForKey:@"url"]];
     }
     
-    NSString *emailString = [[NSString alloc] initWithFormat:@"mailto:?subject=Websites to assist you&body=%@",[websiteString substringFromIndex:0]];
+    NSString *emailString = [[NSString alloc] initWithFormat:@"mailto:?subject=%@&body=%@", [self.fileLoader localizedString:@"GTViewController_shareAllEmail_subject"], [websiteString substringFromIndex:0]];
     NSString *escaped = [emailString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:escaped]];
 }

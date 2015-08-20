@@ -682,8 +682,8 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 	} else {
 		//throw exception if pre requiste functions have not been called
 		if (!self.pageElement) {
-			NSException* parseException = [NSException exceptionWithName:@"parseException"
-																  reason:@"The initialiser may not have been called yet, please check this!"
+			NSException* parseException = [NSException exceptionWithName:[self.fileLoader localizedString:@"GTPageInterpreter_parseException_name"]
+																  reason:[self.fileLoader localizedString:@"GTPageInterpreter_parseException_message"]
 																userInfo:nil];
 			@throw parseException;
 		}
@@ -991,16 +991,16 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 	} else {
 		//throw exception if pre requiste functions have not been called
 		if (!self.pageElement) {
-			NSException* parseException = [NSException exceptionWithName:@"parseException"
-																  reason:@"The initialiser may not have been called yet, please check this!"
+			NSException* parseException = [NSException exceptionWithName:[self.fileLoader localizedString:@"GTPageInterpreter_parseException_name"]
+																  reason:[self.fileLoader localizedString:@"GTPageInterpreter_parseException_message"]
 																userInfo:nil];
 			@throw parseException;
 		}
 		
 		//throw exception if pre requiste functions have not been called
 		if (!self.pageElementsHaveBeenParsed) {
-			NSException* parseException = [NSException exceptionWithName:@"parseException"
-																  reason:@"The parseXMLPage function may not have been called yet, please check this!"
+			NSException* parseException = [NSException exceptionWithName:[self.fileLoader localizedString:@"GTPageInterpreter_parseException_name"]
+																  reason:[self.fileLoader localizedString:@"GTPageInterpreter_parseXMLPageException_message"]
 																userInfo:nil];
 			@throw parseException;
 		}
@@ -1034,16 +1034,16 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 	} else {
 		//throw exception if pre requiste functions have not been called
 		if (!self.pageElement) {
-			NSException* parseException = [NSException exceptionWithName:@"parseException"
-																  reason:@"The initialiser may not have been called yet, please check this!"
+			NSException* parseException = [NSException exceptionWithName:[self.fileLoader localizedString:@"GTPageInterpreter_parseException_name"]
+																  reason:[self.fileLoader localizedString:@"GTPageInterpreter_parseException_message"]
 																userInfo:nil];
 			@throw parseException;
 		}
 		
 		//throw exception if pre requiste functions have not been called
 		if (!self.buttonElementsHaveBeenParsed) {
-			NSException* parseException = [NSException exceptionWithName:@"parseException"
-																  reason:@"The parseXMLButtons function may not have been called yet, please check this!"
+			NSException* parseException = [NSException exceptionWithName:[self.fileLoader localizedString:@"GTPageInterpreter_parseException_name"]
+																  reason:[self.fileLoader localizedString:@"GTPageInterpreter_parseXMLButtonsException_message"]
 																userInfo:nil];
 			@throw parseException;
 		}

@@ -8,6 +8,8 @@
 
 #import "GTFileLoader.h"
 
+NSString * const GTViewControllerBundleName = @"GTViewController.bundle";
+
 @interface GTFileLoader ()
 
 @property (nonatomic, strong)	NSMutableDictionary	*imageCache;
@@ -22,6 +24,8 @@
 @end
 
 @implementation GTFileLoader
+
+@synthesize bundle = _bundle;
 
 #pragma mark - initialization methods
 
@@ -57,10 +61,24 @@
     return self;
 }
 
+#pragma mark - getter and setter methods
+
+- (NSBundle *)bundle {
+	
+	if (!_bundle) {
+		
+		//NSString* path = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:GTViewControllerBundleName];
+		//_bundle = [NSBundle bundleWithPath:path];
+		_bundle = [NSBundle mainBundle];
+		
+	}
+	
+	return _bundle;
+}
+
 #pragma mark - path methods
 
-+ (NSString *)pathOfPackagesDirectory {
-    //return [[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/Packages"];
+- (NSString *)pathOfPackagesDirectory {
     return [[NSHomeDirectory() stringByAppendingPathComponent:  @"Documents"] stringByAppendingPathComponent:@"Packages"];
 }
 
@@ -83,18 +101,30 @@
 
 - (NSString *)findPathForFileWithFilename:(NSString *)filename {
     
-    NSString *path = [[GTFileLoader pathOfPackagesDirectory] stringByAppendingPathComponent:filename];
+    NSString *path = [self.pathOfPackagesDirectory stringByAppendingPathComponent:filename];
     
     if (![[NSFileManager defaultManager] fileExistsAtPath:path]) {
-        path = [[GTFileLoader pathOfPackagesDirectory]	stringByAppendingPathComponent:filename];
+        path = [self.pathOfPackagesDirectory	stringByAppendingPathComponent:filename];
     }
-    
+	
+	if (![[NSFileManager defaultManager] fileExistsAtPath:path]) {
+		path = [self.bundle pathForResource:[filename stringByDeletingPathExtension]
+									 ofType:[filename pathExtension]]; //will return nil if it doesn't exist
+	}
+	
     if (![[NSFileManager defaultManager] fileExistsAtPath:path]) {
         path = [[NSBundle mainBundle] pathForResource:[filename stringByDeletingPathExtension]
                                                ofType:[filename pathExtension]]; //will return nil if it doesn't exist
     }
     
     return path;
+}
+
+#pragma mark - string methods
+
+- (NSString *)localizedString:(NSString *)key {
+	
+	return NSLocalizedStringFromTableInBundle(key, @"GTViewController", self.bundle, nil);
 }
 
 #pragma mark - image methods
