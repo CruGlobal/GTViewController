@@ -166,7 +166,6 @@
 		686D732F1B82659800444718 /* GTFileLoaderExample.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GTFileLoaderExample.m; sourceTree = "<group>"; };
 		686D73401B83877000444718 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
 		686D73491B83A6D400444718 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/GTViewController.strings; sourceTree = "<group>"; };
-		686D734B1B83A70300444718 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/GTViewController.strings; sourceTree = "<group>"; };
 		686D734C1B83A84500444718 /* GTViewControllerTests-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GTViewControllerTests-Info.plist"; sourceTree = "<group>"; };
 		686D734F1B83ABB900444718 /* Buttonlines_large.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Buttonlines_large.png; sourceTree = "<group>"; };
 		686D73501B83ABB900444718 /* Buttonlines.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Buttonlines.png; sourceTree = "<group>"; };
@@ -588,8 +587,6 @@
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
-				de,
-				fr,
 			);
 			mainGroup = 68F1F7F9190B05ED00044CDF;
 			productRefGroup = 68F1F803190B05ED00044CDF /* Products */;
@@ -841,7 +838,6 @@
 			isa = PBXVariantGroup;
 			children = (
 				686D73491B83A6D400444718 /* en */,
-				686D734B1B83A70300444718 /* fr */,
 			);
 			name = GTViewController.strings;
 			sourceTree = "<group>";
