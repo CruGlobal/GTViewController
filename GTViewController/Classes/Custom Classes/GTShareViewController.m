@@ -23,7 +23,7 @@ NSString *const GTShareViewControllerCampaignLinkCampaignName          = @"app-s
 
 @implementation GTShareViewController
 
-- (instancetype)init{
+- (instancetype)init {
 	
 	NSString *campaignLink				= [self produceLinkForCampaign: GTShareViewControllerCampaignLinkCampaignName source:GTShareViewControllerCampaignLinkCampaignSource medium:GTShareViewControllerCampaignLinkCampaignMedium];
 	
@@ -66,11 +66,19 @@ NSString *const GTShareViewControllerCampaignLinkCampaignName          = @"app-s
 	return self;
 }
 
-- (id)initWithPackageCode:(NSString *)packageCode languageCode:(NSString *)languageCode{
-    self.packageCode = packageCode;
-    self.languageCode = languageCode;
+- (instancetype)initWithPackageCode:(NSString *)packageCode languageCode:(NSString *)languageCode {
+	
+	self = [self init];
+	if (self) {
+		[self setPackageCode:packageCode languageCode:languageCode];
+	}
     
-    return [self init];
+    return self;
+}
+
+- (void)setPackageCode:(NSString *)packageCode languageCode:(NSString *)languageCode {
+	self.packageCode = packageCode;
+	self.languageCode = languageCode;
 }
 
 - (NSString *)produceShareLink {

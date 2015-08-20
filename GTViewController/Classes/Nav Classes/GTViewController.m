@@ -21,14 +21,13 @@
 #import "SNInstructions.h"
 #import "GTPage.h"
 
-#import "GAITracker.h"
-#import "GAI.h"
-#import "GAIFields.h"
-#import "GAIDictionaryBuilder.h"
-
-NSString *const GTViewControllerNotificationUserInfoConfigFilenameKey			= @"org.cru.godtools.gtviewcontroller.notifications.all.key.configfilename";
+NSString *const GTViewControllerNotificationUserInfoConfigFilenameKey	= @"org.cru.godtools.gtviewcontroller.notifications.all.key.configfilename";
 
 NSString *const GTViewControllerNotificationResourceDidOpen				= @"org.cru.godtools.gtviewcontroller.notifications.resourcedidopen";
+
+NSString *const GTViewControllerNotificationPageView					= @"org.cru.godtools.gtviewcontroller.notifications.pageview";
+NSString *const GTViewControllerNotificationPageViewUserInfoKeyLanguage	= @"org.cru.godtools.gtviewcontroller.notifications.pageview.key.language";
+NSString *const GTViewControllerNotificationPageViewUserInfoKeyPackage	= @"org.cru.godtools.gtviewcontroller.notifications.pageview.key.package";
 
 /**
  *  Touch Notification Key Names
@@ -564,7 +563,7 @@ NSString * const kAttr_filename		= @"filename";
     NSLog(@"navtoolbarShareselector");
     [self hideNavToolbar];
     
-    self.shareSheet = [[GTShareViewController alloc]initWithPackageCode: self.packageCode languageCode:self.languageCode];
+    [self.shareSheet setPackageCode:self.packageCode languageCode:self.languageCode];
     
     [self presentViewController:self.shareSheet animated:YES completion:nil];
     self.childViewControllerWasShown = YES;
@@ -764,7 +763,7 @@ NSString * const kAttr_filename		= @"filename";
     }
 }
 
--(void)setCodes :packageCode :languageCode {
+- (void)setPackageCode:(NSString *)packageCode languageCode:(NSString *)languageCode {
     self.packageCode = packageCode;
     self.languageCode = languageCode;
 }
@@ -1959,23 +1958,16 @@ NSString * const kAttr_filename		= @"filename";
 
 #pragma mark - page view tracking
 
-- (void) trackPageView:(NSInteger) pageNumber{
+- (void)trackPageView:(NSInteger)pageNumber {
     if(self.lastTrackedView != pageNumber
        || ![self.packageCode isEqualToString:self.lastTrackedPackage]
        || ![self.languageCode isEqualToString:self.lastTrackedLanguage]) {
-        id tracker = [[GAI sharedInstance] defaultTracker];
-
-        [tracker set:[GAIFields customDimensionForIndex:1]
-           value:self.packageCode];
-
-        [tracker set:[GAIFields customDimensionForIndex:2]
-           value:self.languageCode];
-
-        [tracker set:kGAIScreenName
-           value:[self.packageCode stringByAppendingString:[@"-" stringByAppendingString:[@(pageNumber) stringValue]]]];
-
-        [tracker send:[[GAIDictionaryBuilder createScreenView] build]];
-
+		
+		[[NSNotificationCenter defaultCenter] postNotificationName:GTViewControllerNotificationPageView
+															object:self
+														  userInfo:@{GTViewControllerNotificationPageViewUserInfoKeyPackage: self.packageCode,
+																	 GTViewControllerNotificationPageViewUserInfoKeyLanguage: self.languageCode}];
+		
         self.lastTrackedView = pageNumber;
         self.lastTrackedPackage = self.packageCode;
         self.lastTrackedLanguage = self.languageCode;

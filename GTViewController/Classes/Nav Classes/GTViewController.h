@@ -19,6 +19,12 @@ extern NSString *const GTViewControllerNotificationUserInfoConfigFilenameKey;
  */
 extern NSString *const GTViewControllerNotificationResourceDidOpen;
 
+/**
+ *  Notification name for viewing a page.
+ */
+extern NSString *const GTViewControllerNotificationPageView;
+extern NSString *const GTViewControllerNotificationPageViewUserInfoKeyLanguage;
+extern NSString *const GTViewControllerNotificationPageViewUserInfoKeyPackage;
 
 
 
@@ -72,7 +78,7 @@ extern NSString *const GTViewControllerNotificationResourceDidOpen;
 
 - (void)refreshView;
 
-- (void)setCodes:(NSString *)packageCode :(NSString *)languageCode;
+- (void)setPackageCode:(NSString *)packageCode languageCode:(NSString *)languageCode;
 
 @end
 
