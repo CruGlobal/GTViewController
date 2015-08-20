@@ -75,12 +75,14 @@ NSString *const GTExampleTableViewControllerResourcesKeyConfigFile	= @"org.cru.g
 		NSString *configFile	= self.resources[0][GTExampleTableViewControllerResourcesKeyConfigFile];
 		GTFileLoader *fileLoader = [GTFileLoaderExample fileLoader];
 		fileLoader.language		= @"en";
-		GTShareViewController *shareViewController = [[GTShareViewController alloc] initWithPackageCode:@"fourlaws" languageCode:fileLoader.language];
+		GTShareViewController *shareViewController = [[GTShareViewController alloc] initWithPackageCode:@"fourlaws" languageCode:@"en"];
 		GTPageMenuViewController *pageMenuViewController = [[GTPageMenuViewController alloc] initWithFileLoader:fileLoader];
 		GTAboutViewController *aboutViewController = [[GTAboutViewController alloc] initWithDelegate:self fileLoader:fileLoader];
 		
 		[self willChangeValueForKey:@"godtoolsViewController"];
 		_godtoolsViewController	= [[GTViewController alloc] initWithConfigFile:configFile
+																   packageCode:@"fourlaws"
+																  langaugeCode:@"en"
 																	fileLoader:fileLoader
 														   shareViewController:shareViewController
 														pageMenuViewController:pageMenuViewController

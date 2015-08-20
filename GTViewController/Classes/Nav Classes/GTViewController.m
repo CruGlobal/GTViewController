@@ -219,7 +219,14 @@ NSString * const kAttr_filename		= @"filename";
 
 #pragma mark - public methods
 
-- (instancetype)initWithConfigFile:(NSString *)filename fileLoader:(GTFileLoader *)fileLoader shareViewController:(GTShareViewController *)shareViewController pageMenuViewController:(GTPageMenuViewController *)pageMenuViewController aboutViewController:(GTAboutViewController *)aboutViewController delegate:(id<GTViewControllerMenuDelegate>)delegate {
+- (instancetype)initWithConfigFile:(NSString *)filename
+					   packageCode:(NSString *)packageCode
+					  langaugeCode:(NSString *)languageCode
+						fileLoader:(GTFileLoader *)fileLoader
+			   shareViewController:(GTShareViewController *)shareViewController
+			pageMenuViewController:(GTPageMenuViewController *)pageMenuViewController
+			   aboutViewController:(GTAboutViewController *)aboutViewController
+						  delegate:(id<GTViewControllerMenuDelegate>)delegate {
     
     if ((self = [super initWithNibName:NSStringFromClass([self class]) bundle:nil])) {
         
@@ -229,6 +236,7 @@ NSString * const kAttr_filename		= @"filename";
         self.pageMenu						= pageMenuViewController;
         self.aboutPage						= aboutViewController;
         self.shareSheet						= shareViewController;
+		[self setPackageCode:packageCode languageCode:languageCode];
         
         self.transitionAnimationDuration	= NORMAL_TRANSITION_ANIMATION_DURATION;
         self.resistedDragMultiplier			= RESISTED_DRAG_MULTIPLIER;
@@ -776,6 +784,10 @@ NSString * const kAttr_filename		= @"filename";
 - (void)setPackageCode:(NSString *)packageCode languageCode:(NSString *)languageCode {
     self.packageCode = packageCode;
     self.languageCode = languageCode;
+	
+	if (self.shareSheet) {
+		[self.shareSheet setPackageCode:packageCode languageCode:languageCode];
+	}
 }
 
 #pragma mark - easter egg
@@ -1976,10 +1988,15 @@ NSString * const kAttr_filename		= @"filename";
        || ![self.packageCode isEqualToString:self.lastTrackedPackage]
        || ![self.languageCode isEqualToString:self.lastTrackedLanguage]) {
 		
+		NSDictionary *userInfo = nil;
+		if (self.packageCode && self.languageCode) {
+			userInfo = @{GTViewControllerNotificationPageViewUserInfoKeyPackage: self.packageCode,
+						 GTViewControllerNotificationPageViewUserInfoKeyLanguage: self.languageCode};
+		}
+		
 		[[NSNotificationCenter defaultCenter] postNotificationName:GTViewControllerNotificationPageView
 															object:self
-														  userInfo:@{GTViewControllerNotificationPageViewUserInfoKeyPackage: self.packageCode,
-																	 GTViewControllerNotificationPageViewUserInfoKeyLanguage: self.languageCode}];
+														  userInfo:userInfo];
 		
         self.lastTrackedView = pageNumber;
         self.lastTrackedPackage = self.packageCode;
