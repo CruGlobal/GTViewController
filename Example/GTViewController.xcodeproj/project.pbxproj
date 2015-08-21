@@ -14,8 +14,6 @@
 		686D73421B83877000444718 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 686D73401B83877000444718 /* Main.storyboard */; };
 		686D73471B83A6D400444718 /* GTViewController.strings in Resources */ = {isa = PBXBuildFile; fileRef = 686D734A1B83A6D400444718 /* GTViewController.strings */; };
 		686D73481B83A6D400444718 /* GTViewController.strings in Resources */ = {isa = PBXBuildFile; fileRef = 686D734A1B83A6D400444718 /* GTViewController.strings */; };
-		686D734D1B83A84500444718 /* GTViewControllerTests-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 686D734C1B83A84500444718 /* GTViewControllerTests-Info.plist */; };
-		686D734E1B83A84500444718 /* GTViewControllerTests-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 686D734C1B83A84500444718 /* GTViewControllerTests-Info.plist */; };
 		686D73701B83ABBA00444718 /* Buttonlines_large.png in Resources */ = {isa = PBXBuildFile; fileRef = 686D734F1B83ABB900444718 /* Buttonlines_large.png */; };
 		686D73711B83ABBA00444718 /* Buttonlines_large.png in Resources */ = {isa = PBXBuildFile; fileRef = 686D734F1B83ABB900444718 /* Buttonlines_large.png */; };
 		686D73721B83ABBA00444718 /* Buttonlines.png in Resources */ = {isa = PBXBuildFile; fileRef = 686D73501B83ABB900444718 /* Buttonlines.png */; };
@@ -645,7 +643,6 @@
 				686D73821B83ABBA00444718 /* GTInstructions_Hand_Pointer_Shadow.png in Resources */,
 				686D73701B83ABBA00444718 /* Buttonlines_large.png in Resources */,
 				686D73AC1B83ABBA00444718 /* Package_PopUpToolBar_Icon_Menu@2x.png in Resources */,
-				686D734D1B83A84500444718 /* GTViewControllerTests-Info.plist in Resources */,
 				686D739A1B83ABBA00444718 /* arrow@2x.png in Resources */,
 				68C595B41912DDCF00BB2AC6 /* GTPage.xib in Resources */,
 				686D73A21B83ABBA00444718 /* Package_PopUpToolBar_Icon_Help.png in Resources */,
@@ -689,7 +686,6 @@
 				686D739D1B83ABBA00444718 /* fiftytap.mp3 in Resources */,
 				686D738D1B83ABBA00444718 /* line.png in Resources */,
 				686D73AB1B83ABBA00444718 /* Package_PopUpToolBar_Icon_Menu.png in Resources */,
-				686D734E1B83A84500444718 /* GTViewControllerTests-Info.plist in Resources */,
 				686D73A91B83ABBA00444718 /* Package_PopUpToolBar_Icon_Info@2x.png in Resources */,
 				686D73911B83ABBA00444718 /* URL_Button@2x.png in Resources */,
 				686D737D1B83ABBA00444718 /* grad_shad_SE.png in Resources */,

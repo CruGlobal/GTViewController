@@ -14,12 +14,6 @@
 #import "UIRoundedView.h"
 #import	"UIDisclosureIndicator.h"
 
-#define UITextAlignmentLeft NSTextAlignmentLeft
-#define UITextAlignmentRight NSTextAlignmentRight
-#define UITextAlignmentCenter NSTextAlignmentCenter
-#define UILineBreakModeWordWrap NSLineBreakByWordWrapping
-#define UILineBreakModeTailTruncation NSLineBreakByTruncatingTail
-
 //////////Compiler Constants///////////
 #define DEFAULTOFFSET 10.0
 #define DEFAULT_PANEL_OFFSET_X 0.0
@@ -871,7 +865,7 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
             ////TEXT LABEL - note: some defaults are overridden here since existing text label defaults are for within panels, not page objects.
             if ([[TBXML elementName:object_el] isEqual:kName_Label]) {
                 
-                labelLabel = [self createLabelFromElement:object_el parentTextAlignment:UITextAlignmentLeft xPos:object_xpos yPos:object_ypos container:nil];
+                labelLabel = [self createLabelFromElement:object_el parentTextAlignment:NSTextAlignmentLeft xPos:object_xpos yPos:object_ypos container:nil];
                 
                 [labelLabel setTag:(800+labelCount)];
                 if (labelLabel.alpha == 1) {
@@ -1540,9 +1534,9 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 		}
 		
 		if (textalign) {
-			if		([textalign isEqual:kAlignment_right])	{textAlignment		= UITextAlignmentRight;}
-			else if ([textalign isEqual:kAlignment_center])	{textAlignment		= UITextAlignmentCenter;}
-			else if ([textalign isEqual:kAlignment_left])	{textAlignment		= UITextAlignmentLeft;}
+			if		([textalign isEqual:kAlignment_right])	{textAlignment		= NSTextAlignmentRight;}
+			else if ([textalign isEqual:kAlignment_center])	{textAlignment		= NSTextAlignmentCenter;}
+			else if ([textalign isEqual:kAlignment_left])	{textAlignment		= NSTextAlignmentLeft;}
 		}
 		
 		
@@ -1568,13 +1562,13 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 		NSString		*panel_alignment	= [TBXML valueOfAttributeNamed:kAttr_textalign	forElement:element];
 		UITextAlignment	panelAlign;
 		if ([panel_alignment isEqual:kAlignment_left]) {
-			panelAlign = UITextAlignmentLeft;
+			panelAlign = NSTextAlignmentLeft;
 		} else if ([panel_alignment isEqual:kAlignment_center]) {
-			panelAlign = UITextAlignmentCenter;
+			panelAlign = NSTextAlignmentCenter;
 		} else if ([panel_alignment isEqual:kAlignment_right]) {
-			panelAlign = UITextAlignmentRight;
+			panelAlign = NSTextAlignmentRight;
 		} else {
-			panelAlign = UITextAlignmentLeft;
+			panelAlign = NSTextAlignmentLeft;
 		}
 		
 		//init objects that will be used to add interpreted elements to the page
@@ -1831,7 +1825,7 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 					mode		=						(mode == nil ? @"" : mode);
 		
 		CGRect			frame			= CGRectZero;
-		UITextAlignment textAlignment	= UITextAlignmentRight;
+		UITextAlignment textAlignment	= NSTextAlignmentRight;
 		BOOL			resize			= YES;
 		UIColor			*bgColor		= nil;
 		NSUInteger		textSize		= DEFAULT_TEXTSIZE_QUESTION_NORMAL;
@@ -1854,10 +1848,10 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 		}
 		
 		if (textalign) {
-			if		([textalign isEqual:kAlignment_right])	{textAlignment		= UITextAlignmentRight;}
-			else if ([textalign isEqual:kAlignment_center])	{textAlignment		= UITextAlignmentCenter;}
-			else if ([textalign isEqual:kAlignment_left])	{textAlignment		= UITextAlignmentLeft;}
-		}																										else	{textAlignment		= UITextAlignmentRight;}
+			if		([textalign isEqual:kAlignment_right])	{textAlignment		= NSTextAlignmentRight;}
+			else if ([textalign isEqual:kAlignment_center])	{textAlignment		= NSTextAlignmentCenter;}
+			else if ([textalign isEqual:kAlignment_left])	{textAlignment		= NSTextAlignmentLeft;}
+		}																										else	{textAlignment		= NSTextAlignmentRight;}
 		
 		if		([mode isEqual:kTitleMode_straight]) {
 			bgColor = [UIColor whiteColor];
@@ -1865,7 +1859,7 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 			textSize = round(DEFAULT_TEXTSIZE_QUESTION_STRAIGHT * [size floatValue] / 100);
 			font = kFont_straightquestion;
 			frame = CGRectMake(0, frame.origin.y, 320, frame.size.height);
-			textAlignment = UITextAlignmentCenter;
+			textAlignment = NSTextAlignmentCenter;
 		}
 		
 		//if the question can be aligned then align it
@@ -1942,7 +1936,7 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 				tempFont = [tempFont fontWithSize:i];
 				CGSize constraintSize = CGSizeMake(tempHeading.frame.size.width, MAXFLOAT);
 				//NSLog(@"Constraint Width: %f",constraintSize.width);
-				labelsize = [tempHeading.text sizeWithFont:tempFont constrainedToSize:constraintSize lineBreakMode:UILineBreakModeWordWrap];
+				labelsize = [tempHeading.text sizeWithFont:tempFont constrainedToSize:constraintSize lineBreakMode:NSLineBreakByWordWrapping];
 				
 				if (labelsize.height <= (numberoflines*tempFont.pointSize+10)){
 					//NSLog(@"Final Width: %f",labelsize.width);
@@ -2094,7 +2088,7 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 			
 			//init variables for object parameters
 			CGRect			frame			= CGRectZero;
-			UITextAlignment textAlignment	= UITextAlignmentLeft;
+			UITextAlignment textAlignment	= NSTextAlignmentLeft;
 			BOOL			resize			= YES;
 			UIColor			*bgColor		= nil;
 			NSUInteger		textSize		= DEFAULT_TEXTSIZE_TITLE_SUBHEADING;
@@ -2123,9 +2117,9 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 			}
 			
 			if (align) {
-				if		([align isEqual:kAlignment_right])	{textAlignment		= UITextAlignmentRight;}
-				else if ([align isEqual:kAlignment_center])	{textAlignment		= UITextAlignmentCenter;}
-				else if ([align isEqual:kAlignment_left])	{textAlignment		= UITextAlignmentLeft;}
+				if		([align isEqual:kAlignment_right])	{textAlignment		= NSTextAlignmentRight;}
+				else if ([align isEqual:kAlignment_center])	{textAlignment		= NSTextAlignmentCenter;}
+				else if ([align isEqual:kAlignment_left])	{textAlignment		= NSTextAlignmentLeft;}
 			}
 			
 			UILabel			*tempSubTitleText		= nil;
@@ -2152,7 +2146,7 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 														 tapDelegate:self.panelDelegate];
 			
 			CGRect peekPanelArrowFrame = CGRectMake((subTitleFrame.size.width / 2) - 5 ,subTitleFrame.size.height - 8 , 10, 10);
-			UILabel	*peekPanelArrow = [self createLabelWithFrame:peekPanelArrowFrame autoResize:NO text:@"▼" color:[UIColor whiteColor] bgColor: [UIColor clearColor] alpha:1.0 alignment:UITextAlignmentCenter font:kFont_label size:8];
+			UILabel	*peekPanelArrow = [self createLabelWithFrame:peekPanelArrowFrame autoResize:NO text:@"▼" color:[UIColor whiteColor] bgColor: [UIColor clearColor] alpha:1.0 alignment:NSTextAlignmentCenter font:kFont_label size:8];
 			peekPanelArrow.shadowColor = [UIColor darkGrayColor];
 			
 			
@@ -2194,7 +2188,7 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 		NSString	*h		=						[TBXML valueOfAttributeNamed:kAttr_height	forElement:element];
 		
 		CGRect			frame			= CGRectZero;
-		UITextAlignment textAlignment	= UITextAlignmentRight;
+		UITextAlignment textAlignment	= NSTextAlignmentRight;
 		BOOL			resize			= YES;
 		UIColor			*bgColor		= nil;
 		NSUInteger		textSize		= DEFAULT_TEXTSIZE_TITLE_NUMBER;
@@ -2216,10 +2210,10 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 		}
 		
 		if (align) {
-			if		([align isEqual:kAlignment_right])	{textAlignment		= UITextAlignmentRight;}
-			else if ([align isEqual:kAlignment_center])	{textAlignment		= UITextAlignmentCenter;}
-			else if ([align isEqual:kAlignment_left])	{textAlignment		= UITextAlignmentLeft;}
-		}																										else	{textAlignment		= UITextAlignmentRight;}
+			if		([align isEqual:kAlignment_right])	{textAlignment		= NSTextAlignmentRight;}
+			else if ([align isEqual:kAlignment_center])	{textAlignment		= NSTextAlignmentCenter;}
+			else if ([align isEqual:kAlignment_left])	{textAlignment		= NSTextAlignmentLeft;}
+		}																										else	{textAlignment		= NSTextAlignmentRight;}
 		
 		if (titleMode) {
 			if		([titleMode isEqual:kTitleMode_clear])	{bgColor			= [UIColor clearColor];}
@@ -2250,7 +2244,7 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 		NSString	*h		=						[TBXML valueOfAttributeNamed:kAttr_height	forElement:element];
 		
 		CGRect			frame			= CGRectZero;
-		UITextAlignment textAlignment	= ([titleMode isEqual:kTitleMode_peek] ? UITextAlignmentRight : UITextAlignmentLeft);
+		UITextAlignment textAlignment	= ([titleMode isEqual:kTitleMode_peek] ? NSTextAlignmentRight : NSTextAlignmentLeft);
 		BOOL			resize			= YES;
 		UIColor			*bgColor		= nil;
 		NSUInteger		textSize		= ([titleMode isEqual:kTitleMode_peek] ? DEFAULT_TEXTSIZE_TITLE_HEADING_PEEKMODE : DEFAULT_TEXTSIZE_TITLE_HEADING_NORMALMODE );
@@ -2282,15 +2276,15 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 		}
 		
 		if (align) {
-			if		([align isEqual:kAlignment_right])	{textAlignment		= UITextAlignmentRight;}
-			else if ([align isEqual:kAlignment_center])	{textAlignment		= UITextAlignmentCenter;}
-			else if ([align isEqual:kAlignment_left])	{textAlignment		= UITextAlignmentLeft;}
+			if		([align isEqual:kAlignment_right])	{textAlignment		= NSTextAlignmentRight;}
+			else if ([align isEqual:kAlignment_center])	{textAlignment		= NSTextAlignmentCenter;}
+			else if ([align isEqual:kAlignment_left])	{textAlignment		= NSTextAlignmentLeft;}
 		}
 		
 		if (titleMode) {
 			if		([titleMode isEqual:kTitleMode_clear])		{bgColor			= [UIColor clearColor];}
 			else if ([titleMode isEqual:kTitleMode_straight])	{
-				textAlignment=UITextAlignmentCenter;
+				textAlignment=NSTextAlignmentCenter;
 				UILabel *temp = [self createLabelWithFrame:frame autoResize:resize text:text color:color bgColor:bgColor alpha:labelAlpha alignment:textAlignment font:font size:textSize];
 				frame = temp.frame;
 				frame.origin.x		= 0;
@@ -2327,7 +2321,7 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 	
 	//init title parameters with defaults
 	CGRect			frame			= CGRectZero;
-	UITextAlignment textAlignment	= ([titleMode isEqual:kTitleMode_peek] ? UITextAlignmentLeft : UITextAlignmentCenter);
+	UITextAlignment textAlignment	= ([titleMode isEqual:kTitleMode_peek] ? NSTextAlignmentLeft : NSTextAlignmentCenter);
 	BOOL			resize			= YES;
 	UIColor			*bgColor		= nil;
 	NSUInteger		textSize		= DEFAULT_TEXTSIZE_TITLE_SUBHEADING;
@@ -2365,9 +2359,9 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 	}
 	
 	if (align) {
-		if		([align isEqual:kAlignment_right])	{textAlignment		= UITextAlignmentRight;}
-		else if ([align isEqual:kAlignment_center])	{textAlignment		= UITextAlignmentCenter;}
-		else if ([align isEqual:kAlignment_left])	{textAlignment		= UITextAlignmentLeft;}
+		if		([align isEqual:kAlignment_right])	{textAlignment		= NSTextAlignmentRight;}
+		else if ([align isEqual:kAlignment_center])	{textAlignment		= NSTextAlignmentCenter;}
+		else if ([align isEqual:kAlignment_left])	{textAlignment		= NSTextAlignmentLeft;}
 	}
 	
 	//**added to remove multiple return points**	
@@ -2383,8 +2377,8 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 		}
 		//straight
 		else if ([titleMode isEqual:kTitleMode_straight]) {
-			textAlignment=UITextAlignmentCenter;
-			tempLabel.textAlignment = UITextAlignmentCenter;
+			textAlignment=NSTextAlignmentCenter;
+			tempLabel.textAlignment = NSTextAlignmentCenter;
 			//**CONFIRM REDUNDANCY**	UILabel *temp = [self createLabelWithFrame:frame autoResize:resize text:text color:color bgColor:bgColor alpha:labelAlpha alignment:textAlignment font:font size:textSize];
 			frame = tempLabel.frame;
 			frame.origin.x		= 0;
@@ -2417,7 +2411,7 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 	[tempLabel setText:text];
 	[tempLabel setFont:[UIFont fontWithName:font size:size]];
 	[tempLabel setTextAlignment:textAlignment];
-	[tempLabel setLineBreakMode:UILineBreakModeWordWrap];
+	[tempLabel setLineBreakMode:NSLineBreakByWordWrapping];
 	
 	//Size
 	[tempLabel setNumberOfLines:0];
