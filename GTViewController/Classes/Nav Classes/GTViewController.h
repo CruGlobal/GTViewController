@@ -19,6 +19,13 @@ extern NSString *const GTViewControllerNotificationUserInfoConfigFilenameKey;
  */
 extern NSString *const GTViewControllerNotificationResourceDidOpen;
 
+/**
+ *  Notification name for viewing a page.
+ */
+extern NSString *const GTViewControllerNotificationPageView;
+extern NSString *const GTViewControllerNotificationPageViewUserInfoKeyLanguage;
+extern NSString *const GTViewControllerNotificationPageViewUserInfoKeyPackage;
+extern NSString *const GTViewControllerNotificationPageViewUserInfoKeyPageNumber;
 
 
 
@@ -36,6 +43,8 @@ extern NSString *const GTViewControllerNotificationResourceDidOpen;
  *  Note: Don't use initWithNibName:bundle:
  *
  *  @param filename               filename of the configureation file of the resource you would like to display.
+ *  @param packageCode			  string representing the package being displayed
+ *  @param langaugeCode			  ISO langauge code representing the language of the package being displayed.
  *  @param fileLoader             object that can be asked for paths given a filename. It also caches images.
  *  @param shareViewController    A view controller that give the user options for sharing the current resource.
  *  @param pageMenuViewController A view controller that lets the user switch between pages.
@@ -44,7 +53,14 @@ extern NSString *const GTViewControllerNotificationResourceDidOpen;
  *
  *  @return the initialized self
  */
-- (instancetype)initWithConfigFile:(NSString *)filename fileLoader:(GTFileLoader *)fileLoader shareViewController:(GTShareViewController *)shareViewController pageMenuViewController:(GTPageMenuViewController *)pageMenuViewController aboutViewController:(GTAboutViewController *)aboutViewController delegate:(id<GTViewControllerMenuDelegate>)delegate;
+- (instancetype)initWithConfigFile:(NSString *)filename
+					   packageCode:(NSString *)packageCode
+					  langaugeCode:(NSString *)languageCode
+						fileLoader:(GTFileLoader *)fileLoader
+			   shareViewController:(GTShareViewController *)shareViewController
+			pageMenuViewController:(GTPageMenuViewController *)pageMenuViewController
+			   aboutViewController:(GTAboutViewController *)aboutViewController
+						  delegate:(id<GTViewControllerMenuDelegate>)delegate;
 
 /**
  *  loads and parses the assets for a resource defined by the config file passed to this method.
@@ -71,6 +87,8 @@ extern NSString *const GTViewControllerNotificationResourceDidOpen;
 - (void)switchToPageWithIndex:(NSUInteger)pageIndex;
 
 - (void)refreshView;
+
+- (void)setPackageCode:(NSString *)packageCode languageCode:(NSString *)languageCode;
 
 @end
 
