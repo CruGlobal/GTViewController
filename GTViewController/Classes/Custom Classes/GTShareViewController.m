@@ -7,30 +7,29 @@
 //
 
 #import "GTShareViewController.h"
-
+#import "GTViewController.h"
 #import "SSCWhatsAppActivity.h"
 
-NSString *const GTShareViewControllerCampaignLinkCampaignSource        = @"godtools-ios";
-NSString *const GTShareViewControllerCampaignLinkCampaignMedium        = @"email";
-NSString *const GTShareViewControllerCampaignLinkCampaignName          = @"app-sharing";
-
 @interface GTShareViewController ()
-
-@property (weak, nonatomic) NSString *packageCode;
-@property (weak, nonatomic) NSString *languageCode;
 
 @end
 
 @implementation GTShareViewController
 
-- (instancetype)init {
+- (instancetype)initWithInfo:(GTShareInfo *)shareInfo {
 	
-	NSString *campaignLink				= [self produceLinkForCampaign: GTShareViewControllerCampaignLinkCampaignName source:GTShareViewControllerCampaignLinkCampaignSource medium:GTShareViewControllerCampaignLinkCampaignMedium];
+	GTShareViewController *shareViewController = [self initWithActivityItems:@[shareInfo.shareURL] applicationActivities:nil];
+	
+	return shareViewController;
+}
+
+- (instancetype)initWithActivityItems:(NSArray *)activityItems applicationActivities:(NSArray *)applicationActivities {
 	
 	SSCWhatsAppActivity *whatsAppActivity	= [[SSCWhatsAppActivity alloc] init];
+	NSArray *activities = ( applicationActivities ? [applicationActivities arrayByAddingObject:whatsAppActivity] : @[whatsAppActivity] );
 	
-	self = [super initWithActivityItems:@[[NSURL URLWithString:campaignLink]] applicationActivities:@[whatsAppActivity]];
-    self.excludedActivityTypes = [[NSArray alloc]init];
+	self = [super initWithActivityItems:activityItems applicationActivities:activities];
+	
 	if (self) {
 
 		self.excludedActivityTypes	= @[//UIActivityTypePostToFacebook,
@@ -66,46 +65,4 @@ NSString *const GTShareViewControllerCampaignLinkCampaignName          = @"app-s
 	return self;
 }
 
-- (instancetype)initWithPackageCode:(NSString *)packageCode languageCode:(NSString *)languageCode {
-	
-	self = [self init];
-	if (self) {
-		[self setPackageCode:packageCode languageCode:languageCode];
-	}
-    
-    return self;
-}
-
-- (void)setPackageCode:(NSString *)packageCode languageCode:(NSString *)languageCode {
-	self.packageCode = packageCode;
-	self.languageCode = languageCode;
-}
-
-- (NSString *)produceShareLink {
-	
-	return [NSString stringWithFormat:@"http://www.godtoolsapp.com"];
-}
-
-- (NSString *)produceLinkForCampaign:(NSString *)campaign source:(NSString *)source medium:(NSString *)medium {
-	
-	NSString *appVersionNumber	= [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"];
-	
-    if(self.packageCode && self.languageCode) {
-        return [self.produceShareLink stringByAppendingFormat:@"?utm_source=%@&utm_medium=%@&utm_content=%@&utm_campaign=%@&package=%@&language=%@", source, medium, appVersionNumber, campaign, self.packageCode, self.languageCode];
-    } else {
-        return [self.produceShareLink stringByAppendingFormat:@"?utm_source=%@&utm_medium=%@&utm_content=%@&utm_campaign=%@", source, medium, appVersionNumber, campaign];
-    }
-}
-
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
-    // Do any additional setup after loading the view.
-}
-
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
 @end
