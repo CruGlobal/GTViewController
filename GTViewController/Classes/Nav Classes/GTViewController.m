@@ -15,6 +15,7 @@
 #import "GTAboutViewController.h"
 #import "GTPageMenuViewController.h"
 #import "GTShareViewController.h"
+#import "GTShareInfo.h"
 #import "HorizontalGestureRecognizer.h"
 #import "TBXML.h"
 #import "GTFileLoader.h"
@@ -148,7 +149,7 @@ NSString * const kAttr_filename		= @"filename";
 
 @property (nonatomic, strong)	GTAboutViewController		*aboutPage;
 @property (nonatomic, strong)	GTPageMenuViewController	*pageMenu;
-@property (nonatomic, strong)	GTShareViewController		*shareSheet;
+@property (nonatomic, strong)	GTShareInfo					*shareInfo;
 @property (nonatomic, assign)	BOOL childViewControllerWasShown;
 
 @property (nonatomic, assign)	BOOL						isFirstRunSinceCreation;
@@ -224,7 +225,7 @@ NSString * const kAttr_filename		= @"filename";
 					   packageCode:(NSString *)packageCode
 					  langaugeCode:(NSString *)languageCode
 						fileLoader:(GTFileLoader *)fileLoader
-			   shareViewController:(GTShareViewController *)shareViewController
+						 shareInfo:(GTShareInfo *)shareInfo
 			pageMenuViewController:(GTPageMenuViewController *)pageMenuViewController
 			   aboutViewController:(GTAboutViewController *)aboutViewController
 						  delegate:(id<GTViewControllerMenuDelegate>)delegate {
@@ -236,7 +237,7 @@ NSString * const kAttr_filename		= @"filename";
         self.fileLoader						= fileLoader;
         self.pageMenu						= pageMenuViewController;
         self.aboutPage						= aboutViewController;
-        self.shareSheet						= shareViewController;
+        self.shareInfo						= shareInfo;
 		[self setPackageCode:packageCode languageCode:languageCode];
         
         self.transitionAnimationDuration	= NORMAL_TRANSITION_ANIMATION_DURATION;
@@ -581,10 +582,11 @@ NSString * const kAttr_filename		= @"filename";
     
     NSLog(@"navtoolbarShareselector");
     [self hideNavToolbar];
-    
-    [self.shareSheet setPackageCode:self.packageCode languageCode:self.languageCode];
-    
-    [self presentViewController:self.shareSheet animated:YES completion:nil];
+	
+	[self.shareInfo setPackageCode:self.packageCode languageCode:self.languageCode pageNumber:@(self.activeView)];
+	GTShareViewController *shareViewController = [[GTShareViewController alloc] initWithInfo:self.shareInfo];
+	
+    [self presentViewController:shareViewController animated:YES completion:nil];
     self.childViewControllerWasShown = YES;
 }
 
@@ -619,7 +621,7 @@ NSString * const kAttr_filename		= @"filename";
     //configure bottom toolbar
     NSMutableArray *buttons = [NSMutableArray arrayWithObject:[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil]];
     
-    if (self.shareSheet) {
+    if (self.shareInfo) {
         
         self.shareButton	= [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Package_PopUpToolBar_Icon_Export"]
                                                             style:UIBarButtonItemStyleBordered
@@ -786,8 +788,8 @@ NSString * const kAttr_filename		= @"filename";
     self.packageCode = packageCode;
     self.languageCode = languageCode;
 	
-	if (self.shareSheet) {
-		[self.shareSheet setPackageCode:packageCode languageCode:languageCode];
+	if (self.shareInfo) {
+		[self.shareInfo setPackageCode:packageCode languageCode:languageCode pageNumber:@(self.activeView)];
 	}
 }
 

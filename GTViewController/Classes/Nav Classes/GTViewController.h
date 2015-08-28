@@ -29,7 +29,7 @@ extern NSString *const GTViewControllerNotificationPageViewUserInfoKeyPageNumber
 
 
 
-@class GTFileLoader, GTShareViewController, GTPageMenuViewController, GTAboutViewController;
+@class GTFileLoader, GTShareInfo, GTPageMenuViewController, GTAboutViewController;
 @protocol GTViewControllerMenuDelegate;
 
 
@@ -46,7 +46,7 @@ extern NSString *const GTViewControllerNotificationPageViewUserInfoKeyPageNumber
  *  @param packageCode			  string representing the package being displayed
  *  @param langaugeCode			  ISO langauge code representing the language of the package being displayed.
  *  @param fileLoader             object that can be asked for paths given a filename. It also caches images.
- *  @param shareViewController    A view controller that give the user options for sharing the current resource.
+ *  @param shareInfo              An object that produces a share link to be given to an GTShareSheet which gives the user options for sharing the current resource.
  *  @param pageMenuViewController A view controller that lets the user switch between pages.
  *  @param aboutViewController    A view controller that displays the about info for the current resource.
  *  @param delegate               usually the naviagation controller that pushed this object. The delegate should get it's menus (navigation/toolbars out of view when asked by this class.
@@ -57,7 +57,7 @@ extern NSString *const GTViewControllerNotificationPageViewUserInfoKeyPageNumber
 					   packageCode:(NSString *)packageCode
 					  langaugeCode:(NSString *)languageCode
 						fileLoader:(GTFileLoader *)fileLoader
-			   shareViewController:(GTShareViewController *)shareViewController
+						 shareInfo:(GTShareInfo *)shareInfo
 			pageMenuViewController:(GTPageMenuViewController *)pageMenuViewController
 			   aboutViewController:(GTAboutViewController *)aboutViewController
 						  delegate:(id<GTViewControllerMenuDelegate>)delegate;
