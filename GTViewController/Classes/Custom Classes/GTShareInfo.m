@@ -22,6 +22,8 @@
 
 @implementation GTShareInfo
 
+@synthesize shareURL = _shareURL;
+
 - (instancetype)initWithBaseURL:(NSURL *)baseURL packageCode:(NSString *)packageCode languageCode:(NSString *)languageCode {
 	
 	self = [super init];
@@ -102,6 +104,42 @@
 		return [NSURL URLWithString:@""];
 	}
 	
+}
+
+- (NSString *)message {
+	
+	if (_message && [_message containsString:@"%@"]) {
+		
+		return [NSString stringWithFormat:_message, self.shareURL.absoluteString];
+		
+	} else {
+		
+		return _message;
+		
+	}
+	
+}
+
+#pragma mark - UIActivityItemSource
+
+#pragma mark required source methods
+
+- (id)activityViewControllerPlaceholderItem:(UIActivityViewController *)activityViewController {
+	
+	return self.message;
+}
+
+- (id)activityViewController:(UIActivityViewController *)activityViewController itemForActivityType:(NSString *)activityType {
+	
+	
+	return self.message;
+}
+
+#pragma mark optional source methods
+
+- (NSString *)activityViewController:(UIActivityViewController *)activityViewController subjectForActivityType:(NSString *)activityType {
+	
+	return self.subject;
 }
 
 @end

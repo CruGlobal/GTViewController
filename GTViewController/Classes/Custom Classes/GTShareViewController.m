@@ -18,7 +18,8 @@
 
 - (instancetype)initWithInfo:(GTShareInfo *)shareInfo {
 	
-	GTShareViewController *shareViewController = [self initWithActivityItems:@[shareInfo.shareURL] applicationActivities:nil];
+	NSArray *shareArray = @[ ( shareInfo ? shareInfo : @"" ) ];
+	GTShareViewController *shareViewController = [self initWithActivityItems:shareArray applicationActivities:nil];
 	
 	return shareViewController;
 }

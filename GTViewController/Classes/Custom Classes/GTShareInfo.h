@@ -8,10 +8,12 @@
 
 #import <Foundation/Foundation.h>
 
-@interface GTShareInfo : NSObject
+@interface GTShareInfo : NSObject <UIActivityItemSource>
 
 @property (nonatomic, strong) NSURL *baseURL;
-@property (nonatomic, strong) NSURL *shareURL;
+@property (nonatomic, strong, readonly) NSURL *shareURL;
+@property (nonatomic, strong) NSString *subject;
+@property (nonatomic, strong) NSString *message;
 @property (nonatomic, assign) BOOL addPackageInfo;
 @property (nonatomic, assign) BOOL addCampaignInfo;
 
