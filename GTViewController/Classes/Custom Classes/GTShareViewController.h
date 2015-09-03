@@ -7,10 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "GTShareInfo.h"
 
 @interface GTShareViewController : UIActivityViewController
 
-- (instancetype)initWithPackageCode:(NSString *)packageCode languageCode:(NSString *)languageCode;
-- (void)setPackageCode:(NSString *)packageCode languageCode:(NSString *)languageCode;
+- (instancetype)initWithInfo:(GTShareInfo *)shareInfo;
 
 @end

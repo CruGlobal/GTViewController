@@ -14,6 +14,10 @@
 #import "GTPageMenuViewController.h"
 #import "GTAboutViewController.h"
 
+NSString *const GTExampleCampaignSource        = @"godtools-ios";
+NSString *const GTExampleCampaignMedium        = @"email";
+NSString *const GTExampleCampaignName          = @"app-sharing";
+
 NSString *const GTExampleTableViewControllerCellReuseIdentifier			= @"org.cru.godtools.gtviewcontroller.example.gtexampletableviewcontroller.cell.reuseIdentifier";
 NSString *const GTExampleTableViewControllerResourcesKeyResourceName	= @"org.cru.godtools.gtviewcontroller.example.gtexampletableviewcontroller.resources.keys.resourceName";
 NSString *const GTExampleTableViewControllerResourcesKeyConfigFile	= @"org.cru.godtools.gtviewcontroller.example.gtexampletableviewcontroller.resources.keys.configFile";
@@ -75,7 +79,16 @@ NSString *const GTExampleTableViewControllerResourcesKeyConfigFile	= @"org.cru.g
 		NSString *configFile	= self.resources[0][GTExampleTableViewControllerResourcesKeyConfigFile];
 		GTFileLoader *fileLoader = [GTFileLoaderExample fileLoader];
 		fileLoader.language		= @"en";
-		GTShareViewController *shareViewController = [[GTShareViewController alloc] initWithPackageCode:@"fourlaws" languageCode:@"en"];
+		GTShareInfo *shareInfo = [[GTShareInfo alloc] initWithBaseURL:[NSURL URLWithString:@"http://godtoolsapp.com"]
+														  packageCode:@"fourlaws"
+														 languageCode:@"en"];
+		[shareInfo setGoogleAnalyticsCampaign:GTExampleCampaignName
+									   source:GTExampleCampaignSource
+									   medium:GTExampleCampaignMedium];
+		shareInfo.subject = @"God Tools";
+		shareInfo.message = @"Here is the booklet we were looking at today. This link, %@, should take you to the page we were last looking at.";
+		shareInfo.addPackageInfo = YES;
+		shareInfo.addCampaignInfo = NO;
 		GTPageMenuViewController *pageMenuViewController = [[GTPageMenuViewController alloc] initWithFileLoader:fileLoader];
 		GTAboutViewController *aboutViewController = [[GTAboutViewController alloc] initWithDelegate:self fileLoader:fileLoader];
 		
@@ -84,7 +97,7 @@ NSString *const GTExampleTableViewControllerResourcesKeyConfigFile	= @"org.cru.g
 																   packageCode:@"fourlaws"
 																  langaugeCode:@"en"
 																	fileLoader:fileLoader
-														   shareViewController:shareViewController
+																	 shareInfo:shareInfo
 														pageMenuViewController:pageMenuViewController
 														   aboutViewController:aboutViewController
 																	  delegate:self];
