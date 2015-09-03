@@ -14,7 +14,7 @@
 
 @implementation GTInterpreter
 
-+ (instancetype)interpreterWithXMLPath:(NSString *)xmlPath fileLoader:(GTFileLoader *)fileLoader pageView:(UIView *)view panelTapDelegate:(id<UIRoundedViewTapDelegate>)panelDelegate buttonTapDelegate:(id<UISnuffleButtonTapDelegate>)buttonDelegate{
++ (instancetype)interpreterWithXMLPath:(NSString *)xmlPath fileLoader:(GTFileLoader *)fileLoader pageView:(UIView *)view delegate:(id<GTInterpreterDelegate>)delegate panelTapDelegate:(id<UIRoundedViewTapDelegate>)panelDelegate buttonTapDelegate:(id<UISnuffleButtonTapDelegate>)buttonDelegate{
 	
 	GTPageStyle *pageStyle;
 	
@@ -28,7 +28,7 @@
 		
 	}
 	
-	return [[GTPageInterpreter alloc] initWithXMLPath:xmlPath fileLoader:fileLoader pageStyle:pageStyle pageView:view panelTapDelegate:panelDelegate buttonTapDelegate:buttonDelegate];
+	return [[GTPageInterpreter alloc] initWithXMLPath:xmlPath fileLoader:fileLoader pageStyle:pageStyle pageView:view delegate:delegate panelTapDelegate:panelDelegate buttonTapDelegate:buttonDelegate];
 }
 
 //render elements on page from xml representation

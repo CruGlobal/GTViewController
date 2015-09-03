@@ -24,4 +24,4 @@
 "GTPageInterpreter_parseXMLPageException_message"    = "The parseXMLPage function may not have been called yet, please check this!";
 "GTPageInterpreter_parseXMLButtonsException_message" = "The parseXMLButtons function may not have been called yet, please check this!";
 
-"error_message_contact_support"                      = "Try again. If the problem continues please contact supportgodtoolsapp.com.";
+"error_message_contact_support"                      = "Try again. If the problem continues please contact support@godtoolsapp.com.";

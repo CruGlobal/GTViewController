@@ -13,7 +13,7 @@
 	<page thumb="PageThumb_08.png" filename="08_HowCanYouBeSure.xml" translate="true">How Can You Be Sure That All This Has Really Happened?</page>
     <page thumb="PageThumb_09.png" filename="09_WhatHappens.xml" translate="true">If You Asked Jesus Into Your Life As Saviour And Lord, Many Things Have Happened, Including:</page>
 	<page thumb="PageThumb_10.png" filename="10_HowToGrow.xml" translate="true">How To Grow As A Follower Of Jesus</page>
-	<page thumb="PageThumb_11.png" filename="11_FinalPage.xml" translate="true">Special Materials</page>
+	<page thumb="PageThumb_11.png" filename="11_FinalPage.xml" translate="true" listeners="rejected">Special Materials</page>
 	<about filename="00_About.xml" translate="true">About</about>
     <instructions translate="true"></instructions>
 </document>

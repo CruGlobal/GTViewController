@@ -15,6 +15,7 @@
 @property (nonatomic, weak  ) id<UISnuffleButtonTapDelegate> tapDelegate;
 @property (nonatomic, strong) NSString			*mode;
 @property (nonatomic, strong) NSString			*urlTarget;
+@property (nonatomic, strong) NSArray			*tapEvents;
 
 -(instancetype)initWithFrame:(CGRect)frame tapDelegate:(id<UISnuffleButtonTapDelegate>)tapDelegate;
 -(void)reset;

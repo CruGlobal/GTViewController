@@ -12,6 +12,9 @@
 #import "UISnuffleButton.h"
 #import "UIRoundedView.h"
 
+extern NSString * const GTPageNotificationEvent;
+extern NSString * const GTPageNotificationEventKeyEventName;
+
 @protocol GTPageDelegate;
 
 @class GTFileLoader;
@@ -31,6 +34,8 @@
 - (void)viewHasTransitionedOut;
 - (void)viewHasReturnedToCenter;
 - (BOOL)viewControllerWillBeReleased;
+
+- (void)triggerEventWithName:(NSString *)eventName;
 
 @end
 

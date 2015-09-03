@@ -199,6 +199,7 @@ extern NSString * const kButtonMode_allurl;
 				}
 				
 			}
+			
 		}
 		
 		[self reset];

@@ -11,12 +11,15 @@
 #import "UISnuffleButton.h"
 #import "UIRoundedView.h"
 
+@protocol GTInterpreterDelegate;
+
 @interface GTInterpreter : NSObject
 
-@property (nonatomic, strong) id<UIRoundedViewTapDelegate> panelDelegate;
-@property (nonatomic, strong) id<UISnuffleButtonTapDelegate> buttonDelegate;
+@property (nonatomic, weak) id<GTInterpreterDelegate> delegate;
+@property (nonatomic, weak) id<UIRoundedViewTapDelegate> panelDelegate;
+@property (nonatomic, weak) id<UISnuffleButtonTapDelegate> buttonDelegate;
 
-+ (instancetype)interpreterWithXMLPath:(NSString *)xmlPath fileLoader:(GTFileLoader *)fileLoader pageView:(UIView *)view panelTapDelegate:(id<UIRoundedViewTapDelegate>)panelDelegate buttonTapDelegate:(id<UISnuffleButtonTapDelegate>)buttonDelegate;
++ (instancetype)interpreterWithXMLPath:(NSString *)xmlPath fileLoader:(GTFileLoader *)fileLoader pageView:(UIView *)view delegate:(id<GTInterpreterDelegate>)delegate panelTapDelegate:(id<UIRoundedViewTapDelegate>)panelDelegate buttonTapDelegate:(id<UISnuffleButtonTapDelegate>)buttonDelegate;
 
 //render elements on page from xml representation
 - (void)renderPage;
@@ -29,5 +32,12 @@
 
 //cache functions
 - (void)cacheImages;
+
+@end
+
+@protocol GTInterpreterDelegate <NSObject>
+
+@optional
+- (void)registerListenerWithEventName:(NSString *)eventName target:(id)target selector:(SEL)selector;
 
 @end

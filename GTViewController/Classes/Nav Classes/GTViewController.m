@@ -61,6 +61,7 @@ NSString *const snuffyViewControllerTouchNotificationTap              = @"org.cr
 NSInteger  const kPageArray_File	= 0;
 NSInteger  const kPageArray_Thumb	= 1;
 NSInteger  const kPageArray_Desc	= 2;
+NSInteger  const kPageArray_Listeners = 3;
 
 
 //////////Config constants///////////////
@@ -75,6 +76,7 @@ NSString * const kName_About		= @"about";
 //attribute string constants
 NSString * const kAttr_thumb		= @"thumb";
 NSString * const kAttr_filename		= @"filename";
+NSString * const kAttr_listeners	= @"listeners";
 
 @interface GTViewController () <MFMailComposeViewControllerDelegate, UIActionSheetDelegate, GTAboutViewControllerDelegate, SNInstructionsDelegate, HorizontalGestureRecognizerDelegate, GTPageDelegate>
 
@@ -99,6 +101,7 @@ NSString * const kAttr_filename		= @"filename";
 
 @property (nonatomic, strong)	NSArray *packageArray;
 @property (nonatomic, strong)	NSMutableArray *pageArray;
+@property (nonatomic, strong)	NSMutableDictionary *listeners;
 
 @property (nonatomic, weak)		IBOutlet UIButton	*navToolbarButton;
 @property (nonatomic, weak)		IBOutlet UIToolbar *navToolbar;
@@ -161,6 +164,8 @@ NSString * const kAttr_filename		= @"filename";
 //config functions
 - (NSMutableArray *)pageArrayForConfigFile:(NSString *)filename;
 
+- (void)registerListenerWithName:(NSString *)listenerName forPageNumber:(NSInteger)pageNumber;
+- (void)pageEventDetected:(NSNotification *)notification;
 - (void)registerNotificationHandlers;
 - (void)removeNotificationHandlers;
 
@@ -298,6 +303,35 @@ NSString * const kAttr_filename		= @"filename";
 - (void)switchToPageWithIndex:(NSUInteger)pageIndex {
     [self skipTo:pageIndex];
     
+}
+
+#pragma mark - event listener methods
+
+- (void)registerListenerWithName:(NSString *)eventName forPageNumber:(NSInteger)pageNumber {
+	
+	if (eventName && pageNumber) {
+	
+		if (self.listeners[eventName]) {
+			[self.listeners[eventName] addObject:@(pageNumber)];
+		} else {
+			self.listeners[eventName] = @[@(pageNumber)].mutableCopy;
+		}
+		
+	}
+	
+}
+
+- (void)pageEventDetected:(NSNotification *)notification {
+	
+	NSString *eventName = notification.userInfo[GTPageNotificationEventKeyEventName];
+	
+	if (eventName && self.listeners[eventName]) {
+		
+		NSNumber *pageNumber = self.listeners[eventName][0];
+		[self switchToPageWithIndex:pageNumber.integerValue];
+		[self.centerPage triggerEventWithName:eventName];
+	}
+	
 }
 
 #pragma mark - methods for changing pages
@@ -471,8 +505,8 @@ NSString * const kAttr_filename		= @"filename";
     NSMutableArray	*pageArr	= [[NSMutableArray alloc] init];
     NSMutableArray	*fileArr	= [[NSMutableArray alloc] init];
     NSMutableArray	*thumbArr	= [[NSMutableArray alloc] init];
-    NSMutableArray	*descArr	= [[NSMutableArray alloc] init];
-    
+	NSMutableArray	*descArr	= [[NSMutableArray alloc] init];
+	
     if (package_el != nil) {
         self.packageName		= [TBXML textForElement:package_el];
     } else {
@@ -487,7 +521,10 @@ NSString * const kAttr_filename		= @"filename";
         [thumbArr addObject:[TBXML valueOfAttributeNamed:kAttr_thumb	//add thumb
                                               forElement:page_el]];
         [descArr addObject:[TBXML textForElement:page_el]];				//add description
-        
+		
+		[self registerListenerWithName:[TBXML valueOfAttributeNamed:kAttr_listeners forElement:page_el]
+						 forPageNumber:fileArr.count - 1];
+		
         //move to next page element
         page_el = [TBXML nextSiblingNamed:kName_Page searchFromElement:page_el];
     }
@@ -526,6 +563,9 @@ NSString * const kAttr_filename		= @"filename";
 - (void)registerNotificationHandlers {
     
     __weak GTViewController *weakSelf = self;
+	
+	self.listeners						= [NSMutableDictionary dictionary];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(pageEventDetected:) name:GTPageNotificationEvent object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserverForName:snuffyViewControllerTouchNotificationTouchesBegan object:nil queue:nil usingBlock:^(NSNotification *note) {
         
@@ -570,7 +610,8 @@ NSString * const kAttr_filename		= @"filename";
 }
 
 - (void)removeNotificationHandlers {
-    
+	
+	[[NSNotificationCenter defaultCenter] removeObserver:self name:GTPageNotificationEvent object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:snuffyViewControllerTouchNotificationTouchesBegan object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:snuffyViewControllerTouchNotificationTouchesMoved object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:snuffyViewControllerTouchNotificationTouchesEnded object:nil];
