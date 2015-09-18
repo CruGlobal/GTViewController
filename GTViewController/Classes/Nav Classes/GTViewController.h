@@ -89,6 +89,7 @@ extern NSString *const GTViewControllerNotificationPageViewUserInfoKeyPageNumber
 - (void)refreshView;
 
 - (void)setPackageCode:(NSString *)packageCode languageCode:(NSString *)languageCode;
+- (void)setParallelPackageCode:(NSString *)packageCode parallelLanguageCode:(NSString *)languageCode;
 
 @end
 

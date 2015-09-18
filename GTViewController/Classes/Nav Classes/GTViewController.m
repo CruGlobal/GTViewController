@@ -93,6 +93,8 @@ NSString * const kAttr_filename		= @"filename";
 @property (nonatomic, strong)	NSString *packageName;
 @property (nonatomic, strong)	NSString *languageCode;
 @property (nonatomic, strong)	NSString *packageCode;
+@property (nonatomic, strong)	NSString *parallelLanguageCode;
+@property (nonatomic, strong)	NSString *parallelPackageCode;
 
 @property (nonatomic, strong)	NSArray *packageArray;
 @property (nonatomic, strong)	NSMutableArray *pageArray;
@@ -715,7 +717,7 @@ NSString * const kAttr_filename		= @"filename";
         UIBarButtonItem *switchButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Package_PopUpToolBar_Icon_Switch"]
                                                                          style:UIBarButtonItemStyleBordered
                                                                         target:self
-                                                                        action:@selector(nabvToolbarLanguageSwitch)];
+                                                                        action:@selector(navToolbarLanguageSwitch)];
         
         self.switchButton = switchButton;
         
@@ -734,10 +736,19 @@ NSString * const kAttr_filename		= @"filename";
     
 }
 
--(void)nabvToolbarLanguageSwitch{
-    NSString *current = self.configFilename;
+-(void)navToolbarLanguageSwitch{
+	
+	NSString *current = self.configFilename;
+	NSString *packageCode = self.packageCode;
+	NSString *languageCode = self.languageCode;
+	
     self.configFilename = self.parallelConfigFilename;
-    self.parallelConfigFilename = current;
+	self.packageCode = self.parallelPackageCode;
+	self.languageCode = self.parallelLanguageCode;
+	
+	self.parallelConfigFilename = current;
+	self.parallelPackageCode = packageCode;
+	self.parallelLanguageCode = languageCode;
     
     [self refreshView];
     
@@ -791,6 +802,11 @@ NSString * const kAttr_filename		= @"filename";
 	if (self.shareInfo) {
 		[self.shareInfo setPackageCode:packageCode languageCode:languageCode pageNumber:@(self.activeView)];
 	}
+}
+
+- (void)setParallelPackageCode:(NSString *)packageCode parallelLanguageCode:(NSString *)languageCode {
+	self.parallelPackageCode = packageCode;
+	self.parallelLanguageCode = languageCode;
 }
 
 #pragma mark - easter egg

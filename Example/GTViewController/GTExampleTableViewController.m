@@ -137,7 +137,9 @@ NSString *const GTExampleTableViewControllerResourcesKeyConfigFile	= @"org.cru.g
 	
 	NSString *configFile	= self.resources[0][GTExampleTableViewControllerResourcesKeyConfigFile];
 	
-	[self.godtoolsViewController loadResourceWithConfigFilename:configFile];
+	[self.godtoolsViewController setPackageCode:@"fourlaws" languageCode:@"en"];
+	[self.godtoolsViewController setParallelPackageCode:@"fourlaws" parallelLanguageCode:@"fr"];
+	[self.godtoolsViewController loadResourceWithConfigFilename:configFile parallelConfigFileName:configFile isDraft:NO];
 	
 	[self.navigationController pushViewController:self.godtoolsViewController animated:YES];
 	
