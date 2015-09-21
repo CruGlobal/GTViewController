@@ -14,6 +14,8 @@
 @property (nonatomic, strong, readonly) NSURL *shareURL;
 @property (nonatomic, strong) NSString *subject;
 @property (nonatomic, strong) NSString *message;
+@property (nonatomic, strong) NSString *appName;
+@property (nonatomic, strong) NSString *packageName;
 @property (nonatomic, assign) BOOL addPackageInfo;
 @property (nonatomic, assign) BOOL addCampaignInfo;
 

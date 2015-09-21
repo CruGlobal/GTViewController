@@ -106,18 +106,42 @@
 	
 }
 
+- (NSString *)subject {
+	
+	return [self replaceTermsWithValuesInString:_subject];
+	
+}
+
 - (NSString *)message {
 	
-	if (_message && [_message containsString:@"%@"]) {
+	return [self replaceTermsWithValuesInString:_message];
+	
+}
+	
+- (NSString *)replaceTermsWithValuesInString:(NSString *)string {
+	
+	NSString *message = string;
+	
+	if (message) {
 		
-		return [NSString stringWithFormat:_message, self.shareURL.absoluteString];
+		if (self.shareURL && [message containsString:@"{{share_link}}"]) {
 		
-	} else {
+			message = [message stringByReplacingOccurrencesOfString:@"{{share_link}}" withString:self.shareURL.absoluteString];
+		}
 		
-		return _message;
+		if (self.appName && [message containsString:@"{{app_name}}"]) {
+			
+			message = [message stringByReplacingOccurrencesOfString:@"{{app_name}}" withString:self.appName];
+		}
+		
+		if (self.packageName && [message containsString:@"{{package_name}}"]) {
+			
+			message = [message stringByReplacingOccurrencesOfString:@"{{package_name}}" withString:self.packageName];
+		}
 		
 	}
 	
+	return message;
 }
 
 #pragma mark - UIActivityItemSource

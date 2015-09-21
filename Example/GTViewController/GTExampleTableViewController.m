@@ -85,8 +85,10 @@ NSString *const GTExampleTableViewControllerResourcesKeyConfigFile	= @"org.cru.g
 		[shareInfo setGoogleAnalyticsCampaign:GTExampleCampaignName
 									   source:GTExampleCampaignSource
 									   medium:GTExampleCampaignMedium];
-		shareInfo.subject = @"God Tools";
-		shareInfo.message = @"Here is the booklet we were looking at today. This link, %@, should take you to the page we were last looking at.";
+	 	shareInfo.subject = @"{{app_name}} - {{package_name}}";
+		shareInfo.message = @"Here is the booklet we were looking at today. This link, {{share_link}}, should take you to the page we were last looking at.";
+		shareInfo.appName = @"My Sweet App";
+		shareInfo.packageName = @"The Four Spiritual Laws";
 		shareInfo.addPackageInfo = YES;
 		shareInfo.addCampaignInfo = NO;
 		GTPageMenuViewController *pageMenuViewController = [[GTPageMenuViewController alloc] initWithFileLoader:fileLoader];
