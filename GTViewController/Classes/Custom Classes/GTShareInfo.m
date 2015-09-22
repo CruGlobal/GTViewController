@@ -124,17 +124,17 @@
 	
 	if (message) {
 		
-		if (self.shareURL && [message containsString:@"{{share_link}}"]) {
+		if (self.shareURL) {
 		
 			message = [message stringByReplacingOccurrencesOfString:@"{{share_link}}" withString:self.shareURL.absoluteString];
 		}
 		
-		if (self.appName && [message containsString:@"{{app_name}}"]) {
+		if (self.appName) {
 			
 			message = [message stringByReplacingOccurrencesOfString:@"{{app_name}}" withString:self.appName];
 		}
 		
-		if (self.packageName && [message containsString:@"{{package_name}}"]) {
+		if (self.packageName) {
 			
 			message = [message stringByReplacingOccurrencesOfString:@"{{package_name}}" withString:self.packageName];
 		}
