@@ -748,7 +748,7 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
                 //note: because of the unpredictable height of text labels, we need to calculate their combined height
 
                 //create a temporary text label and add it's height to the tally
-                labelLabel = [self createLabelFromElement:object_el parentTextAlignment:NSTextAlignmentLeft xPos:0 yPos:0 container:nil];
+                labelLabel = [self createLabelFromElement:object_el parentTextAlignment:NSTextAlignmentLeft xPos:0 yPos:0 container:self.pageView];
                 combinedHeightOfTextLabels += fmaxf(labelLabel.frame.size.height,40);
                 
             }
@@ -791,7 +791,7 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
         //NSLog(@"topOfPageSpace = %ld", (long)topOfPageSpace);
         
         //calculate the bottom limit for objects to be spaced - top of question if it exists, or bottom of page if it doesn't
-        NSInteger bottomOfPageSpace = ([TBXML childElementNamed:kName_Question parentElement:self.pageElement] ? CGRectGetMinY(self.questionFrame) : CGRectGetMaxY(self.pageView.frame));
+        NSInteger bottomOfPageSpace = ([TBXML childElementNamed:kName_Question parentElement:self.pageElement] ? CGRectGetMinY(self.questionFrame) : CGRectGetHeight(self.pageView.frame));
         //NSLog(@"bottomOfPageSpace = %ld", (long)bottomOfPageSpace);
         
         spaceBetweenObjects = round(((       bottomOfPageSpace                          // top of question/bottom of page
