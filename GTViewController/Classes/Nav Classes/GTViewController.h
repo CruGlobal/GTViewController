@@ -54,6 +54,7 @@ extern NSString *const GTViewControllerNotificationPageViewUserInfoKeyPageNumber
  *  @return the initialized self
  */
 - (instancetype)initWithConfigFile:(NSString *)filename
+							 frame:(CGRect)frame
 					   packageCode:(NSString *)packageCode
 					  langaugeCode:(NSString *)languageCode
 						fileLoader:(GTFileLoader *)fileLoader

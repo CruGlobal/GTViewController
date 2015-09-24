@@ -80,6 +80,7 @@ NSString * const kAttr_filename		= @"filename";
 
 @property (nonatomic, weak)		id<GTViewControllerMenuDelegate> menuDelegate;
 @property (nonatomic, strong)	GTFileLoader *fileLoader;
+@property (nonatomic, assign)	CGRect frame;
 
 @property (nonatomic, strong)	NSString *configFilename;
 @property (nonatomic, strong)	NSString *parallelConfigFilename;
@@ -224,6 +225,7 @@ NSString * const kAttr_filename		= @"filename";
 #pragma mark - public methods
 
 - (instancetype)initWithConfigFile:(NSString *)filename
+							 frame:(CGRect)frame
 					   packageCode:(NSString *)packageCode
 					  langaugeCode:(NSString *)languageCode
 						fileLoader:(GTFileLoader *)fileLoader
@@ -235,7 +237,8 @@ NSString * const kAttr_filename		= @"filename";
     if ((self = [super initWithNibName:NSStringFromClass([self class]) bundle:nil])) {
         
         [self registerNotificationHandlers];
-        
+		
+		self.frame							= frame;
         self.fileLoader						= fileLoader;
         self.pageMenu						= pageMenuViewController;
         self.aboutPage						= aboutViewController;
@@ -304,7 +307,8 @@ NSString * const kAttr_filename		= @"filename";
 }
 
 - (void)skipToIndex:(NSInteger)index animated:(BOOL)animated {
-    
+	
+	CGRect pageFrame = ( self.view ? self.view.frame : self.frame );
     GTPage *newLeftLeftPage, *newLeftPage, *newCenterPage, *newRightPage, *newRightRightPage;
     
     //make sure the views aren't animating
@@ -317,7 +321,7 @@ NSString * const kAttr_filename		= @"filename";
         //create the new view controllers
         if (index > 1) {
             newLeftLeftPage = [[GTPage alloc] initWithFilename:self.pageArray[kPageArray_File][self.activeView - 2]
-                                                         frame:self.view.frame
+                                                         frame:pageFrame
                                                       delegate:self
                                                     fileLoader:self.fileLoader];
         } else {
@@ -326,7 +330,7 @@ NSString * const kAttr_filename		= @"filename";
         
         if (index > 0) {
             newLeftPage = [[GTPage alloc] initWithFilename:self.pageArray[kPageArray_File][self.activeView - 1]
-                                                     frame:self.view.frame
+                                                     frame:pageFrame
                                                   delegate:self
                                                 fileLoader:self.fileLoader];
         } else {
@@ -334,13 +338,13 @@ NSString * const kAttr_filename		= @"filename";
         }
         
         newCenterPage = [[GTPage alloc] initWithFilename:self.pageArray[kPageArray_File][self.activeView]
-                                                   frame:self.view.frame
+                                                   frame:pageFrame
                                                 delegate:self
                                               fileLoader:self.fileLoader];
         
         if (index < [[[self pageArray] objectAtIndex:kPageArray_File] count] - 1) {
             newRightPage = [[GTPage alloc] initWithFilename:self.pageArray[kPageArray_File][self.activeView + 1]
-                                                      frame:self.view.frame
+                                                      frame:pageFrame
                                                    delegate:self
                                                  fileLoader:self.fileLoader];
         } else {
@@ -349,7 +353,7 @@ NSString * const kAttr_filename		= @"filename";
         
         if (index < [[[self pageArray] objectAtIndex:kPageArray_File] count] - 2) {
             newRightRightPage = [[GTPage alloc] initWithFilename:self.pageArray[kPageArray_File][self.activeView + 2]
-                                                           frame:self.view.frame
+                                                           frame:pageFrame
                                                         delegate:self
                                                       fileLoader:self.fileLoader];
         } else {
@@ -364,7 +368,7 @@ NSString * const kAttr_filename		= @"filename";
         self.leftPage = nil;
         
         //remove the right view
-        if (self.rightPage.superview != nil) {
+        if (self.rightPage.superview) {
             [self.rightPage removeFromSuperview];
         }
         self.rightPage = nil;
@@ -1937,7 +1941,8 @@ NSString * const kAttr_filename		= @"filename";
 - (void)viewDidLoad {
     
     [super viewDidLoad];
-    
+	
+	self.view.frame = self.frame;
     self.lastTrackedView = -1;
 }
 
