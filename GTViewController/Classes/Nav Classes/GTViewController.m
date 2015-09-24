@@ -239,6 +239,7 @@ NSString * const kAttr_filename		= @"filename";
         [self registerNotificationHandlers];
 		
 		self.frame							= frame;
+		self.view.frame						= frame;
         self.fileLoader						= fileLoader;
         self.pageMenu						= pageMenuViewController;
         self.aboutPage						= aboutViewController;
