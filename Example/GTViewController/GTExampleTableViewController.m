@@ -96,6 +96,7 @@ NSString *const GTExampleTableViewControllerResourcesKeyConfigFile	= @"org.cru.g
 		
 		[self willChangeValueForKey:@"godtoolsViewController"];
 		_godtoolsViewController	= [[GTViewController alloc] initWithConfigFile:configFile
+																		 frame:self.view.frame
 																   packageCode:@"fourlaws"
 																  langaugeCode:@"en"
 																	fileLoader:fileLoader
