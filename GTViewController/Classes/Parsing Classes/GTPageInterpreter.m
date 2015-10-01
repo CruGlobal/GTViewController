@@ -152,7 +152,7 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 - (id)createDisclosureIndicatorFromButtonTag:	(NSInteger)buttonTag		container:(UIView *)container;
 - (id)createImageFromElement:					(TBXMLElement *)element		xPos:(CGFloat)xpostion			yPos:(CGFloat)ypostion	container:(UIView *)container;
 - (id)createLabelFromElement:					(TBXMLElement *)element		parentTextAlignment:(UITextAlignment)panelAlign			xPos:(CGFloat)xpostion			yPos:(CGFloat)ypostion	container:(UIView *)container;
-- (id)createPanelFromElement:					(TBXMLElement *)element		buttonTag:(NSInteger)buttonTag;
+- (id)createPanelFromElement:					(TBXMLElement *)element		buttonTag:(NSInteger)buttonTag	container:(UIView *)container;
 - (id)createQuestionFromElement:				(TBXMLElement *)element		container:(UIView *)container;
 - (id)createQuestionLabelFromElement:			(TBXMLElement *)element		container:(UIView *)container;
 - (id)createTitleFromElement:					(TBXMLElement *)element;
@@ -1020,7 +1020,7 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 		panel_el					=		[TBXML childElementNamed:kName_Panel parentElement:button_el];
 		
 		//create, add and release panel
-		UISnufflePanel		*tempPanel	=		[self createPanelFromElement:panel_el buttonTag:tag];
+		UISnufflePanel		*tempPanel	=		[self createPanelFromElement:panel_el buttonTag:tag container:self.pageView];
 		if (![self.pageView viewWithTag:tempPanel.tag]) {
 			[self.pageView	addSubview:tempPanel];
 		}
@@ -1496,7 +1496,7 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 		//note: these defaults only apply to text labels inside panels
         if		(x)										{frame.origin.x		=	round([x floatValue]);}								else	{frame.origin.x		= xpostion;}
 		if		(y)										{frame.origin.y		=	round([y floatValue]);}								else	{frame.origin.y		= ypostion;}
-		if		(w)										{frame.size.width	=	round([w floatValue]);}								else	{frame.size.width	= 280;}
+		if		(w)										{frame.size.width	=	round([w floatValue]);}								else	{frame.size.width	= (container ? container.frame.size.width - (2 * DEFAULT_PANEL_OFFSET_X) : 280);}
 		if		(h)										{frame.size.height	=	round([h floatValue]);}								else	{frame.size.height	= 40;}
 		if		((w != nil) && (h != nil))				{resize				= NO;}
 		
@@ -1553,7 +1553,7 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
  *	Parameters:		Element:	The TBXMLElement for the panel
  *	Returns:		A UISnufflePanel object from the attributes specified in the passed TBXML element.
  */
-- (id)createPanelFromElement:(TBXMLElement *)element buttonTag:(NSInteger)buttonTag {
+- (id)createPanelFromElement:(TBXMLElement *)element buttonTag:(NSInteger)buttonTag container:(UIView *)container {
 	
 	//if panel exists create panel
 	if (element) {
@@ -1581,7 +1581,8 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 		CGFloat			maxHeight			= 0;
 		
 		UISnufflePanel	*tempPanel			=	[[UISnufflePanel alloc] init];
-		UIView			*tempContainerView	=	[[UIView alloc] initWithFrame:CGRectMake(5, 5, 280, 5)];
+		CGRect			containerFrame		=	(container ? container.frame : CGRectMake(0, 0, 320, 480));
+		UIView			*tempContainerView	=	[[UIView alloc] initWithFrame:CGRectMake(5, 5, CGRectGetWidth(containerFrame) - 40, 5)];
 		
 		//init variables for button placment
 		CGFloat				spaceBetweenObjects = 10.0;
