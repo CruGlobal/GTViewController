@@ -155,11 +155,11 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 - (id)createPanelFromElement:					(TBXMLElement *)element		buttonTag:(NSInteger)buttonTag	container:(UIView *)container;
 - (id)createQuestionFromElement:				(TBXMLElement *)element		container:(UIView *)container;
 - (id)createQuestionLabelFromElement:			(TBXMLElement *)element		container:(UIView *)container;
-- (id)createTitleFromElement:					(TBXMLElement *)element;
+- (id)createTitleFromElement:					(TBXMLElement *)element		container:(UIView *)container;
 - (id)createSubTitleFromElement:				(TBXMLElement *)element		underTitle:(UIView *)titleView;
-- (id)createTitleNumberFromElement:				(TBXMLElement *)element		titleMode:(NSString *)titleMode;
-- (id)createTitleHeadingFromElement:			(TBXMLElement *)element		titleMode:(NSString *)titleMode;
-- (id)createTitleSubheadingFromElement:			(TBXMLElement *)element		titleMode:(NSString *)titleMode;
+- (id)createTitleNumberFromElement:				(TBXMLElement *)element		titleMode:(NSString *)titleMode containerFrame:(CGRect)containerFrame;
+- (id)createTitleHeadingFromElement:			(TBXMLElement *)element		titleMode:(NSString *)titleMode containerFrame:(CGRect)containerFrame;
+- (id)createTitleSubheadingFromElement:			(TBXMLElement *)element		titleMode:(NSString *)titleMode containerFrame:(CGRect)containerFrame;
 - (UILabel *)createLabelWithFrame:				(CGRect)frame				autoResize:(BOOL)resize			text:(NSString *)text	color:(UIColor *)color	bgColor:(UIColor *)bgColor	alpha:(CGFloat)alpha	alignment:(UITextAlignment)textAlignment	font:(NSString *)font	size:(NSUInteger)size;
 
 //attribute parsing functions
@@ -391,7 +391,7 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 		
 		//create title from xml element
 		if (title_el) {
-			titleView		= [self createTitleFromElement:title_el];
+			titleView		= [self createTitleFromElement:title_el container:self.pageView];
 			mode			= [TBXML valueOfAttributeNamed:kAttr_mode forElement:title_el];
 			self.titleFrame = titleView.frame;
 			subTitleView	= [self createSubTitleFromElement:title_el underTitle:titleView];
@@ -1902,7 +1902,7 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 	}
 }
 
-- (id)createTitleFromElement:(TBXMLElement *)element {
+- (id)createTitleFromElement:(TBXMLElement *)element container:(UIView *)container {
 	
 	
 	if (element) {
@@ -1914,14 +1914,29 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 		TBXMLElement	*title_heading		= [TBXML childElementNamed:kName_TitleHeading		parentElement:element];
 		TBXMLElement	*title_subheading	= [TBXML childElementNamed:kName_TitleSubHeading	parentElement:element];
 		NSInteger		xmltitleheight		= [[TBXML valueOfAttributeNamed:kAttr_height		forElement:element] intValue];
+		CGRect			titleFrame			= CGRectMake(0, 20, CGRectGetWidth(container.frame) - 20, xmltitleheight ? xmltitleheight : 150);
 		
 		UILabel	*tempNumber			= nil;
 		UILabel *tempHeading		= nil;
 		UILabel	*tempSubHeading		= nil;
 		
-		if (title_number)		{tempNumber		= [self createTitleNumberFromElement:title_number			titleMode:mode];}
-		if (title_heading)		{tempHeading	= [self createTitleHeadingFromElement:title_heading			titleMode:mode];}
-		if (title_subheading)	{tempSubHeading	= [self createTitleSubheadingFromElement:title_subheading	titleMode:mode];}
+		//create the title container
+		if ([mode isEqual:kTitleMode_straight]) {
+			titleFrame = CGRectMake(0, 20, CGRectGetWidth(container.frame), CGRectGetHeight(titleFrame));
+			
+		}
+		
+		if (title_number)		{tempNumber		= [self createTitleNumberFromElement:title_number			titleMode:mode containerFrame:titleFrame];}
+		if (title_heading)		{tempHeading	= [self createTitleHeadingFromElement:title_heading			titleMode:mode containerFrame:titleFrame];}
+		if (title_subheading)	{tempSubHeading	= [self createTitleSubheadingFromElement:title_subheading	titleMode:mode containerFrame:titleFrame];}
+		
+		//fixes issue with number getting cut off when heading is short
+		if (tempNumber && tempHeading) {
+			tempNumber.frame = CGRectMake(CGRectGetMinX(tempNumber.frame),
+										  CGRectGetMinY(tempNumber.frame),
+										  CGRectGetWidth(tempNumber.frame),
+										  fminf(CGRectGetHeight(tempNumber.frame), CGRectGetHeight(tempHeading.frame)));
+		}
 		
 		//Uses a loop to find the right size for the heading to fit on 3 lines
 		if ([mode isEqual:kTitleMode_peek]) {
@@ -1955,7 +1970,7 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 			
 			tempSubHeading.frame			= CGRectMake(CGRectGetMaxX(tempHeading.frame) + 11, 
 														 tempSubHeading.frame.origin.y, 
-														 self.pageView.frame.size.width - 20 - tempSubHeading.frame.origin.x - 11, 
+														 container.frame.size.width - 20 - tempSubHeading.frame.origin.x - 11, 
 														 fmaxf(tempSubHeading.frame.size.height + 10,labelsize.height + 20));
 			tempHeading.frame				= CGRectMake(tempHeading.frame.origin.x, 
 														 tempHeading.frame.origin.y - 10, 
@@ -1976,12 +1991,16 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 			titleheight = xmltitleheight;
 		}
 		
+		//override title height for subheadings with peek
 		if (tempSubHeading && [mode isEqual:kTitleMode_peek]) {titleheight += tempSubHeading.frame.size.height + CGRectGetMinY(tempSubHeading.frame) - CGRectGetMaxY(tempHeading.frame);}
+		
+		//set newly calculated height but don't let it be less than 43, the min value for shadows to display correctly
+		titleFrame.size.height = fmaxf(titleheight, 43);
 		
 		//create the title container
 		if ([mode isEqual:kTitleMode_clear]) {
 			//clear mode
-			titleContainer = [[UIRoundedView alloc] initWithFrame:CGRectMake(0, 20, 300, titleheight)
+			titleContainer = [[UIRoundedView alloc] initWithFrame:titleFrame
 														  bgColor:[UIColor clearColor]
 														   radius:ROUNDRECT_RADIUS
 														  topleft:NO
@@ -1992,7 +2011,7 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 			
 		} else if ([mode isEqual:kTitleMode_plain]) {
 			//plain mode
-			titleContainer = [[UIRoundedView alloc] initWithFrame:CGRectMake(0, 20, self.pageView.frame.size.width - 20, titleheight)
+			titleContainer = [[UIRoundedView alloc] initWithFrame:titleFrame
 														  bgColor:[UIColor whiteColor]
 														   radius:ROUNDRECT_RADIUS
 														  topleft:NO
@@ -2001,13 +2020,13 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 													   bottomleft:NO
 													  tapDelegate:self.panelDelegate];
 			
-			tempSubHeading.frame = CGRectMake(10, 10, self.pageView.frame.size.width - 30, titleheight - 10);
+			tempSubHeading.frame = CGRectMake(10, 10, container.frame.size.width - 30, titleheight - 10);
 			[tempSubHeading sizeToFit];
-			titleContainer.frame = CGRectMake(0, 20, self.pageView.frame.size.width - 20, tempSubHeading.frame.size.height + 20);
+			titleContainer.frame = CGRectMake(0, 20, container.frame.size.width - 20, tempSubHeading.frame.size.height + 20);
 			titleContainer.clipsToBounds = YES;
 		} else if ([mode isEqual:kTitleMode_straight]) {
 			//straight mode
-			titleContainer = [[UIRoundedView alloc] initWithFrame:CGRectMake(0, 20, self.pageView.frame.size.width, titleheight)
+			titleContainer = [[UIRoundedView alloc] initWithFrame:titleFrame
 														  bgColor:[UIColor whiteColor]
 														   radius:ROUNDRECT_RADIUS
 														  topleft:NO
@@ -2019,7 +2038,7 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 		} else if ([mode isEqual:kTitleMode_singlecurve] || [mode isEqual:kTitleMode_peek]) {
 			//single rounded corner mode or
 			//peek mode
-			titleContainer = [[UIRoundedView alloc] initWithFrame:CGRectMake(0, 0, self.pageView.frame.size.width - 20, titleheight)
+			titleContainer = [[UIRoundedView alloc] initWithFrame:titleFrame
 														  bgColor:[UIColor whiteColor]
 														   radius:ROUNDRECT_RADIUS * 2
 														  topleft:NO
@@ -2030,7 +2049,7 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 			
 		} else {
 			//no mode specified
-			titleContainer = [[UIRoundedView alloc] initWithFrame:CGRectMake(0, 20, self.pageView.frame.size.width - 20, titleheight)
+			titleContainer = [[UIRoundedView alloc] initWithFrame:titleFrame
 														  bgColor:[UIColor whiteColor]
 														   radius:ROUNDRECT_RADIUS
 														  topleft:NO
@@ -2068,7 +2087,7 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 	
 }
 
-- (id)createSubTitleFromElement:(TBXMLElement *)element underTitle:(UIView *)titleUIView{
+- (id)createSubTitleFromElement:(TBXMLElement *)element underTitle:(UIView *)titleUIView {
 	UIRoundedView	*subTitleContainer = nil;
 	
 	if (element) {
@@ -2099,7 +2118,7 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 			//set parameters to attribute val or defaults	//attribute value															//default value
 			if		(x)										{frame.origin.x		=	round([x floatValue]);}								else	{frame.origin.x		= 10;}
 			if		(y)										{frame.origin.y		=	round([y floatValue]);}								else	{frame.origin.y		= 30;}
-			if		(w)										{frame.size.width	=	round([w floatValue]);}								else	{frame.size.width	= self.pageView.frame.size.width - 40;}
+			if		(w)										{frame.size.width	=	round([w floatValue]);}								else	{frame.size.width	= CGRectGetWidth(titleUIView.frame) - 40;}
 			if		(h)										{frame.size.height	=	round([h floatValue]);}								else	{frame.size.height	= 80;}
 			if		((w != nil) && (h != nil))				{resize				= NO;}
 			
@@ -2133,7 +2152,7 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 			//set the initial frame of the subtitle
 			CGRect subTitleFrame = CGRectMake(0,
                                               self.titleFrame.size.height - (tempSubTitleText.frame.size.height + tempSubTitleText.frame.origin.y + (ROUNDRECT_RADIUS)) + 10,
-                                              self.pageView.frame.size.width - 30,
+                                              titleUIView.frame.size.width - 10,
                                               tempSubTitleText.frame.size.height + tempSubTitleText.frame.origin.y + (ROUNDRECT_RADIUS)
                                               );
 			
@@ -2173,7 +2192,7 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 	return subTitleContainer;
 }
 
-- (id)createTitleNumberFromElement:(TBXMLElement *)element	titleMode:(NSString *)titleMode {
+- (id)createTitleNumberFromElement:(TBXMLElement *)element	titleMode:(NSString *)titleMode containerFrame:(CGRect)containerFrame {
 	
 	if (element != nil) {
 		
@@ -2229,7 +2248,7 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 }
 
 
-- (id)createTitleHeadingFromElement:(TBXMLElement *)element	titleMode:(NSString *)titleMode {
+- (id)createTitleHeadingFromElement:(TBXMLElement *)element	titleMode:(NSString *)titleMode containerFrame:(CGRect)containerFrame {
 	
 	
 	if (element != nil) {
@@ -2264,7 +2283,7 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 		} else {
 			if		(x)										{frame.origin.x		= [x floatValue];}								else	{frame.origin.x		= 55;}
 			if		(y)										{frame.origin.y		= [y floatValue];}								else	{frame.origin.y		= 5;}
-			if		(w)										{frame.size.width	= [w floatValue];}								else	{frame.size.width	= 240;}
+			if		(w)										{frame.size.width	= [w floatValue];}								else	{frame.size.width	= CGRectGetWidth(containerFrame) - 60;}
 			if		(h)										{frame.size.height	= [h floatValue];}								else	{frame.size.height	= 150;}
 			if		((w != nil) && (h != nil))				{resize				= NO;}
 		}
@@ -2289,7 +2308,7 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 				UILabel *temp = [self createLabelWithFrame:frame autoResize:resize text:text color:color bgColor:bgColor alpha:labelAlpha alignment:textAlignment font:font size:textSize];
 				frame = temp.frame;
 				frame.origin.x		= 0;
-				frame.size.width = self.pageView.frame.size.width;
+				frame.size.width = containerFrame.size.width;
 				temp.frame = frame;
 				
 				return temp;
@@ -2308,7 +2327,7 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
  *					titleMode:	A NSString containing the specified title mode (straight, single, etc.)
  *	Returns:		A UIView object from the attributes specified in the passed TBXML element.
  */
-- (id)createTitleSubheadingFromElement:(TBXMLElement *)element titleMode:(NSString *)titleMode {
+- (id)createTitleSubheadingFromElement:(TBXMLElement *)element titleMode:(NSString *)titleMode containerFrame:(CGRect)containerFrame {
 	//read attributes for title subheading
 	NSString	*text	=						[TBXML textForElement:element];
 	UIColor		*color	=	[self colorForHex:	[TBXML valueOfAttributeNamed:kAttr_color	forElement:element]];
@@ -2383,7 +2402,7 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 			//**CONFIRM REDUNDANCY**	UILabel *temp = [self createLabelWithFrame:frame autoResize:resize text:text color:color bgColor:bgColor alpha:labelAlpha alignment:textAlignment font:font size:textSize];
 			frame = tempLabel.frame;
 			frame.origin.x		= 0;
-			frame.size.width = self.pageView.frame.size.width;
+			frame.size.width = containerFrame.size.width;
 			tempLabel.frame = frame;
 			
 			//**CONFIRM REDUNDANCY**	return temp;
