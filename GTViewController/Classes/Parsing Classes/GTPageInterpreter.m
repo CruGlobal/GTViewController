@@ -1938,7 +1938,7 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 			tempNumber.frame = CGRectMake(CGRectGetMinX(tempNumber.frame),
 										  CGRectGetMinY(tempNumber.frame),
 										  CGRectGetWidth(tempNumber.frame),
-										  fminf(CGRectGetHeight(tempNumber.frame), CGRectGetHeight(tempHeading.frame)));
+										  fmaxf(fminf(CGRectGetHeight(tempNumber.frame), CGRectGetHeight(tempHeading.frame)), 50));
 		}
 		
 		//Uses a loop to find the right size for the heading to fit on 3 lines
@@ -1996,6 +1996,10 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 		
 		//set newly calculated height but don't let it be less than 43, the min value for shadows to display correctly
 		titleFrame.size.height = fmaxf(titleheight, 43);
+		//set bigger min size if a number is involved
+		if (tempNumber) {
+			titleFrame.size.height = fmaxf(titleheight, 60);
+		}
 		
 		//create the title container
 		if ([mode isEqual:kTitleMode_clear]) {
