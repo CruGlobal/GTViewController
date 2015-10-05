@@ -20,8 +20,6 @@
 @property (nonatomic, strong) NSString *peekPanelFontName;
 @property (nonatomic, strong) NSString *questionFontName;
 @property (nonatomic, strong) NSString *straightQuestionFontName;
-@property (nonatomic, strong) NSString *descriptionFontName;
-@property (nonatomic, strong) NSString *instructionsFontName;
 @property (nonatomic, strong) NSString *labelFontName;
 @property (nonatomic, strong) NSString *boldLabelFontName;
 @property (nonatomic, strong) NSString *italicsLabelFontName;

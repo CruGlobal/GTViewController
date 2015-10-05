@@ -17,8 +17,6 @@ NSString * const kFont_peeksubheading	= @"Helvetica";
 NSString * const kFont_peekpanel		= @"HelveticaNeue-BoldItalic";
 NSString * const kFont_question			= @"Helvetica-BoldOblique";
 NSString * const kFont_straightquestion	= @"Helvetica-Bold";
-NSString * const kFont_description		= @"Helvetica-Oblique";
-NSString * const kFont_instructions		= @"Helvetica-Bold";
 NSString * const kFont_label			= @"Helvetica";
 NSString * const kFont_boldlabel		= @"Helvetica-Bold";
 NSString * const kFont_italicslabel		= @"Helvetica-Oblique";
@@ -121,14 +119,6 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 
 - (NSString *)straightQuestionFontName {
 	return kFont_straightquestion;
-}
-
-- (NSString *)descriptionFontName {
-	return kFont_description;
-}
-
-- (NSString *)instructionsFontName {
-	return kFont_instructions;
 }
 
 - (NSString *)labelFontName {

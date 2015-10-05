@@ -16,7 +16,6 @@ NSString * const  GTPageInterpreterAmharicFont_peeksubheading	= @"NotoSansEthiop
 NSString * const  GTPageInterpreterAmharicFont_peekpanel		= @"NotoSansEthiopic";
 NSString * const  GTPageInterpreterAmharicFont_question			= @"NotoSansEthiopic-Bold";
 NSString * const  GTPageInterpreterAmharicFont_straightquestion	= @"NotoSansEthiopic-Bold";
-NSString * const  GTPageInterpreterAmharicFont_description		= @"NotoSansEthiopic";
 NSString * const  GTPageInterpreterAmharicFont_instructions		= @"NotoSansEthiopic-Bold";
 NSString * const  GTPageInterpreterAmharicFont_label			= @"NotoSansEthiopic";
 NSString * const  GTPageInterpreterAmharicFont_boldlabel		= @"NotoSansEthiopic-Bold";
@@ -55,10 +54,6 @@ NSString * const  GTPageInterpreterAmharicFont_bolditalicslabel	= @"NotoSansEthi
 
 - (NSString *)straightQuestionFontName {
 	return GTPageInterpreterAmharicFont_straightquestion;
-}
-
-- (NSString *)descriptionFontName {
-	return GTPageInterpreterAmharicFont_description;
 }
 
 - (NSString *)instructionsFontName {

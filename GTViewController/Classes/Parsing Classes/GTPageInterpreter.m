@@ -58,8 +58,6 @@ NSString * const kName_Image			= @"image";
 NSString * const kName_Panel			= @"panel";
 NSString * const kName_PanelLabel		= @"text";
 NSString * const kName_PanelImage		= @"image";
-NSString * const kName_Description		= @"description";
-NSString * const kName_Instructions		= @"instructions";
 NSString * const kName_Question			= @"question";
 
 // Constants for the XML attribute names
@@ -114,24 +112,6 @@ NSString * const kLabelModifer_normal	= @"normal";
 NSString * const kLabelModifer_bold		= @"bold";
 NSString * const kLabelModifer_italics	= @"italics";
 NSString * const kLabelModifer_bolditalics	= @"bold-italics";
-
-//font constants
-NSString * const kFont_number			= @"STHeitiTC-Light";
-NSString * const kFont_heading			= @"Helvetica-Bold";//default
-NSString * const kFont_subheading		= @"STHeitiSC-Medium";
-NSString * const kFont_peekheading		= @"STHeitiTC-Light";
-NSString * const kFont_peeksubheading	= @"Helvetica";
-NSString * const kFont_peekpanel		= @"HelveticaNeue-BoldItalic";
-NSString * const kFont_question			= @"Helvetica-BoldOblique";
-NSString * const kFont_straightquestion	= @"Helvetica-Bold";
-NSString * const kFont_description		= @"Helvetica-Oblique";
-NSString * const kFont_instructions		= @"Helvetica-Bold";
-NSString * const kFont_label			= @"Helvetica";
-NSString * const kFont_boldlabel		= @"Helvetica-Bold";
-NSString * const kFont_italicslabel		= @"Helvetica-Oblique";
-NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
-
-//font sizes
 
 
 @interface GTPageInterpreter ()
@@ -1443,7 +1423,7 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 		BOOL			resize			= YES;
 		UIColor			*bgColor		= nil;
 		NSUInteger		textSize		= DEFAULT_TEXTSIZE_LABEL;
-		NSString		*font			= kFont_label;
+		NSString		*font			= self.pageStyle.labelFontName;
 		CGFloat			labelAlpha		= 1.0;
 		
 		//set parameters to attribute val or defaults	//attribute value															//default value
@@ -1482,9 +1462,9 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 		}
 		
 		if (modifier) {
-			if		([modifier isEqual:kLabelModifer_bold])			{font		= kFont_boldlabel;}
-			else if	([modifier isEqual:kLabelModifer_italics])		{font		= kFont_italicslabel;}
-			else if	([modifier isEqual:kLabelModifer_bolditalics])	{font		= kFont_bolditalicslabel;}
+			if		([modifier isEqual:kLabelModifer_bold])			{font		= self.pageStyle.boldLabelFontName;}
+			else if	([modifier isEqual:kLabelModifer_italics])		{font		= self.pageStyle.italicsLabelFontName;}
+			else if	([modifier isEqual:kLabelModifer_bolditalics])	{font		= self.pageStyle.boldItalicsLabelFontName;}
 		}
 		
 		if (textalign) {
@@ -1784,7 +1764,7 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 		BOOL			resize			= YES;
 		UIColor			*bgColor		= nil;
 		NSUInteger		textSize		= DEFAULT_TEXTSIZE_QUESTION_NORMAL;
-		NSString		*font			= kFont_question;
+		NSString		*font			= self.pageStyle.questionFontName;
 		CGFloat			labelAlpha		= 1.0;
 		
 		//overwrite defaults with user set values (xml attributes)
@@ -1812,7 +1792,7 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 			bgColor = [UIColor whiteColor];
 			color = self.pageStyle.backgroundColor;
 			textSize = round(DEFAULT_TEXTSIZE_QUESTION_STRAIGHT * [size floatValue] / 100);
-			font = kFont_straightquestion;
+			font = self.pageStyle.straightQuestionFontName;
 			frame = CGRectMake(0, frame.origin.y, 320, frame.size.height);
 			textAlignment = NSTextAlignmentCenter;
 		}
@@ -1839,13 +1819,13 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 		
 		if (modifier) {
 			if ([modifier isEqual:kLabelModifer_bold]) {
-				font = kFont_boldlabel;
+				font = self.pageStyle.boldLabelFontName;
 			} else if ([modifier isEqual:kLabelModifer_italics]) {
-				font = kFont_italicslabel;
+				font = self.pageStyle.italicsLabelFontName;
 			} else if ([modifier isEqual:kLabelModifer_bolditalics]) {
-				font = kFont_bolditalicslabel;
+				font = self.pageStyle.boldItalicsLabelFontName;
 			} else if ([modifier isEqual:kLabelModifer_normal]) {
-				font = kFont_label;
+				font = self.pageStyle.labelFontName;
 			}
 		}
 		
@@ -1900,7 +1880,7 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 			
 			tempHeading.text = [textArray componentsJoinedByString:@"\n"];
 			
-			UIFont *tempFont = [UIFont fontWithName:kFont_peekheading size:DEFAULT_TEXTSIZE_TITLE_PEEKHEADING_MAX];
+			UIFont *tempFont = [UIFont fontWithName:self.pageStyle.peekHeadingFontName size:DEFAULT_TEXTSIZE_TITLE_PEEKHEADING_MAX];
 			int i;
 			CGSize labelsize;
 			for (i=DEFAULT_TEXTSIZE_TITLE_PEEKHEADING_MAX; i> DEFAULT_TEXTSIZE_TITLE_PEEKHEADING_MIN; i=i-1) {
@@ -2067,7 +2047,7 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 			BOOL			resize			= YES;
 			UIColor			*bgColor		= nil;
 			NSUInteger		textSize		= DEFAULT_TEXTSIZE_TITLE_SUBHEADING;
-			NSString		*font			= kFont_peekpanel;
+			NSString		*font			= self.pageStyle.peekPanelFontName;
 			CGFloat			labelAlpha		= 1.0;
 			
 			//set parameters to attribute val or defaults	//attribute value															//default value
@@ -2086,9 +2066,9 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 			}
 			
 			if (modifier) {
-				if		([modifier isEqual:kLabelModifer_bold])			{font		= kFont_boldlabel;}
-				else if	([modifier isEqual:kLabelModifer_italics])		{font		= kFont_italicslabel;}
-				else if	([modifier isEqual:kLabelModifer_bolditalics])	{font		= kFont_bolditalicslabel;}
+				if		([modifier isEqual:kLabelModifer_bold])			{font		= self.pageStyle.boldLabelFontName;}
+				else if	([modifier isEqual:kLabelModifer_italics])		{font		= self.pageStyle.italicsLabelFontName;}
+				else if	([modifier isEqual:kLabelModifer_bolditalics])	{font		= self.pageStyle.boldItalicsLabelFontName;}
 			}
 			
 			if (align) {
@@ -2121,7 +2101,7 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 														 tapDelegate:self.panelDelegate];
 			
 			CGRect peekPanelArrowFrame = CGRectMake((subTitleFrame.size.width / 2) - 5 ,subTitleFrame.size.height - 8 , 10, 10);
-			UILabel	*peekPanelArrow = [self createLabelWithFrame:peekPanelArrowFrame autoResize:NO text:@"▼" color:[UIColor whiteColor] bgColor: [UIColor clearColor] alpha:1.0 alignment:NSTextAlignmentCenter font:kFont_label size:8];
+			UILabel	*peekPanelArrow = [self createLabelWithFrame:peekPanelArrowFrame autoResize:NO text:@"▼" color:[UIColor whiteColor] bgColor: [UIColor clearColor] alpha:1.0 alignment:NSTextAlignmentCenter font:self.pageStyle.labelFontName size:8];
 			peekPanelArrow.shadowColor = [UIColor darkGrayColor];
 			
 			[subTitleContainer addSubview:tempSubTitleText];
@@ -2153,7 +2133,7 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 		BOOL			resize			= YES;
 		UIColor			*bgColor		= nil;
 		NSUInteger		textSize		= DEFAULT_TEXTSIZE_TITLE_NUMBER;
-		NSString		*font			= kFont_number;
+		NSString		*font			= self.pageStyle.numberFontName;
 		CGFloat			labelAlpha		= 1.0;
 		//overwrite defaults with user set values (xml attributes)
 		if		(x)										{frame.origin.x		= [x floatValue];}								else	{frame.origin.x		= 10;}
@@ -2209,7 +2189,7 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 		BOOL			resize			= YES;
 		UIColor			*bgColor		= nil;
 		NSUInteger		textSize		= ([titleMode isEqual:kTitleMode_peek] ? DEFAULT_TEXTSIZE_TITLE_HEADING_PEEKMODE : DEFAULT_TEXTSIZE_TITLE_HEADING_NORMALMODE );
-		NSString		*font			= ([titleMode isEqual:kTitleMode_peek] ? kFont_peekheading : kFont_heading);
+		NSString		*font			= ([titleMode isEqual:kTitleMode_peek] ? self.pageStyle.peekHeadingFontName : self.pageStyle.headingFontName);
 		CGFloat			labelAlpha		= 1.0;
 		
 		//set values to attribute values or defaults
@@ -2286,7 +2266,7 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 	BOOL			resize			= YES;
 	UIColor			*bgColor		= nil;
 	NSUInteger		textSize		= DEFAULT_TEXTSIZE_TITLE_SUBHEADING;
-	NSString		*font			= ([titleMode isEqual:kTitleMode_peek] ? kFont_peeksubheading : kFont_subheading);
+	NSString		*font			= ([titleMode isEqual:kTitleMode_peek] ? self.pageStyle.peekSubheadingFontName : self.pageStyle.subheadingFontName);
 	CGFloat			labelAlpha		= 1.0;
 	
 	//check if xml attributes are specified,		if so,				use them.										if not,	use defaults
