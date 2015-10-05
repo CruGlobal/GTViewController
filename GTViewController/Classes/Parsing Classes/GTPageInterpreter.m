@@ -1954,7 +1954,7 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 				//NSLog(@"Constraint Width: %f",constraintSize.width);
 				labelsize = [tempHeading.text sizeWithFont:tempFont constrainedToSize:constraintSize lineBreakMode:NSLineBreakByWordWrapping];
 				
-				if (labelsize.height <= (numberoflines*tempFont.pointSize+10)){
+				if (labelsize.height <= CGRectGetHeight(tempSubHeading.frame)){
 					//NSLog(@"Final Width: %f",labelsize.width);
 					break;
 				}
@@ -2276,7 +2276,7 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 			//peek mode
 			if		(x)										{frame.origin.x		= [x floatValue];}								else	{frame.origin.x		= 5;}
 			if		(y)										{frame.origin.y		= [y floatValue];}								else	{frame.origin.y		= 10;}
-			if		(w)										{frame.size.width	= [w floatValue];}								else	{frame.size.width	= 95;}
+			if		(w)										{frame.size.width	= [w floatValue];}								else	{frame.size.width	= CGRectGetWidth(containerFrame) / 4 - 5 - 4 - 2;}
 			if		(h)										{frame.size.height	= [h floatValue];}								else	{frame.size.height	= 100;}
 			if		((w != nil) && (h != nil))				{resize				= NO;}
 			
@@ -2351,15 +2351,15 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 	//check if xml attributes are specified,		if so,				use them.										if not,	use defaults
 	if ([titleMode isEqual:kTitleMode_peek]) {
 		//peek mode
-		if		(x)										{frame.origin.x		= [x floatValue];}								else	{frame.origin.x		= 116;}
+		if		(x)										{frame.origin.x		= [x floatValue];}								else	{frame.origin.x		= CGRectGetWidth(containerFrame) / 4 + 5;}
 		if		(y)										{frame.origin.y		= [y floatValue];}								else	{frame.origin.y		= 0;}
-		if		(w)										{frame.size.width	= [w floatValue];}								else	{frame.size.width	= 175;}
+		if		(w)										{frame.size.width	= [w floatValue];}								else	{frame.size.width	= CGRectGetWidth(containerFrame) * 3 / 4 - 5 - 31;}
 		if		(h)										{frame.size.height	= [h floatValue];}								else	{frame.size.height	= 120;}
 		if		((w != nil) && (h != nil))				{resize				= NO;}
 	} else {
 		if		(x)										{frame.origin.x		= [x floatValue];}								else	{frame.origin.x		= 0;}
 		if		(y)										{frame.origin.y		= [y floatValue];}								else	{frame.origin.y		= 82;}
-		if		(w)										{frame.size.width	= [w floatValue];}								else	{frame.size.width	= 320;}
+		if		(w)										{frame.size.width	= [w floatValue];}								else	{frame.size.width	= CGRectGetWidth(containerFrame);}
 		if		(h)										{frame.size.height	= [h floatValue];}								else	{frame.size.height	= 23;}
 		if		((w != nil) && (h != nil))				{resize				= NO;}
 	}
