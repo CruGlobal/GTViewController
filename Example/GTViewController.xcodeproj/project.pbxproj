@@ -123,8 +123,6 @@
 		68C595B51912DDCF00BB2AC6 /* GTPage.xib in Resources */ = {isa = PBXBuildFile; fileRef = 68C595731912DDCF00BB2AC6 /* GTPage.xib */; };
 		68C595B61912DDCF00BB2AC6 /* GTPageInterpreter.m in Sources */ = {isa = PBXBuildFile; fileRef = 68C595751912DDCF00BB2AC6 /* GTPageInterpreter.m */; settings = {COMPILER_FLAGS = "-Wno-enum-conversion"; }; };
 		68C595B71912DDCF00BB2AC6 /* GTPageInterpreter.m in Sources */ = {isa = PBXBuildFile; fileRef = 68C595751912DDCF00BB2AC6 /* GTPageInterpreter.m */; };
-		68C595B81912DDCF00BB2AC6 /* GTPageInterpreterAmharic.m in Sources */ = {isa = PBXBuildFile; fileRef = 68C595771912DDCF00BB2AC6 /* GTPageInterpreterAmharic.m */; settings = {COMPILER_FLAGS = "-Wno-enum-conversion"; }; };
-		68C595B91912DDCF00BB2AC6 /* GTPageInterpreterAmharic.m in Sources */ = {isa = PBXBuildFile; fileRef = 68C595771912DDCF00BB2AC6 /* GTPageInterpreterAmharic.m */; };
 		68C595BE1912DDCF00BB2AC6 /* AbyssinicaSIL-R.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 68C595811912DDCF00BB2AC6 /* AbyssinicaSIL-R.ttf */; };
 		68C595BF1912DDCF00BB2AC6 /* AbyssinicaSIL-R.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 68C595811912DDCF00BB2AC6 /* AbyssinicaSIL-R.ttf */; };
 		68C595D01912DDCF00BB2AC6 /* NotoSansEthiopic-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 68C5958A1912DDCF00BB2AC6 /* NotoSansEthiopic-Bold.ttf */; };
@@ -247,8 +245,6 @@
 		68C595731912DDCF00BB2AC6 /* GTPage.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = GTPage.xib; sourceTree = "<group>"; };
 		68C595741912DDCF00BB2AC6 /* GTPageInterpreter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTPageInterpreter.h; sourceTree = "<group>"; };
 		68C595751912DDCF00BB2AC6 /* GTPageInterpreter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = GTPageInterpreter.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
-		68C595761912DDCF00BB2AC6 /* GTPageInterpreterAmharic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTPageInterpreterAmharic.h; sourceTree = "<group>"; };
-		68C595771912DDCF00BB2AC6 /* GTPageInterpreterAmharic.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = GTPageInterpreterAmharic.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		68C5957E1912DDCF00BB2AC6 /* GTTrackerNotifications.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTTrackerNotifications.h; sourceTree = "<group>"; };
 		68C5957F1912DDCF00BB2AC6 /* snuffyViewControllerTouchNotifications.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = snuffyViewControllerTouchNotifications.h; sourceTree = "<group>"; };
 		68C595811912DDCF00BB2AC6 /* AbyssinicaSIL-R.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "AbyssinicaSIL-R.ttf"; sourceTree = "<group>"; };
@@ -388,8 +384,6 @@
 				6857937E1BC2F3A2002038CF /* GTPageStyle.m */,
 				685793811BC2FB47002038CF /* GTPageStyleAmharic.h */,
 				685793821BC2FB47002038CF /* GTPageStyleAmharic.m */,
-				68C595761912DDCF00BB2AC6 /* GTPageInterpreterAmharic.h */,
-				68C595771912DDCF00BB2AC6 /* GTPageInterpreterAmharic.m */,
 			);
 			path = "Parsing Classes";
 			sourceTree = "<group>";
@@ -807,7 +801,6 @@
 				687A32251B2D3DC80098ACE6 /* TBXML+HTTP.m in Sources */,
 				687A32241B2D3DC80098ACE6 /* TBXML+Compression.m in Sources */,
 				685793831BC2FB47002038CF /* GTPageStyleAmharic.m in Sources */,
-				68C595B81912DDCF00BB2AC6 /* GTPageInterpreterAmharic.m in Sources */,
 				68F1F816190B05ED00044CDF /* GTAppDelegate.m in Sources */,
 				68C595B01912DDCF00BB2AC6 /* GTInterpreter.m in Sources */,
 				68C595AC1912DDCF00BB2AC6 /* GTAboutViewController.m in Sources */,
@@ -825,7 +818,6 @@
 				68C595A91912DDCF00BB2AC6 /* GTViewController.m in Sources */,
 				68C595A31912DDCF00BB2AC6 /* HorizontalGestureRecognizer.m in Sources */,
 				68828FF81B90D951005E1EA2 /* GTShareInfo.m in Sources */,
-				68C595B91912DDCF00BB2AC6 /* GTPageInterpreterAmharic.m in Sources */,
 				686D73311B82659800444718 /* GTFileLoaderExample.m in Sources */,
 				68C595991912DDCF00BB2AC6 /* SNInstructions.m in Sources */,
 				685793801BC2F3A2002038CF /* GTPageStyle.m in Sources */,

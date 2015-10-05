@@ -27,6 +27,6 @@
 @property (nonatomic, strong) NSString *italicsLabelFontName;
 @property (nonatomic, strong) NSString *boldItalicsLabelFontName;
 
-
++ (UIColor *)colorForHex:(NSString *)hexColor;
 
 @end

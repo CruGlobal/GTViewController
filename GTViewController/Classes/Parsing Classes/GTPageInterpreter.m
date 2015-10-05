@@ -145,7 +145,6 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 @property (nonatomic, assign)	BOOL			pageElementsHaveBeenParsed;
 @property (nonatomic, assign)	BOOL			buttonElementsHaveBeenParsed;
 
-@property (nonatomic, strong)	UIColor			*backgroundColor;
 @property (nonatomic, strong)	UIView			*pageView;
 @property (nonatomic, assign)	CGRect			titleFrame;
 @property (nonatomic, assign)	CGRect			questionFrame;
@@ -165,9 +164,6 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 - (id)createTitleHeadingFromElement:			(TBXMLElement *)element		titleMode:(NSString *)titleMode containerFrame:(CGRect)containerFrame;
 - (id)createTitleSubheadingFromElement:			(TBXMLElement *)element		titleMode:(NSString *)titleMode containerFrame:(CGRect)containerFrame;
 - (UILabel *)createLabelWithFrame:				(CGRect)frame				autoResize:(BOOL)resize			text:(NSString *)text	color:(UIColor *)color	bgColor:(UIColor *)bgColor	alpha:(CGFloat)alpha	alignment:(UITextAlignment)textAlignment	font:(NSString *)font	size:(NSUInteger)size;
-
-//attribute parsing functions
-- (UIColor *)colorForHex:						(NSString *)hexColor;
 
 @end
 
@@ -195,10 +191,7 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 		self.pageElement		= self.xmlRepresentation.rootXMLElement;
 		
 		//holds a ref to the background colour
-		self.backgroundColor	= [self colorForHex:[TBXML valueOfAttributeNamed:kAttr_color forElement:self.pageElement]];
-		if (self.backgroundColor == nil) {
-			self.backgroundColor = [UIColor yellowColor];
-		}
+		self.pageStyle.backgroundColor	= [GTPageStyle colorForHex:[TBXML valueOfAttributeNamed:kAttr_color forElement:self.pageElement]];
 		
 		//add background image if attribute is set
 		if ([TBXML valueOfAttributeNamed:kAttr_backgroundImage forElement:self.pageElement]) {
@@ -222,50 +215,6 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 	
 	return self.pageView.frame;
 }
-
-/**
- * Description: Parses xml file and stores its xml representation for later interpretation
- *				keeps a reference to the page's view, the background colour
- * param:		path - the path of the xml file to be parsed
- * param:		view - reference to the view that will display the page
- */
-//- (id)initWithXMLPath:(NSString *)path pageView:(UIView *)view rootViewController:(id)rootViewController {
-//	//NSLog(@"%@", path);
-//	// grab instance of root view controller
-//	self.snuffleViewController = rootViewController;
-//	
-//	//parse and store xml
-//	self.xmlRepresentation			= [[TBXML alloc] initWithXMLPath:path];
-//	
-//	//holds a reference to the view that will hold this page
-//	self.pageView			= view;
-//	
-//	//holds a ref to the page element
-//	self.pageElement		= self.xmlRepresentation.rootXMLElement;
-//	
-//	//holds a ref to the background colour
-//	self.backgroundColor	= [self colorForHex:[TBXML valueOfAttributeNamed:kAttr_color forElement:self.pageElement]];
-//	if (self.backgroundColor == nil) {
-//		self.backgroundColor = [UIColor yellowColor];
-//	}
-//	
-//	//add background image if attribute is set
-//	if ([TBXML valueOfAttributeNamed:kAttr_backgroundImage forElement:self.pageElement]) {
-//		
-//		UIImageView *bgimage	= [[UIImageView alloc] initWithImage:[[(snuffyViewController *)self.snuffleViewController fileLoader] imageWithFilename:[TBXML valueOfAttributeNamed:kAttr_backgroundImage forElement:self.pageElement]]];
-//		[bgimage setTag:900];
-//		[bgimage setFrame:[self.pageView frame]];
-//		[self.pageView insertSubview:bgimage atIndex:0];
-//	}
-//	
-//	//init flags
-//	self.pageElementsHaveBeenParsed		= NO;
-//	self.buttonElementsHaveBeenParsed	= NO;
-//	
-//	//[self parseXMLPage];
-//	
-//	return self;
-//}
 
 -(NSMutableArray *)arrayWithUrls {
 	TBXMLElement	*button_el		= [TBXML childElementNamed:kName_Button parentElement:self.pageElement];
@@ -392,7 +341,7 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 		}
 		
 		//set background color
-		[self.pageView setBackgroundColor:self.backgroundColor];
+		[self.pageView setBackgroundColor:self.pageStyle.backgroundColor];
 		
 		//create title from xml element
 		if (title_el) {
@@ -1193,7 +1142,7 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 		//init variables for button parameters
 		UIImage								*bgImage			= nil;
 		UIColor								*bgColor			= nil;
-		UIColor								*textColor			= [self colorForHex:textColorString];
+		UIColor								*textColor			= [GTPageStyle colorForHex:textColorString];
 		CGRect								frame;
 		CGFloat								size				= DEFAULT_TEXTSIZE_BUTTON;
 		UIControlContentHorizontalAlignment	contentHorizontalAlignment;
@@ -1204,7 +1153,7 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 		//set defaults based on mode
 		if ([mode isEqual:kButtonMode_big]) {
 			frame						= CGRectMake(LARGEBUTTONXOFFSET, yPos + 2, container.frame.size.width - (2 * LARGEBUTTONXOFFSET), 136);
-			bgColor						= [UIColor clearColor]; //self.backgroundColor;
+			bgColor						= [UIColor clearColor];
 			if (textColor == nil) {
 				textColor				= [UIColor whiteColor];
 			}
@@ -1220,7 +1169,7 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 			tag							+= 110;
 			bgColor						= [UIColor clearColor];
 			if (textColor == nil) {
-				textColor				= self.backgroundColor;
+				textColor				= self.pageStyle.backgroundColor;
 			}
 			if (image == nil) {
 				bgImage = [self.fileLoader imageWithFilename:@"URL_Button.png"];
@@ -1230,7 +1179,7 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 			contentVerticalAlignment	= UIControlContentVerticalAlignmentCenter;
 		} else if ([mode isEqual:kButtonMode_allurl]) {
 			frame						= CGRectMake(BUTTONXOFFSET, yPos + 2, container.frame.size.width - (2 * BUTTONXOFFSET), 36);
-			bgColor						= [UIColor clearColor];//self.backgroundColor;
+			bgColor						= [UIColor clearColor];
 			if (textColor == nil) {
 				textColor				= [UIColor whiteColor];
 			}
@@ -1238,7 +1187,7 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 			contentVerticalAlignment	= UIControlContentVerticalAlignmentCenter;
 		} else {
 			frame						= CGRectMake(BUTTONXOFFSET, yPos + 2, container.frame.size.width - (2 * BUTTONXOFFSET), 36);
-			bgColor						= [UIColor clearColor];//self.backgroundColor;
+			bgColor						= [UIColor clearColor];
 			if (textColor == nil) {
 				textColor				= [UIColor whiteColor];
 			}
@@ -1474,19 +1423,19 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 	if (element != nil) {
 		
 		//read attributes for label
-		NSString	*text		=						[TBXML textForElement:element];
-		NSString	*modifier	=						[TBXML valueOfAttributeNamed:kAttr_modifier forElement:element];
-		UIColor		*color		=	[self colorForHex:	[TBXML valueOfAttributeNamed:kAttr_color	forElement:element]];
-		NSString	*alpha		=						[TBXML valueOfAttributeNamed:kAttr_alpha	forElement:element];
-		NSString	*align		=						[TBXML valueOfAttributeNamed:kAttr_align	forElement:element];
-		NSString	*textalign	=						[TBXML valueOfAttributeNamed:kAttr_textalign	forElement:element];
-		NSString	*size		=						[TBXML valueOfAttributeNamed:kAttr_size		forElement:element];
-		NSString	*x			=						[TBXML valueOfAttributeNamed:kAttr_x		forElement:element];
-		NSString	*y			=						[TBXML valueOfAttributeNamed:kAttr_y		forElement:element];
-		NSString	*w			=						[TBXML valueOfAttributeNamed:kAttr_width	forElement:element];
-		NSString	*h			=						[TBXML valueOfAttributeNamed:kAttr_height	forElement:element];
-		CGFloat		xoffset		=						round([[TBXML valueOfAttributeNamed:kAttr_xoff		forElement:element] floatValue]);
-		CGFloat		yoffset		=						round([[TBXML valueOfAttributeNamed:kAttr_yoff		forElement:element] floatValue]);
+		NSString	*text		=								[TBXML textForElement:element];
+		NSString	*modifier	=								[TBXML valueOfAttributeNamed:kAttr_modifier forElement:element];
+		UIColor		*color		=	[GTPageStyle colorForHex:	[TBXML valueOfAttributeNamed:kAttr_color	forElement:element]];
+		NSString	*alpha		=								[TBXML valueOfAttributeNamed:kAttr_alpha	forElement:element];
+		NSString	*align		=								[TBXML valueOfAttributeNamed:kAttr_align	forElement:element];
+		NSString	*textalign	=								[TBXML valueOfAttributeNamed:kAttr_textalign	forElement:element];
+		NSString	*size		=								[TBXML valueOfAttributeNamed:kAttr_size		forElement:element];
+		NSString	*x			=								[TBXML valueOfAttributeNamed:kAttr_x		forElement:element];
+		NSString	*y			=								[TBXML valueOfAttributeNamed:kAttr_y		forElement:element];
+		NSString	*w			=								[TBXML valueOfAttributeNamed:kAttr_width	forElement:element];
+		NSString	*h			=								[TBXML valueOfAttributeNamed:kAttr_height	forElement:element];
+		CGFloat		xoffset		=								round([[TBXML valueOfAttributeNamed:kAttr_xoff		forElement:element] floatValue]);
+		CGFloat		yoffset		=								round([[TBXML valueOfAttributeNamed:kAttr_yoff		forElement:element] floatValue]);
 		
 		//init variables for object parameters
 		CGRect			frame			= CGRectZero;
@@ -1681,7 +1630,7 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 		
 		//set up panel
 		[tempPanel setFrame:tempContainerView.frame];
-		[tempPanel setBackgroundColor:self.backgroundColor];
+		[tempPanel setBackgroundColor:self.pageStyle.backgroundColor];
 		[tempPanel setTag:(1000 + buttonTag)];
 		[tempPanel setHidden:YES];
 		[tempPanel setAlpha:0.0];
@@ -1815,20 +1764,20 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 	
 	if (element != nil) {
 		//read attributes for label
-		NSString	*text		=						[TBXML textForElement:element];
-		NSString	*mode		=						[TBXML valueOfAttributeNamed:kAttr_mode		forElement:element];
-		UIColor		*color		=	[self colorForHex:	[TBXML valueOfAttributeNamed:kAttr_color	forElement:element]];
-		NSString	*modifier	=						[TBXML valueOfAttributeNamed:kAttr_modifier	forElement:element];
-		NSString	*alpha		=						[TBXML valueOfAttributeNamed:kAttr_alpha	forElement:element];
-		NSString	*align		=						[TBXML valueOfAttributeNamed:kAttr_align	forElement:element];
-		NSString	*textalign	=						[TBXML valueOfAttributeNamed:kAttr_textalign	forElement:element];
-		NSString	*size		=						[TBXML valueOfAttributeNamed:kAttr_size		forElement:element];
-		NSString	*x			=						[TBXML valueOfAttributeNamed:kAttr_x		forElement:element];
-		NSString	*y			=						[TBXML valueOfAttributeNamed:kAttr_y		forElement:element];
-		NSString	*w			=						[TBXML valueOfAttributeNamed:kAttr_width	forElement:element];
-		NSString	*h			=						[TBXML valueOfAttributeNamed:kAttr_height	forElement:element];
+		NSString	*text		=								[TBXML textForElement:element];
+		NSString	*mode		=								[TBXML valueOfAttributeNamed:kAttr_mode		forElement:element];
+		UIColor		*color		=	[GTPageStyle colorForHex:	[TBXML valueOfAttributeNamed:kAttr_color	forElement:element]];
+		NSString	*modifier	=								[TBXML valueOfAttributeNamed:kAttr_modifier	forElement:element];
+		NSString	*alpha		=								[TBXML valueOfAttributeNamed:kAttr_alpha	forElement:element];
+		NSString	*align		=								[TBXML valueOfAttributeNamed:kAttr_align	forElement:element];
+		NSString	*textalign	=								[TBXML valueOfAttributeNamed:kAttr_textalign	forElement:element];
+		NSString	*size		=								[TBXML valueOfAttributeNamed:kAttr_size		forElement:element];
+		NSString	*x			=								[TBXML valueOfAttributeNamed:kAttr_x		forElement:element];
+		NSString	*y			=								[TBXML valueOfAttributeNamed:kAttr_y		forElement:element];
+		NSString	*w			=								[TBXML valueOfAttributeNamed:kAttr_width	forElement:element];
+		NSString	*h			=								[TBXML valueOfAttributeNamed:kAttr_height	forElement:element];
 		
-					mode		=						(mode == nil ? @"" : mode);
+					mode		=								(mode == nil ? @"" : mode);
 		
 		CGRect			frame			= CGRectZero;
 		UITextAlignment textAlignment	= NSTextAlignmentRight;
@@ -1861,7 +1810,7 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 		
 		if		([mode isEqual:kTitleMode_straight]) {
 			bgColor = [UIColor whiteColor];
-			color = self.backgroundColor;
+			color = self.pageStyle.backgroundColor;
 			textSize = round(DEFAULT_TEXTSIZE_QUESTION_STRAIGHT * [size floatValue] / 100);
 			font = kFont_straightquestion;
 			frame = CGRectMake(0, frame.origin.y, 320, frame.size.height);
@@ -2101,16 +2050,16 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 		TBXMLElement	*subTitle_element			= [TBXML childElementNamed:kName_TitlePeek		parentElement:element];
 		if (subTitle_element) {
 			
-			NSString	*text		=						[TBXML textForElement:subTitle_element];
-			NSString	*modifier	=						[TBXML valueOfAttributeNamed:kAttr_modifier forElement:subTitle_element];
-			UIColor		*color		=	[self colorForHex:	[TBXML valueOfAttributeNamed:kAttr_color	forElement:subTitle_element]];
-			NSString	*alpha		=						[TBXML valueOfAttributeNamed:kAttr_alpha	forElement:subTitle_element];
-			NSString	*align		=						[TBXML valueOfAttributeNamed:kAttr_textalign	forElement:subTitle_element];
-			NSString	*size		=						[TBXML valueOfAttributeNamed:kAttr_size		forElement:subTitle_element];
-			NSString	*x			=						[TBXML valueOfAttributeNamed:kAttr_x		forElement:subTitle_element];
-			NSString	*y			=						[TBXML valueOfAttributeNamed:kAttr_y		forElement:subTitle_element];
-			NSString	*w			=						[TBXML valueOfAttributeNamed:kAttr_width	forElement:subTitle_element];
-			NSString	*h			=						[TBXML valueOfAttributeNamed:kAttr_height	forElement:subTitle_element];
+			NSString	*text		=								[TBXML textForElement:subTitle_element];
+			NSString	*modifier	=								[TBXML valueOfAttributeNamed:kAttr_modifier forElement:subTitle_element];
+			UIColor		*color		=	[GTPageStyle colorForHex:	[TBXML valueOfAttributeNamed:kAttr_color	forElement:subTitle_element]];
+			NSString	*alpha		=								[TBXML valueOfAttributeNamed:kAttr_alpha	forElement:subTitle_element];
+			NSString	*align		=								[TBXML valueOfAttributeNamed:kAttr_textalign	forElement:subTitle_element];
+			NSString	*size		=								[TBXML valueOfAttributeNamed:kAttr_size		forElement:subTitle_element];
+			NSString	*x			=								[TBXML valueOfAttributeNamed:kAttr_x		forElement:subTitle_element];
+			NSString	*y			=								[TBXML valueOfAttributeNamed:kAttr_y		forElement:subTitle_element];
+			NSString	*w			=								[TBXML valueOfAttributeNamed:kAttr_width	forElement:subTitle_element];
+			NSString	*h			=								[TBXML valueOfAttributeNamed:kAttr_height	forElement:subTitle_element];
 			
 			//init variables for object parameters
 			CGRect			frame			= CGRectZero;
@@ -2129,7 +2078,7 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 			if		((w != nil) && (h != nil))				{resize				= NO;}
 			
 			if		(!bgColor)																											{bgColor			= [UIColor whiteColor];}
-			if		(!color)																											{color				= self.backgroundColor;}
+			if		(!color)																											{color				= self.pageStyle.backgroundColor;}
 			if		(size)									{textSize			= round(textSize * [size floatValue] / 100);}
 			
 			if (alpha) {
@@ -2175,24 +2124,10 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 			UILabel	*peekPanelArrow = [self createLabelWithFrame:peekPanelArrowFrame autoResize:NO text:@"▼" color:[UIColor whiteColor] bgColor: [UIColor clearColor] alpha:1.0 alignment:NSTextAlignmentCenter font:kFont_label size:8];
 			peekPanelArrow.shadowColor = [UIColor darkGrayColor];
 			
-			
-			//[tempSubTitleText setTag:10];
 			[subTitleContainer addSubview:tempSubTitleText];
-            //CGRect subTitleMask = CGRectMake(0, 0, self.titleFrame.size.width, self.pageView.frame.size.height);
-            
-            //UIView *subTitleMask = [[UIView alloc] initWithFrame:CGRectMake(subTitleContainer.frame.origin.x, subTitleContainer.frame.origin.y, subTitleContainer.frame.size.width, self.pageView.frame.size.height)];
-            //[subTitleMask addSubview:(UIView *)subTitleContainer];
-            
 			[subTitleContainer insertSubview:peekPanelArrow aboveSubview:tempSubTitleText];
-			//UIView *gapfiller = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.titleFrame.size.width, self.titleFrame.origin.y)];
-			//gapfiller.backgroundColor = self.backgroundColor;
-            //[gapfiller setTag:99];
-			//[subTitleContainer insertSubview:gapfiller atIndex:0];
-			//[gapfiller release];
 			
 			subTitleContainer.titleMode = kTitleMode_peek;
-			//[subTitleContainer setTag:550];
-            //[subTitleMask setTag:550];
 		}
 	}
 	return subTitleContainer;
@@ -2203,15 +2138,15 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 	if (element != nil) {
 		
 		//read attributes for title subheading
-		NSString	*text	=						[TBXML textForElement:element];
-		UIColor		*color	=	[self colorForHex:	[TBXML valueOfAttributeNamed:kAttr_color	forElement:element]];
-		NSString	*alpha	=						[TBXML valueOfAttributeNamed:kAttr_alpha	forElement:element];
-		NSString	*align	=						[TBXML valueOfAttributeNamed:kAttr_textalign	forElement:element];
-		NSString	*size	=						[TBXML valueOfAttributeNamed:kAttr_size		forElement:element];
-		NSString	*x		=						[TBXML valueOfAttributeNamed:kAttr_x		forElement:element];
-		NSString	*y		=						[TBXML valueOfAttributeNamed:kAttr_y		forElement:element];
-		NSString	*w		=						[TBXML valueOfAttributeNamed:kAttr_width	forElement:element];
-		NSString	*h		=						[TBXML valueOfAttributeNamed:kAttr_height	forElement:element];
+		NSString	*text	=								[TBXML textForElement:element];
+		UIColor		*color	=	[GTPageStyle colorForHex:	[TBXML valueOfAttributeNamed:kAttr_color	forElement:element]];
+		NSString	*alpha	=								[TBXML valueOfAttributeNamed:kAttr_alpha	forElement:element];
+		NSString	*align	=								[TBXML valueOfAttributeNamed:kAttr_textalign	forElement:element];
+		NSString	*size	=								[TBXML valueOfAttributeNamed:kAttr_size		forElement:element];
+		NSString	*x		=								[TBXML valueOfAttributeNamed:kAttr_x		forElement:element];
+		NSString	*y		=								[TBXML valueOfAttributeNamed:kAttr_y		forElement:element];
+		NSString	*w		=								[TBXML valueOfAttributeNamed:kAttr_width	forElement:element];
+		NSString	*h		=								[TBXML valueOfAttributeNamed:kAttr_height	forElement:element];
 		
 		CGRect			frame			= CGRectZero;
 		UITextAlignment textAlignment	= NSTextAlignmentRight;
@@ -2228,7 +2163,7 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 		if		((w != nil) && (h != nil))				{resize				= NO;}
 		
 		if		(!bgColor)																								{bgColor			= [UIColor clearColor];}
-		if		(!color)																								{color				= self.backgroundColor;}
+		if		(!color)																								{color				= self.pageStyle.backgroundColor;}
 		if		(size)									{textSize			= round(textSize * [size floatValue] / 100);}
 		
 		if (alpha) {
@@ -2259,15 +2194,15 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 	
 	if (element != nil) {
 		//read attributes for title subheading
-		NSString	*text	=						[TBXML textForElement:element];
-		UIColor		*color	=	[self colorForHex:	[TBXML valueOfAttributeNamed:kAttr_color	forElement:element]];
-		NSString	*alpha	=						[TBXML valueOfAttributeNamed:kAttr_alpha	forElement:element];
-		NSString	*align	=						[TBXML valueOfAttributeNamed:kAttr_textalign	forElement:element];
-		NSString	*size	=						[TBXML valueOfAttributeNamed:kAttr_size		forElement:element];
-		NSString	*x		=						[TBXML valueOfAttributeNamed:kAttr_x		forElement:element];
-		NSString	*y		=						[TBXML valueOfAttributeNamed:kAttr_y		forElement:element];
-		NSString	*w		=						[TBXML valueOfAttributeNamed:kAttr_width	forElement:element];
-		NSString	*h		=						[TBXML valueOfAttributeNamed:kAttr_height	forElement:element];
+		NSString	*text	=								[TBXML textForElement:element];
+		UIColor		*color	=	[GTPageStyle colorForHex:	[TBXML valueOfAttributeNamed:kAttr_color	forElement:element]];
+		NSString	*alpha	=								[TBXML valueOfAttributeNamed:kAttr_alpha	forElement:element];
+		NSString	*align	=								[TBXML valueOfAttributeNamed:kAttr_textalign	forElement:element];
+		NSString	*size	=								[TBXML valueOfAttributeNamed:kAttr_size		forElement:element];
+		NSString	*x		=								[TBXML valueOfAttributeNamed:kAttr_x		forElement:element];
+		NSString	*y		=								[TBXML valueOfAttributeNamed:kAttr_y		forElement:element];
+		NSString	*w		=								[TBXML valueOfAttributeNamed:kAttr_width	forElement:element];
+		NSString	*h		=								[TBXML valueOfAttributeNamed:kAttr_height	forElement:element];
 		
 		CGRect			frame			= CGRectZero;
 		UITextAlignment textAlignment	= ([titleMode isEqual:kTitleMode_peek] ? NSTextAlignmentRight : NSTextAlignmentLeft);
@@ -2294,7 +2229,7 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 			if		((w != nil) && (h != nil))				{resize				= NO;}
 		}
 		if		(!bgColor)																								{bgColor			= [UIColor clearColor];}
-		if		(!color)																								{color				= self.backgroundColor;}
+		if		(!color)																								{color				= self.pageStyle.backgroundColor;}
 		if		(size)									{textSize			= round(textSize * [size floatValue] / 100);}
 		
 		if (alpha) {
@@ -2335,15 +2270,15 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
  */
 - (id)createTitleSubheadingFromElement:(TBXMLElement *)element titleMode:(NSString *)titleMode containerFrame:(CGRect)containerFrame {
 	//read attributes for title subheading
-	NSString	*text	=						[TBXML textForElement:element];
-	UIColor		*color	=	[self colorForHex:	[TBXML valueOfAttributeNamed:kAttr_color	forElement:element]];
-	NSString	*alpha	=						[TBXML valueOfAttributeNamed:kAttr_alpha	forElement:element];
-	NSString	*align	=						[TBXML valueOfAttributeNamed:kAttr_textalign	forElement:element];
-	NSString	*size	=						[TBXML valueOfAttributeNamed:kAttr_size		forElement:element];
-	NSString	*x		=						[TBXML valueOfAttributeNamed:kAttr_x		forElement:element];
-	NSString	*y		=						[TBXML valueOfAttributeNamed:kAttr_y		forElement:element];
-	NSString	*w		=						[TBXML valueOfAttributeNamed:kAttr_width	forElement:element];
-	NSString	*h		=						[TBXML valueOfAttributeNamed:kAttr_height	forElement:element];
+	NSString	*text	=								[TBXML textForElement:element];
+	UIColor		*color	=	[GTPageStyle colorForHex:	[TBXML valueOfAttributeNamed:kAttr_color	forElement:element]];
+	NSString	*alpha	=								[TBXML valueOfAttributeNamed:kAttr_alpha	forElement:element];
+	NSString	*align	=								[TBXML valueOfAttributeNamed:kAttr_textalign	forElement:element];
+	NSString	*size	=								[TBXML valueOfAttributeNamed:kAttr_size		forElement:element];
+	NSString	*x		=								[TBXML valueOfAttributeNamed:kAttr_x		forElement:element];
+	NSString	*y		=								[TBXML valueOfAttributeNamed:kAttr_y		forElement:element];
+	NSString	*w		=								[TBXML valueOfAttributeNamed:kAttr_width	forElement:element];
+	NSString	*h		=								[TBXML valueOfAttributeNamed:kAttr_height	forElement:element];
 	
 	//init title parameters with defaults
 	CGRect			frame			= CGRectZero;
@@ -2375,7 +2310,7 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 	if		(!bgColor)								{bgColor			= [UIColor clearColor];}
 	
 	//Text Colour (page's background colour)
-	if		(!color)								{color				= self.backgroundColor;}
+	if		(!color)								{color				= self.pageStyle.backgroundColor;}
 	
 	//Text Size (percentage modifier)
 	if		(size)									{textSize			= round(textSize * [size floatValue] / 100);}
@@ -2449,57 +2384,6 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 	[tempLabel setFrame:CGRectMake(tempLabel.frame.origin.x, tempLabel.frame.origin.y, frame.size.width, tempLabel.frame.size.height)];
 	
 	return tempLabel;
-}
-
-#pragma mark -
-#pragma mark Attribute Parsing Functions
-
-/**
- *	Description:	Takes a hex string and returns a UIColor object that represents that hex color
- *	Parameters:		hexColor - NSString that is the hex representation of that desired color
- *	Returns:		A UIColor with those r, g, b and alpha values in hexColor
- */
-- (UIColor *) colorForHex:(NSString *)hexColor {
-	if (hexColor) {
-		unsigned long long rgbValue;
-		hexColor = [[hexColor stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] uppercaseString];  
-		
-		// strip # if it appears  
-		if ([hexColor hasPrefix:@"#"]) {
-			hexColor = [hexColor substringFromIndex:1];
-		}
-		
-		// String should be 6 characters or 8 characters with an alpha component
-		if (!([hexColor length] == 6 || [hexColor length] == 8)) {
-			return nil;
-		}
-		
-		//parse the string WITHOUT an alpha component and return the coresponding UIColor
-		if ([hexColor length] == 6) {
-			[[NSScanner scannerWithString:hexColor] scanHexLongLong:&rgbValue];
-			
-			return [UIColor colorWithRed:((float)((rgbValue & 0xFF0000) >> 16))/255.0
-								   green:((float)((rgbValue & 0xFF00) >> 8))/255.0
-									blue:((float)(rgbValue & 0xFF))/255.0
-								   alpha:1.0];
-			
-			//parse the string WITH an alpha component and return the coresponding UIColor
-		} else if ([hexColor length] == 8) {
-			[[NSScanner scannerWithString:hexColor] scanHexLongLong:&rgbValue];
-			
-			return [UIColor colorWithRed:((float)((rgbValue & 0xFF000000) >> 32))/255.0
-								   green:((float)((rgbValue & 0xFF0000) >> 16))/255.0
-									blue:((float)((rgbValue & 0xFF00) >> 8))/255.0
-								   alpha:((float)(rgbValue & 0xFF))/255.0];
-		} else {
-			return nil;
-		}
-		
-		
-	} else {
-		return nil;
-	}
-	
 }
 
 @end
