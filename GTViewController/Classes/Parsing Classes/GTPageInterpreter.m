@@ -1957,7 +1957,8 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 				CGSize constraintSize = CGSizeMake(tempHeading.frame.size.width, MAXFLOAT);
 				labelsize = [tempHeading.text sizeWithFont:tempFont constrainedToSize:constraintSize lineBreakMode:NSLineBreakByWordWrapping];
 				
-				if (labelsize.height <= desiredHeight) {
+				CGFloat currentNumberOfLines = ceil(labelsize.height / tempFont.lineHeight);
+				if (labelsize.height <= desiredHeight && currentNumberOfLines == numberoflines) {
 					break;
 				}
 			}
