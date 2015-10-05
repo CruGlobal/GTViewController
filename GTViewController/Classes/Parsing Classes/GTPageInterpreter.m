@@ -35,6 +35,9 @@
 #define DEFAULT_TEXTSIZE_TITLE_PEEKHEADING_MAX 30
 #define DEFAULT_TEXTSIZE_TITLE_PEEKHEADING_MIN 6
 #define DEFAULT_TEXTSIZE_TITLE_SUBHEADING 17
+#define DEFAULT_TITLE_PEEKHEADING_MIN_HEIGHT 68
+#define DEFAULT_TITLE_PEEKHEADING_PADDING 5
+#define DEFAULT_TITLE_PEEKHEADING_LINE_WIDTH 2
 #define DEFAULT_TEXTSIZE_TITLE_NUMBER 68
 #define DEFAULT_TEXTSIZE_TITLE_HEADING_PEEKMODE 30
 #define DEFAULT_TEXTSIZE_TITLE_HEADING_NORMALMODE 17
@@ -1942,6 +1945,7 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 		if ([mode isEqual:kTitleMode_peek]) {
 			NSArray *textArray = [tempHeading.text componentsSeparatedByString:@" "];
 			NSInteger numberoflines = [textArray count];
+			CGFloat desiredHeight = fmaxf(CGRectGetHeight(tempSubHeading.frame), DEFAULT_TITLE_PEEKHEADING_MIN_HEIGHT);
 			
 			tempHeading.text = [textArray componentsJoinedByString:@"\n"];
 			
@@ -1951,22 +1955,17 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 			for (i=DEFAULT_TEXTSIZE_TITLE_PEEKHEADING_MAX; i> DEFAULT_TEXTSIZE_TITLE_PEEKHEADING_MIN; i=i-1) {
 				tempFont = [tempFont fontWithSize:i];
 				CGSize constraintSize = CGSizeMake(tempHeading.frame.size.width, MAXFLOAT);
-				//NSLog(@"Constraint Width: %f",constraintSize.width);
 				labelsize = [tempHeading.text sizeWithFont:tempFont constrainedToSize:constraintSize lineBreakMode:NSLineBreakByWordWrapping];
 				
-				if (labelsize.height <= CGRectGetHeight(tempSubHeading.frame)){
-					//NSLog(@"Final Width: %f",labelsize.width);
+				if (labelsize.height <= desiredHeight) {
 					break;
 				}
 			}
+			
 			if (numberoflines > 1) {
 				tempHeading.frame = CGRectMake(tempHeading.frame.origin.x, tempHeading.frame.origin.y, labelsize.width, labelsize.height);
 				tempHeading.font = tempFont;
 			}
-
-			
-			//resize the heading to fit the text
-			//[tempHeading sizeToFit];
 			
 			tempSubHeading.frame			= CGRectMake(CGRectGetMaxX(tempHeading.frame) + 11, 
 														 tempSubHeading.frame.origin.y, 
@@ -2276,7 +2275,7 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 			//peek mode
 			if		(x)										{frame.origin.x		= [x floatValue];}								else	{frame.origin.x		= 5;}
 			if		(y)										{frame.origin.y		= [y floatValue];}								else	{frame.origin.y		= 10;}
-			if		(w)										{frame.size.width	= [w floatValue];}								else	{frame.size.width	= CGRectGetWidth(containerFrame) / 4 - 5 - 4 - 2;}
+			if		(w)										{frame.size.width	= [w floatValue];}								else	{frame.size.width	= CGRectGetWidth(containerFrame) / 4 - 2 * DEFAULT_TITLE_PEEKHEADING_PADDING - DEFAULT_TITLE_PEEKHEADING_LINE_WIDTH;}
 			if		(h)										{frame.size.height	= [h floatValue];}								else	{frame.size.height	= 100;}
 			if		((w != nil) && (h != nil))				{resize				= NO;}
 			
@@ -2351,9 +2350,9 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 	//check if xml attributes are specified,		if so,				use them.										if not,	use defaults
 	if ([titleMode isEqual:kTitleMode_peek]) {
 		//peek mode
-		if		(x)										{frame.origin.x		= [x floatValue];}								else	{frame.origin.x		= CGRectGetWidth(containerFrame) / 4 + 5;}
+		if		(x)										{frame.origin.x		= [x floatValue];}								else	{frame.origin.x		= CGRectGetWidth(containerFrame) / 4 + DEFAULT_TITLE_PEEKHEADING_PADDING;}
 		if		(y)										{frame.origin.y		= [y floatValue];}								else	{frame.origin.y		= 0;}
-		if		(w)										{frame.size.width	= [w floatValue];}								else	{frame.size.width	= CGRectGetWidth(containerFrame) * 3 / 4 - 5 - 31;}
+		if		(w)										{frame.size.width	= [w floatValue];}								else	{frame.size.width	= CGRectGetWidth(containerFrame) * 3 / 4 - DEFAULT_TITLE_PEEKHEADING_PADDING - 31;}
 		if		(h)										{frame.size.height	= [h floatValue];}								else	{frame.size.height	= 120;}
 		if		((w != nil) && (h != nil))				{resize				= NO;}
 	} else {
