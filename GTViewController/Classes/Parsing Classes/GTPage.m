@@ -555,7 +555,7 @@ extern NSString * const kAttr_watermark;
 		[self click:(id)[self viewWithTag:self.activeTag]];
 	}
 	
-	if (self.subTitleView) {
+	if (self.subTitleView && !self.peekPanelIsHidden) {
 		//if subTitleView not visible or peeking
 		if (!(self.subTitleView.frame.origin.y + self.subTitleView.frame.size.height <= (self.titleView.frame.origin.y + self.titleView.frame.size.height + 10))) {
 			[self peek:nil];
