@@ -9,22 +9,26 @@
 #import "GTInterpreter.h"
 
 #import "GTPageInterpreter.h"
-#import "GTPageInterpreterAmharic.h"
+#import "GTPageStyle.h"
+#import "GTPageStyleAmharic.h"
 
 @implementation GTInterpreter
 
 + (instancetype)interpreterWithXMLPath:(NSString *)xmlPath fileLoader:(GTFileLoader *)fileLoader pageView:(UIView *)view panelTapDelegate:(id<UIRoundedViewTapDelegate>)panelDelegate buttonTapDelegate:(id<UISnuffleButtonTapDelegate>)buttonDelegate{
 	
+	GTPageStyle *pageStyle;
+	
 	if ([fileLoader.language isEqualToString:@"am-ET"]) {
 		
-		return [[GTPageInterpreterAmharic alloc] initWithXMLPath:xmlPath fileLoader:fileLoader pageView:view panelTapDelegate:panelDelegate buttonTapDelegate:buttonDelegate];
+		pageStyle = [[GTPageStyleAmharic alloc] init];
 		
 	} else {
 		
-		return [[GTPageInterpreter alloc] initWithXMLPath:xmlPath fileLoader:fileLoader pageView:view panelTapDelegate:panelDelegate buttonTapDelegate:buttonDelegate];
+		pageStyle = [[GTPageStyle alloc] init];
 		
 	}
 	
+	return [[GTPageInterpreter alloc] initWithXMLPath:xmlPath fileLoader:fileLoader pageStyle:pageStyle pageView:view panelTapDelegate:panelDelegate buttonTapDelegate:buttonDelegate];
 }
 
 //render elements on page from xml representation

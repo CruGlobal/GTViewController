@@ -8,6 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		3EA257A72B8B446AA8362101 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A44A8CF92AB420FB766F984 /* libPods.a */; };
+		6857937F1BC2F3A2002038CF /* GTPageStyle.m in Sources */ = {isa = PBXBuildFile; fileRef = 6857937E1BC2F3A2002038CF /* GTPageStyle.m */; settings = {ASSET_TAGS = (); }; };
+		685793801BC2F3A2002038CF /* GTPageStyle.m in Sources */ = {isa = PBXBuildFile; fileRef = 6857937E1BC2F3A2002038CF /* GTPageStyle.m */; settings = {ASSET_TAGS = (); }; };
+		685793831BC2FB47002038CF /* GTPageStyleAmharic.m in Sources */ = {isa = PBXBuildFile; fileRef = 685793821BC2FB47002038CF /* GTPageStyleAmharic.m */; settings = {ASSET_TAGS = (); }; };
+		685793841BC2FB47002038CF /* GTPageStyleAmharic.m in Sources */ = {isa = PBXBuildFile; fileRef = 685793821BC2FB47002038CF /* GTPageStyleAmharic.m */; settings = {ASSET_TAGS = (); }; };
 		686D73301B82659800444718 /* GTFileLoaderExample.m in Sources */ = {isa = PBXBuildFile; fileRef = 686D732F1B82659800444718 /* GTFileLoaderExample.m */; };
 		686D73311B82659800444718 /* GTFileLoaderExample.m in Sources */ = {isa = PBXBuildFile; fileRef = 686D732F1B82659800444718 /* GTFileLoaderExample.m */; };
 		686D73411B83877000444718 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 686D73401B83877000444718 /* Main.storyboard */; };
@@ -162,6 +166,10 @@
 /* Begin PBXFileReference section */
 		1A44A8CF92AB420FB766F984 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		28E91EFD01A90DF9A37D0C7C /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
+		6857937D1BC2F3A2002038CF /* GTPageStyle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTPageStyle.h; sourceTree = "<group>"; };
+		6857937E1BC2F3A2002038CF /* GTPageStyle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GTPageStyle.m; sourceTree = "<group>"; };
+		685793811BC2FB47002038CF /* GTPageStyleAmharic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTPageStyleAmharic.h; sourceTree = "<group>"; };
+		685793821BC2FB47002038CF /* GTPageStyleAmharic.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GTPageStyleAmharic.m; sourceTree = "<group>"; };
 		686D732E1B82659800444718 /* GTFileLoaderExample.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTFileLoaderExample.h; sourceTree = "<group>"; };
 		686D732F1B82659800444718 /* GTFileLoaderExample.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GTFileLoaderExample.m; sourceTree = "<group>"; };
 		686D73401B83877000444718 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
@@ -376,6 +384,10 @@
 				68C595731912DDCF00BB2AC6 /* GTPage.xib */,
 				68C595741912DDCF00BB2AC6 /* GTPageInterpreter.h */,
 				68C595751912DDCF00BB2AC6 /* GTPageInterpreter.m */,
+				6857937D1BC2F3A2002038CF /* GTPageStyle.h */,
+				6857937E1BC2F3A2002038CF /* GTPageStyle.m */,
+				685793811BC2FB47002038CF /* GTPageStyleAmharic.h */,
+				685793821BC2FB47002038CF /* GTPageStyleAmharic.m */,
 				68C595761912DDCF00BB2AC6 /* GTPageInterpreterAmharic.h */,
 				68C595771912DDCF00BB2AC6 /* GTPageInterpreterAmharic.m */,
 			);
@@ -784,6 +796,7 @@
 				68828FF71B90D951005E1EA2 /* GTShareInfo.m in Sources */,
 				686D73301B82659800444718 /* GTFileLoaderExample.m in Sources */,
 				687A32261B2D3DC80098ACE6 /* TBXML.m in Sources */,
+				6857937F1BC2F3A2002038CF /* GTPageStyle.m in Sources */,
 				68C5959A1912DDCF00BB2AC6 /* UIDisclosureIndicator.m in Sources */,
 				68C595A01912DDCF00BB2AC6 /* UISnufflePanel.m in Sources */,
 				68C595B21912DDCF00BB2AC6 /* GTPage.m in Sources */,
@@ -793,6 +806,7 @@
 				68C595B61912DDCF00BB2AC6 /* GTPageInterpreter.m in Sources */,
 				687A32251B2D3DC80098ACE6 /* TBXML+HTTP.m in Sources */,
 				687A32241B2D3DC80098ACE6 /* TBXML+Compression.m in Sources */,
+				685793831BC2FB47002038CF /* GTPageStyleAmharic.m in Sources */,
 				68C595B81912DDCF00BB2AC6 /* GTPageInterpreterAmharic.m in Sources */,
 				68F1F816190B05ED00044CDF /* GTAppDelegate.m in Sources */,
 				68C595B01912DDCF00BB2AC6 /* GTInterpreter.m in Sources */,
@@ -814,7 +828,9 @@
 				68C595B91912DDCF00BB2AC6 /* GTPageInterpreterAmharic.m in Sources */,
 				686D73311B82659800444718 /* GTFileLoaderExample.m in Sources */,
 				68C595991912DDCF00BB2AC6 /* SNInstructions.m in Sources */,
+				685793801BC2F3A2002038CF /* GTPageStyle.m in Sources */,
 				68C5959F1912DDCF00BB2AC6 /* UISnuffleButton.m in Sources */,
+				685793841BC2FB47002038CF /* GTPageStyleAmharic.m in Sources */,
 				68C595B31912DDCF00BB2AC6 /* GTPage.m in Sources */,
 				68C595A51912DDCF00BB2AC6 /* GTPageMenuViewController.m in Sources */,
 				68F1F831190B05ED00044CDF /* GTViewControllerTests.m in Sources */,

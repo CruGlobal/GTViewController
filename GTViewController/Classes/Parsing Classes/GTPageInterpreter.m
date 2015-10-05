@@ -137,6 +137,7 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 @interface GTPageInterpreter ()
 
 @property (nonatomic, strong)	GTFileLoader	*fileLoader;
+@property (nonatomic, strong)	GTPageStyle		*pageStyle;
 
 @property (nonatomic, strong)	TBXML			*xmlRepresentation;
 @property (nonatomic, assign)	TBXMLElement	*pageElement;
@@ -173,12 +174,13 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 
 @implementation GTPageInterpreter
 
-- (instancetype)initWithXMLPath:(NSString *)xmlPath fileLoader:(GTFileLoader *)fileLoader pageView:(UIView *)view panelTapDelegate:(id<UIRoundedViewTapDelegate>)panelDelegate buttonTapDelegate:(id<UISnuffleButtonTapDelegate>)buttonDelegate {
+- (instancetype)initWithXMLPath:(NSString *)xmlPath fileLoader:(GTFileLoader *)fileLoader pageStyle:(GTPageStyle *)pageStyle pageView:(UIView *)view panelTapDelegate:(id<UIRoundedViewTapDelegate>)panelDelegate buttonTapDelegate:(id<UISnuffleButtonTapDelegate>)buttonDelegate {
 	
 	self = [self init];
 	if (self) {
 		
 		self.fileLoader			= fileLoader;
+		self.pageStyle			= pageStyle;
 		self.panelDelegate		= panelDelegate;
 		self.buttonDelegate		= buttonDelegate;
 		
