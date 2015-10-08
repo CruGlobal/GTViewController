@@ -29,6 +29,18 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 	self = [super init];
 	if (self) {
 		self.backgroundColor = [UIColor yellowColor];
+		self.defaultTextColor = [UIColor whiteColor];
+		self.straightQuestionBackgroundColor = [UIColor whiteColor];
+		self.backgroundColor = [UIColor whiteColor];
+		self.defaultTextColor = [UIColor whiteColor];
+		self.defaultLabelBackgroundColor = [UIColor clearColor];
+		self.defaultTitleBackgroundColor = [UIColor whiteColor];
+		self.straightQuestionBackgroundColor = [UIColor whiteColor];
+		self.clearTitleBackgroundColor = [UIColor clearColor];
+		self.plainTitleBackgroundColor = [UIColor whiteColor];
+		self.straightTitleBackgroundColor = [UIColor whiteColor];
+		self.singleCurveTitleBackgroundColor = [UIColor whiteColor];
+		self.subTitleBackgroundColor = [UIColor whiteColor];
 	}
 	return self;
 }

@@ -332,12 +332,10 @@ NSString * const kLabelModifer_bolditalics	= @"bold-italics";
             
             //create a container view to clip the peek panel above the title
             subTitleContainer = [[UIView alloc] initWithFrame:  CGRectMake(self.titleFrame.origin.x, self.titleFrame.origin.y,    subTitleView.frame.size.width,  self.pageView.frame.size.height)];   //container in page
-            //subTitleView.frame =                                CGRectMake(0,                   0,                      subTitleView.frame.size.width,  subTitleView.frame.size.height);     //peek panel in container
             [subTitleContainer setTag:550];         //make the container accessible in the page
             [subTitleView setTag:555];                //make the peek panel accessible in the container
             subTitleContainer.clipsToBounds = YES;  //clip the contents
             subTitleContainer.userInteractionEnabled = NO;
-            //subTitleContainer.backgroundColor = [UIColor yellowColor];
             
             //set the title mode flags to peek
 			if (subTitleView != nil && [subTitleView.titleMode isEqual:kTitleMode_peek]) {
@@ -1135,7 +1133,7 @@ NSString * const kLabelModifer_bolditalics	= @"bold-italics";
 			frame						= CGRectMake(LARGEBUTTONXOFFSET, yPos + 2, container.frame.size.width - (2 * LARGEBUTTONXOFFSET), 136);
 			bgColor						= [UIColor clearColor];
 			if (textColor == nil) {
-				textColor				= [UIColor whiteColor];
+				textColor				= self.pageStyle.defaultTextColor;
 			}
 			contentHorizontalAlignment	= UIControlContentHorizontalAlignmentCenter;
 			contentVerticalAlignment	= UIControlContentVerticalAlignmentBottom;
@@ -1161,7 +1159,7 @@ NSString * const kLabelModifer_bolditalics	= @"bold-italics";
 			frame						= CGRectMake(BUTTONXOFFSET, yPos + 2, container.frame.size.width - (2 * BUTTONXOFFSET), 36);
 			bgColor						= [UIColor clearColor];
 			if (textColor == nil) {
-				textColor				= [UIColor whiteColor];
+				textColor				= self.pageStyle.defaultTextColor;
 			}
 			contentHorizontalAlignment	= UIControlContentHorizontalAlignmentCenter;
 			contentVerticalAlignment	= UIControlContentVerticalAlignmentCenter;
@@ -1169,7 +1167,7 @@ NSString * const kLabelModifer_bolditalics	= @"bold-italics";
 			frame						= CGRectMake(BUTTONXOFFSET, yPos + 2, container.frame.size.width - (2 * BUTTONXOFFSET), 36);
 			bgColor						= [UIColor clearColor];
 			if (textColor == nil) {
-				textColor				= [UIColor whiteColor];
+				textColor				= self.pageStyle.defaultTextColor;
 			}
 			contentHorizontalAlignment	= UIControlContentHorizontalAlignmentLeft;
 			contentVerticalAlignment	= UIControlContentVerticalAlignmentCenter;
@@ -1434,8 +1432,8 @@ NSString * const kLabelModifer_bolditalics	= @"bold-italics";
 		if		(h)										{frame.size.height	=	round([h floatValue]);}								else	{frame.size.height	= 40;}
 		if		((w != nil) && (h != nil))				{resize				= NO;}
 		
-		if		(!bgColor)																											{bgColor			= [UIColor clearColor];}
-		if		(!color)																											{color				= [UIColor whiteColor];}
+		if		(!bgColor)																											{bgColor			= self.pageStyle.defaultLabelBackgroundColor;}
+		if		(!color)																											{color				= self.pageStyle.defaultTextColor;}
 		if		(size)									{textSize			= round(textSize * [size floatValue] / 100);}
 		
 		//if alignment is found calculate position based on alignment
@@ -1774,8 +1772,8 @@ NSString * const kLabelModifer_bolditalics	= @"bold-italics";
 		if		(h)										{frame.size.height	=	round([h floatValue]);}								else	{frame.size.height	= 76;}
 		if		((w != nil) && (h != nil))				{resize				= NO;}
 		
-		if		(!bgColor)																								{bgColor			= [UIColor clearColor];}
-		if		(!color)																								{color				= [UIColor whiteColor];}
+		if		(!bgColor)																								{bgColor			= self.pageStyle.defaultLabelBackgroundColor;}
+		if		(!color)																								{color				= self.pageStyle.defaultTextColor;}
 		if		(size)									{textSize			= round(textSize * [size floatValue] / 100);}
 		
 		if (alpha) {
@@ -1789,7 +1787,7 @@ NSString * const kLabelModifer_bolditalics	= @"bold-italics";
 		}																										else	{textAlignment		= NSTextAlignmentRight;}
 		
 		if		([mode isEqual:kTitleMode_straight]) {
-			bgColor = [UIColor whiteColor];
+			bgColor = self.pageStyle.straightQuestionBackgroundColor;
 			color = self.pageStyle.backgroundColor;
 			textSize = round(DEFAULT_TEXTSIZE_QUESTION_STRAIGHT * [size floatValue] / 100);
 			font = self.pageStyle.straightQuestionFontName;
@@ -1936,7 +1934,7 @@ NSString * const kLabelModifer_bolditalics	= @"bold-italics";
 		if ([mode isEqual:kTitleMode_clear]) {
 			//clear mode
 			titleContainer = [[UIRoundedView alloc] initWithFrame:titleFrame
-														  bgColor:[UIColor clearColor]
+														  bgColor:self.pageStyle.clearTitleBackgroundColor
 														   radius:ROUNDRECT_RADIUS
 														  topleft:NO
 														 topright:NO
@@ -1947,7 +1945,7 @@ NSString * const kLabelModifer_bolditalics	= @"bold-italics";
 		} else if ([mode isEqual:kTitleMode_plain]) {
 			//plain mode
 			titleContainer = [[UIRoundedView alloc] initWithFrame:titleFrame
-														  bgColor:[UIColor whiteColor]
+														  bgColor:self.pageStyle.plainTitleBackgroundColor
 														   radius:ROUNDRECT_RADIUS
 														  topleft:NO
 														 topright:YES
@@ -1962,7 +1960,7 @@ NSString * const kLabelModifer_bolditalics	= @"bold-italics";
 		} else if ([mode isEqual:kTitleMode_straight]) {
 			//straight mode
 			titleContainer = [[UIRoundedView alloc] initWithFrame:titleFrame
-														  bgColor:[UIColor whiteColor]
+														  bgColor:self.pageStyle.straightTitleBackgroundColor
 														   radius:ROUNDRECT_RADIUS
 														  topleft:NO
 														 topright:NO
@@ -1974,7 +1972,7 @@ NSString * const kLabelModifer_bolditalics	= @"bold-italics";
 			//single rounded corner mode or
 			//peek mode
 			titleContainer = [[UIRoundedView alloc] initWithFrame:titleFrame
-														  bgColor:[UIColor whiteColor]
+														  bgColor:self.pageStyle.singleCurveTitleBackgroundColor
 														   radius:ROUNDRECT_RADIUS * 2
 														  topleft:NO
 														 topright:NO
@@ -1985,7 +1983,7 @@ NSString * const kLabelModifer_bolditalics	= @"bold-italics";
 		} else {
 			//no mode specified
 			titleContainer = [[UIRoundedView alloc] initWithFrame:titleFrame
-														  bgColor:[UIColor whiteColor]
+														  bgColor:self.pageStyle.defaultTitleBackgroundColor
 														   radius:ROUNDRECT_RADIUS
 														  topleft:NO
 														 topright:YES
@@ -2057,7 +2055,7 @@ NSString * const kLabelModifer_bolditalics	= @"bold-italics";
 			if		(h)										{frame.size.height	=	round([h floatValue]);}								else	{frame.size.height	= 80;}
 			if		((w != nil) && (h != nil))				{resize				= NO;}
 			
-			if		(!bgColor)																											{bgColor			= [UIColor whiteColor];}
+			if		(!bgColor)																											{bgColor			= self.pageStyle.subTitleBackgroundColor;}
 			if		(!color)																											{color				= self.pageStyle.backgroundColor;}
 			if		(size)									{textSize			= round(textSize * [size floatValue] / 100);}
 			
@@ -2080,7 +2078,7 @@ NSString * const kLabelModifer_bolditalics	= @"bold-italics";
 			UILabel			*tempSubTitleText		= nil;
 			
 			if (subTitle_element) {
-				tempSubTitleText = [self createLabelWithFrame:frame autoResize:resize text:text color:color bgColor:[UIColor clearColor] alpha:labelAlpha alignment:textAlignment font:font size:textSize];
+				tempSubTitleText = [self createLabelWithFrame:frame autoResize:resize text:text color:color bgColor:self.pageStyle.defaultLabelBackgroundColor alpha:labelAlpha alignment:textAlignment font:font size:textSize];
 			}
 			
 			
@@ -2101,7 +2099,7 @@ NSString * const kLabelModifer_bolditalics	= @"bold-italics";
 														 tapDelegate:self.panelDelegate];
 			
 			CGRect peekPanelArrowFrame = CGRectMake((subTitleFrame.size.width / 2) - 5 ,subTitleFrame.size.height - 8 , 10, 10);
-			UILabel	*peekPanelArrow = [self createLabelWithFrame:peekPanelArrowFrame autoResize:NO text:@"▼" color:[UIColor whiteColor] bgColor: [UIColor clearColor] alpha:1.0 alignment:NSTextAlignmentCenter font:self.pageStyle.labelFontName size:8];
+			UILabel	*peekPanelArrow = [self createLabelWithFrame:peekPanelArrowFrame autoResize:NO text:@"▼" color:self.pageStyle.defaultTextColor bgColor:self.pageStyle.defaultLabelBackgroundColor alpha:1.0 alignment:NSTextAlignmentCenter font:self.pageStyle.labelFontName size:8];
 			peekPanelArrow.shadowColor = [UIColor darkGrayColor];
 			
 			[subTitleContainer addSubview:tempSubTitleText];
@@ -2142,7 +2140,7 @@ NSString * const kLabelModifer_bolditalics	= @"bold-italics";
 		if		(h)										{frame.size.height	= [h floatValue];}								else	{frame.size.height	= 150;}
 		if		((w != nil) && (h != nil))				{resize				= NO;}
 		
-		if		(!bgColor)																								{bgColor			= [UIColor clearColor];}
+		if		(!bgColor)																								{bgColor			= self.pageStyle.defaultLabelBackgroundColor;}
 		if		(!color)																								{color				= self.pageStyle.backgroundColor;}
 		if		(size)									{textSize			= round(textSize * [size floatValue] / 100);}
 		
@@ -2157,7 +2155,7 @@ NSString * const kLabelModifer_bolditalics	= @"bold-italics";
 		}																										else	{textAlignment		= NSTextAlignmentRight;}
 		
 		if (titleMode) {
-			if		([titleMode isEqual:kTitleMode_clear])	{bgColor			= [UIColor clearColor];}
+			if		([titleMode isEqual:kTitleMode_clear])	{bgColor			= self.pageStyle.clearTitleBackgroundColor;}
 		}
 		
 		return [self createLabelWithFrame:frame autoResize:resize text:text color:color bgColor:bgColor alpha:labelAlpha alignment:textAlignment font:font size:textSize];
@@ -2208,7 +2206,7 @@ NSString * const kLabelModifer_bolditalics	= @"bold-italics";
 			if		(h)										{frame.size.height	= [h floatValue];}								else	{frame.size.height	= 150;}
 			if		((w != nil) && (h != nil))				{resize				= NO;}
 		}
-		if		(!bgColor)																								{bgColor			= [UIColor clearColor];}
+		if		(!bgColor)																								{bgColor			= self.pageStyle.clearTitleBackgroundColor;}
 		if		(!color)																								{color				= self.pageStyle.backgroundColor;}
 		if		(size)									{textSize			= round(textSize * [size floatValue] / 100);}
 		
@@ -2223,7 +2221,7 @@ NSString * const kLabelModifer_bolditalics	= @"bold-italics";
 		}
 		
 		if (titleMode) {
-			if		([titleMode isEqual:kTitleMode_clear])		{bgColor			= [UIColor clearColor];}
+			if		([titleMode isEqual:kTitleMode_clear])		{bgColor			= self.pageStyle.clearTitleBackgroundColor;}
 			else if ([titleMode isEqual:kTitleMode_straight])	{
 				textAlignment=NSTextAlignmentCenter;
 				UILabel *temp = [self createLabelWithFrame:frame autoResize:resize text:text color:color bgColor:bgColor alpha:labelAlpha alignment:textAlignment font:font size:textSize];
@@ -2287,7 +2285,7 @@ NSString * const kLabelModifer_bolditalics	= @"bold-italics";
 	
 	
 	//Background Colour (clear)
-	if		(!bgColor)								{bgColor			= [UIColor clearColor];}
+	if		(!bgColor)								{bgColor			= self.pageStyle.clearTitleBackgroundColor;}
 	
 	//Text Colour (page's background colour)
 	if		(!color)								{color				= self.pageStyle.backgroundColor;}
@@ -2313,8 +2311,8 @@ NSString * const kLabelModifer_bolditalics	= @"bold-italics";
 	if (titleMode) {
 		//clear
 		if		([titleMode isEqual:kTitleMode_clear])	{
-			bgColor			= [UIColor clearColor];
-			tempLabel.backgroundColor = [UIColor clearColor];
+			bgColor			= self.pageStyle.clearTitleBackgroundColor;
+			tempLabel.backgroundColor = self.pageStyle.clearTitleBackgroundColor;
 		}
 		//straight
 		else if ([titleMode isEqual:kTitleMode_straight]) {

@@ -11,6 +11,16 @@
 @interface GTPageStyle : NSObject
 
 @property (nonatomic, strong) UIColor *backgroundColor;
+@property (nonatomic, strong) UIColor *defaultTextColor;
+@property (nonatomic, strong) UIColor *defaultLabelBackgroundColor;
+@property (nonatomic, strong) UIColor *defaultTitleBackgroundColor;
+@property (nonatomic, strong) UIColor *straightQuestionBackgroundColor;
+@property (nonatomic, strong) UIColor *clearTitleBackgroundColor;
+@property (nonatomic, strong) UIColor *plainTitleBackgroundColor;
+@property (nonatomic, strong) UIColor *straightTitleBackgroundColor;
+@property (nonatomic, strong) UIColor *singleCurveTitleBackgroundColor;
+@property (nonatomic, strong) UIColor *subTitleBackgroundColor;
+
 
 @property (nonatomic, strong) NSString *numberFontName;
 @property (nonatomic, strong) NSString *headingFontName;
