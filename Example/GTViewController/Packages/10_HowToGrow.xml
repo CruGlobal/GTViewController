@@ -3,8 +3,8 @@
 <page color="#BC1111" watermark="Watermark.png" buttons="7">
 	
 	<title>
-        <heading x="20" w="290" size="95" translate="true">SUGGESTIONS FOR CHRISTIAN GROWTH</heading>
-	  	<peekpanel textalign="right" w="260" size="96" translate="true">Spiritual growth results from trusting Jesus Christ.  "...The righteous man shall live by faith" (Galatians 3:11).
+        <heading x="20" size="95" translate="true">SUGGESTIONS FOR CHRISTIAN GROWTH</heading>
+	  	<peekpanel textalign="right" size="96" translate="true">Spiritual growth results from trusting Jesus Christ.  "...The righteous man shall live by faith" (Galatians 3:11).
             
             A life of faith will enable you to trust God increasingly with every detail of your life, and to practice the following:
         </peekpanel>
