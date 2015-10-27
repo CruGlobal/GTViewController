@@ -54,7 +54,8 @@
 	}
 	
 	self.filename	= filename;
-	self.aboutPage	= [[GTPage alloc] initWithFilename:self.filename frame:self.view.frame delegate:self fileLoader:self.fileLoader];
+	CGRect parentFrame = self.aboutDelegate.viewOfPageViewController.frame;
+	self.aboutPage	= [[GTPage alloc] initWithFilename:self.filename frame:parentFrame delegate:self fileLoader:self.fileLoader];
 	self.scrollView.backgroundColor = self.aboutPage.backgroundColor;
 	self.navigationBar.tintColor = self.aboutPage.backgroundColor;
 	[self.scrollView addSubview:self.aboutPage];
@@ -65,8 +66,8 @@
 	for (UIView *subview in self.aboutPage.subviews) {
 		maxheight = fmax(maxheight, CGRectGetMaxY(subview.frame));
 	}
-	self.aboutPage.frame = CGRectMake(0, 0, self.view.frame.size.width, maxheight + 10);
-	[self.scrollView setContentSize:CGSizeMake(self.view.frame.size.width, maxheight + 10)];
+	self.aboutPage.frame = CGRectMake(0, 0, parentFrame.size.width, maxheight + 10);
+	[self.scrollView setContentSize:CGSizeMake(parentFrame.size.width, maxheight + 10)];
 	
 }
 
