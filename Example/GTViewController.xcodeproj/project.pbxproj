@@ -8,10 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		3EA257A72B8B446AA8362101 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A44A8CF92AB420FB766F984 /* libPods.a */; };
-		6857937F1BC2F3A2002038CF /* GTPageStyle.m in Sources */ = {isa = PBXBuildFile; fileRef = 6857937E1BC2F3A2002038CF /* GTPageStyle.m */; settings = {ASSET_TAGS = (); }; };
-		685793801BC2F3A2002038CF /* GTPageStyle.m in Sources */ = {isa = PBXBuildFile; fileRef = 6857937E1BC2F3A2002038CF /* GTPageStyle.m */; settings = {ASSET_TAGS = (); }; };
-		685793831BC2FB47002038CF /* GTPageStyleAmharic.m in Sources */ = {isa = PBXBuildFile; fileRef = 685793821BC2FB47002038CF /* GTPageStyleAmharic.m */; settings = {ASSET_TAGS = (); }; };
-		685793841BC2FB47002038CF /* GTPageStyleAmharic.m in Sources */ = {isa = PBXBuildFile; fileRef = 685793821BC2FB47002038CF /* GTPageStyleAmharic.m */; settings = {ASSET_TAGS = (); }; };
+		6857937F1BC2F3A2002038CF /* GTPageStyle.m in Sources */ = {isa = PBXBuildFile; fileRef = 6857937E1BC2F3A2002038CF /* GTPageStyle.m */; };
+		685793801BC2F3A2002038CF /* GTPageStyle.m in Sources */ = {isa = PBXBuildFile; fileRef = 6857937E1BC2F3A2002038CF /* GTPageStyle.m */; };
+		685793831BC2FB47002038CF /* GTPageStyleAmharic.m in Sources */ = {isa = PBXBuildFile; fileRef = 685793821BC2FB47002038CF /* GTPageStyleAmharic.m */; };
+		685793841BC2FB47002038CF /* GTPageStyleAmharic.m in Sources */ = {isa = PBXBuildFile; fileRef = 685793821BC2FB47002038CF /* GTPageStyleAmharic.m */; };
 		686D73301B82659800444718 /* GTFileLoaderExample.m in Sources */ = {isa = PBXBuildFile; fileRef = 686D732F1B82659800444718 /* GTFileLoaderExample.m */; };
 		686D73311B82659800444718 /* GTFileLoaderExample.m in Sources */ = {isa = PBXBuildFile; fileRef = 686D732F1B82659800444718 /* GTFileLoaderExample.m */; };
 		686D73411B83877000444718 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 686D73401B83877000444718 /* Main.storyboard */; };
@@ -546,6 +546,7 @@
 				68F1F7FF190B05ED00044CDF /* Frameworks */,
 				68F1F800190B05ED00044CDF /* Resources */,
 				20C6D3E70CD24E2C9852851C /* Copy Pods Resources */,
+				73CF94D6E6F38AD49A39C71E /* Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -565,6 +566,7 @@
 				68F1F820190B05ED00044CDF /* Frameworks */,
 				68F1F821190B05ED00044CDF /* Resources */,
 				A5E308CF4C494F118FE05633 /* Copy Pods Resources */,
+				84A47B1C39F6E110EA069F4D /* Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -727,6 +729,36 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods/Pods-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		73CF94D6E6F38AD49A39C71E /* Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods/Pods-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		84A47B1C39F6E110EA069F4D /* Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods/Pods-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		8D064CC1346C4BB291DF596C /* Check Pods Manifest.lock */ = {

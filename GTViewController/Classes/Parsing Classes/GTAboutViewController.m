@@ -49,25 +49,7 @@
 
 - (void)loadAboutPageWithFilename:(NSString *)filename {
 	
-	if (self.aboutPage.superview) {
-		[self.aboutPage removeFromSuperview];
-	}
-	
 	self.filename	= filename;
-	CGRect parentFrame = self.aboutDelegate.viewOfPageViewController.frame;
-	self.aboutPage	= [[GTPage alloc] initWithFilename:self.filename frame:parentFrame delegate:self fileLoader:self.fileLoader];
-	self.scrollView.backgroundColor = self.aboutPage.backgroundColor;
-	self.navigationBar.tintColor = self.aboutPage.backgroundColor;
-	[self.scrollView addSubview:self.aboutPage];
-	[self.aboutPage viewHasTransitionedIn];
-	
-	//dynamically grab scroll hieght
-	CGFloat maxheight = 0;
-	for (UIView *subview in self.aboutPage.subviews) {
-		maxheight = fmax(maxheight, CGRectGetMaxY(subview.frame));
-	}
-	self.aboutPage.frame = CGRectMake(0, 0, parentFrame.size.width, maxheight + 10);
-	[self.scrollView setContentSize:CGSizeMake(parentFrame.size.width, maxheight + 10)];
 	
 }
 
@@ -97,13 +79,29 @@
 	
 }
 
-/*
-// Override to allow orientations other than the default portrait orientation.
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
-    // Return YES for supported orientations
-    return (interfaceOrientation == UIInterfaceOrientationPortrait);
+- (void)viewWillAppear:(BOOL)animated {
+	[super viewWillAppear:animated];
+	
+	if (self.aboutPage.superview) {
+		[self.aboutPage removeFromSuperview];
+	}
+	
+	CGRect parentFrame = self.aboutDelegate.viewOfPageViewController.frame;
+	self.aboutPage	= [[GTPage alloc] initWithFilename:self.filename frame:parentFrame delegate:self fileLoader:self.fileLoader];
+	self.scrollView.backgroundColor = self.aboutPage.backgroundColor;
+	self.navigationBar.tintColor = self.aboutPage.backgroundColor;
+	[self.scrollView addSubview:self.aboutPage];
+	[self.aboutPage viewHasTransitionedIn];
+	
+	//dynamically grab scroll hieght
+	CGFloat maxheight = 0;
+	for (UIView *subview in self.aboutPage.subviews) {
+		maxheight = fmax(maxheight, CGRectGetMaxY(subview.frame));
+	}
+	self.aboutPage.frame = CGRectMake(0, 0, parentFrame.size.width, maxheight + 10);
+	[self.scrollView setContentSize:CGSizeMake(parentFrame.size.width, maxheight + 10)];
+	
 }
-*/
 
 - (void)didReceiveMemoryWarning {
     // Releases the view if it doesn't have a superview.
