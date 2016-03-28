@@ -14,12 +14,6 @@
 #import "UIRoundedView.h"
 #import	"UIDisclosureIndicator.h"
 
-#define UITextAlignmentLeft NSTextAlignmentLeft
-#define UITextAlignmentRight NSTextAlignmentRight
-#define UITextAlignmentCenter NSTextAlignmentCenter
-#define UILineBreakModeWordWrap NSLineBreakByWordWrapping
-#define UILineBreakModeTailTruncation NSLineBreakByTruncatingTail
-
 //////////Compiler Constants///////////
 #define DEFAULTOFFSET 10.0
 #define DEFAULT_PANEL_OFFSET_X 0.0
@@ -41,6 +35,9 @@
 #define DEFAULT_TEXTSIZE_TITLE_PEEKHEADING_MAX 30
 #define DEFAULT_TEXTSIZE_TITLE_PEEKHEADING_MIN 6
 #define DEFAULT_TEXTSIZE_TITLE_SUBHEADING 17
+#define DEFAULT_TITLE_PEEKHEADING_MIN_HEIGHT 68
+#define DEFAULT_TITLE_PEEKHEADING_PADDING 5
+#define DEFAULT_TITLE_PEEKHEADING_LINE_WIDTH 2
 #define DEFAULT_TEXTSIZE_TITLE_NUMBER 68
 #define DEFAULT_TEXTSIZE_TITLE_HEADING_PEEKMODE 30
 #define DEFAULT_TEXTSIZE_TITLE_HEADING_NORMALMODE 17
@@ -61,8 +58,6 @@ NSString * const kName_Image			= @"image";
 NSString * const kName_Panel			= @"panel";
 NSString * const kName_PanelLabel		= @"text";
 NSString * const kName_PanelImage		= @"image";
-NSString * const kName_Description		= @"description";
-NSString * const kName_Instructions		= @"instructions";
 NSString * const kName_Question			= @"question";
 
 // Constants for the XML attribute names
@@ -118,28 +113,11 @@ NSString * const kLabelModifer_bold		= @"bold";
 NSString * const kLabelModifer_italics	= @"italics";
 NSString * const kLabelModifer_bolditalics	= @"bold-italics";
 
-//font constants
-NSString * const kFont_number			= @"STHeitiTC-Light";
-NSString * const kFont_heading			= @"Helvetica-Bold";//default
-NSString * const kFont_subheading		= @"STHeitiSC-Medium";
-NSString * const kFont_peekheading		= @"STHeitiTC-Light";
-NSString * const kFont_peeksubheading	= @"Helvetica";
-NSString * const kFont_peekpanel		= @"HelveticaNeue-BoldItalic";
-NSString * const kFont_question			= @"Helvetica-BoldOblique";
-NSString * const kFont_straightquestion	= @"Helvetica-Bold";
-NSString * const kFont_description		= @"Helvetica-Oblique";
-NSString * const kFont_instructions		= @"Helvetica-Bold";
-NSString * const kFont_label			= @"Helvetica";
-NSString * const kFont_boldlabel		= @"Helvetica-Bold";
-NSString * const kFont_italicslabel		= @"Helvetica-Oblique";
-NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
-
-//font sizes
-
 
 @interface GTPageInterpreter ()
 
 @property (nonatomic, strong)	GTFileLoader	*fileLoader;
+@property (nonatomic, strong)	GTPageStyle		*pageStyle;
 
 @property (nonatomic, strong)	TBXML			*xmlRepresentation;
 @property (nonatomic, assign)	TBXMLElement	*pageElement;
@@ -147,7 +125,6 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 @property (nonatomic, assign)	BOOL			pageElementsHaveBeenParsed;
 @property (nonatomic, assign)	BOOL			buttonElementsHaveBeenParsed;
 
-@property (nonatomic, strong)	UIColor			*backgroundColor;
 @property (nonatomic, strong)	UIView			*pageView;
 @property (nonatomic, assign)	CGRect			titleFrame;
 @property (nonatomic, assign)	CGRect			questionFrame;
@@ -158,35 +135,34 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 - (id)createDisclosureIndicatorFromButtonTag:	(NSInteger)buttonTag		container:(UIView *)container;
 - (id)createImageFromElement:					(TBXMLElement *)element		xPos:(CGFloat)xpostion			yPos:(CGFloat)ypostion	container:(UIView *)container;
 - (id)createLabelFromElement:					(TBXMLElement *)element		parentTextAlignment:(UITextAlignment)panelAlign			xPos:(CGFloat)xpostion			yPos:(CGFloat)ypostion	container:(UIView *)container;
-- (id)createPanelFromElement:					(TBXMLElement *)element		buttonTag:(NSInteger)buttonTag;
+- (id)createPanelFromElement:					(TBXMLElement *)element		buttonTag:(NSInteger)buttonTag	container:(UIView *)container;
 - (id)createQuestionFromElement:				(TBXMLElement *)element		container:(UIView *)container;
 - (id)createQuestionLabelFromElement:			(TBXMLElement *)element		container:(UIView *)container;
-- (id)createTitleFromElement:					(TBXMLElement *)element;
+- (id)createTitleFromElement:					(TBXMLElement *)element		container:(UIView *)container;
 - (id)createSubTitleFromElement:				(TBXMLElement *)element		underTitle:(UIView *)titleView;
-- (id)createTitleNumberFromElement:				(TBXMLElement *)element		titleMode:(NSString *)titleMode;
-- (id)createTitleHeadingFromElement:			(TBXMLElement *)element		titleMode:(NSString *)titleMode;
-- (id)createTitleSubheadingFromElement:			(TBXMLElement *)element		titleMode:(NSString *)titleMode;
+- (id)createTitleNumberFromElement:				(TBXMLElement *)element		titleMode:(NSString *)titleMode containerFrame:(CGRect)containerFrame;
+- (id)createTitleHeadingFromElement:			(TBXMLElement *)element		titleMode:(NSString *)titleMode containerFrame:(CGRect)containerFrame;
+- (id)createTitleSubheadingFromElement:			(TBXMLElement *)element		titleMode:(NSString *)titleMode containerFrame:(CGRect)containerFrame;
 - (UILabel *)createLabelWithFrame:				(CGRect)frame				autoResize:(BOOL)resize			text:(NSString *)text	color:(UIColor *)color	bgColor:(UIColor *)bgColor	alpha:(CGFloat)alpha	alignment:(UITextAlignment)textAlignment	font:(NSString *)font	size:(NSUInteger)size;
-
-//attribute parsing functions
-- (UIColor *)colorForHex:						(NSString *)hexColor;
 
 @end
 
 
 @implementation GTPageInterpreter
 
-- (instancetype)initWithXMLPath:(NSString *)xmlPath fileLoader:(GTFileLoader *)fileLoader pageView:(UIView *)view panelTapDelegate:(id<UIRoundedViewTapDelegate>)panelDelegate buttonTapDelegate:(id<UISnuffleButtonTapDelegate>)buttonDelegate {
+- (instancetype)initWithXMLPath:(NSString *)xmlPath fileLoader:(GTFileLoader *)fileLoader pageStyle:(GTPageStyle *)pageStyle pageView:(UIView *)view panelTapDelegate:(id<UIRoundedViewTapDelegate>)panelDelegate buttonTapDelegate:(id<UISnuffleButtonTapDelegate>)buttonDelegate {
 	
 	self = [self init];
 	if (self) {
 		
 		self.fileLoader			= fileLoader;
+		self.pageStyle			= pageStyle;
 		self.panelDelegate		= panelDelegate;
 		self.buttonDelegate		= buttonDelegate;
 		
 		//parse and store xml
-		self.xmlRepresentation	= [[TBXML alloc] initWithXMLPath:xmlPath];
+		NSData *data			= [NSData dataWithContentsOfFile:xmlPath];
+		self.xmlRepresentation	= [[TBXML alloc] initWithXMLData:data error:nil];
 		
 		//holds a reference to the view that will hold this page
 		self.pageView			= view;
@@ -195,10 +171,7 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 		self.pageElement		= self.xmlRepresentation.rootXMLElement;
 		
 		//holds a ref to the background colour
-		self.backgroundColor	= [self colorForHex:[TBXML valueOfAttributeNamed:kAttr_color forElement:self.pageElement]];
-		if (self.backgroundColor == nil) {
-			self.backgroundColor = [UIColor yellowColor];
-		}
+		self.pageStyle.backgroundColor	= [GTPageStyle colorForHex:[TBXML valueOfAttributeNamed:kAttr_color forElement:self.pageElement]];
 		
 		//add background image if attribute is set
 		if ([TBXML valueOfAttributeNamed:kAttr_backgroundImage forElement:self.pageElement]) {
@@ -222,50 +195,6 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 	
 	return self.pageView.frame;
 }
-
-/**
- * Description: Parses xml file and stores its xml representation for later interpretation
- *				keeps a reference to the page's view, the background colour
- * param:		path - the path of the xml file to be parsed
- * param:		view - reference to the view that will display the page
- */
-//- (id)initWithXMLPath:(NSString *)path pageView:(UIView *)view rootViewController:(id)rootViewController {
-//	//NSLog(@"%@", path);
-//	// grab instance of root view controller
-//	self.snuffleViewController = rootViewController;
-//	
-//	//parse and store xml
-//	self.xmlRepresentation			= [[TBXML alloc] initWithXMLPath:path];
-//	
-//	//holds a reference to the view that will hold this page
-//	self.pageView			= view;
-//	
-//	//holds a ref to the page element
-//	self.pageElement		= self.xmlRepresentation.rootXMLElement;
-//	
-//	//holds a ref to the background colour
-//	self.backgroundColor	= [self colorForHex:[TBXML valueOfAttributeNamed:kAttr_color forElement:self.pageElement]];
-//	if (self.backgroundColor == nil) {
-//		self.backgroundColor = [UIColor yellowColor];
-//	}
-//	
-//	//add background image if attribute is set
-//	if ([TBXML valueOfAttributeNamed:kAttr_backgroundImage forElement:self.pageElement]) {
-//		
-//		UIImageView *bgimage	= [[UIImageView alloc] initWithImage:[[(snuffyViewController *)self.snuffleViewController fileLoader] imageWithFilename:[TBXML valueOfAttributeNamed:kAttr_backgroundImage forElement:self.pageElement]]];
-//		[bgimage setTag:900];
-//		[bgimage setFrame:[self.pageView frame]];
-//		[self.pageView insertSubview:bgimage atIndex:0];
-//	}
-//	
-//	//init flags
-//	self.pageElementsHaveBeenParsed		= NO;
-//	self.buttonElementsHaveBeenParsed	= NO;
-//	
-//	//[self parseXMLPage];
-//	
-//	return self;
-//}
 
 -(NSMutableArray *)arrayWithUrls {
 	TBXMLElement	*button_el		= [TBXML childElementNamed:kName_Button parentElement:self.pageElement];
@@ -392,23 +321,21 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 		}
 		
 		//set background color
-		[self.pageView setBackgroundColor:self.backgroundColor];
+		[self.pageView setBackgroundColor:self.pageStyle.backgroundColor];
 		
 		//create title from xml element
 		if (title_el) {
-			titleView		= [self createTitleFromElement:title_el];
+			titleView		= [self createTitleFromElement:title_el container:self.pageView];
 			mode			= [TBXML valueOfAttributeNamed:kAttr_mode forElement:title_el];
 			self.titleFrame = titleView.frame;
 			subTitleView	= [self createSubTitleFromElement:title_el underTitle:titleView];
             
             //create a container view to clip the peek panel above the title
             subTitleContainer = [[UIView alloc] initWithFrame:  CGRectMake(self.titleFrame.origin.x, self.titleFrame.origin.y,    subTitleView.frame.size.width,  self.pageView.frame.size.height)];   //container in page
-            //subTitleView.frame =                                CGRectMake(0,                   0,                      subTitleView.frame.size.width,  subTitleView.frame.size.height);     //peek panel in container
             [subTitleContainer setTag:550];         //make the container accessible in the page
             [subTitleView setTag:555];                //make the peek panel accessible in the container
             subTitleContainer.clipsToBounds = YES;  //clip the contents
             subTitleContainer.userInteractionEnabled = NO;
-            //subTitleContainer.backgroundColor = [UIColor yellowColor];
             
             //set the title mode flags to peek
 			if (subTitleView != nil && [subTitleView.titleMode isEqual:kTitleMode_peek]) {
@@ -681,8 +608,8 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 	} else {
 		//throw exception if pre requiste functions have not been called
 		if (!self.pageElement) {
-			NSException* parseException = [NSException exceptionWithName:@"parseException"
-																  reason:@"The initialiser may not have been called yet, please check this!"
+			NSException* parseException = [NSException exceptionWithName:[self.fileLoader localizedString:@"GTPageInterpreter_parseException_name"]
+																  reason:[self.fileLoader localizedString:@"GTPageInterpreter_parseException_message"]
 																userInfo:nil];
 			@throw parseException;
 		}
@@ -753,7 +680,7 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
                 //note: because of the unpredictable height of text labels, we need to calculate their combined height
 
                 //create a temporary text label and add it's height to the tally
-                labelLabel = [self createLabelFromElement:object_el parentTextAlignment:NSTextAlignmentLeft xPos:0 yPos:0 container:nil];
+                labelLabel = [self createLabelFromElement:object_el parentTextAlignment:NSTextAlignmentLeft xPos:0 yPos:0 container:self.pageView];
                 combinedHeightOfTextLabels += fmaxf(labelLabel.frame.size.height,40);
                 
             }
@@ -796,7 +723,7 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
         //NSLog(@"topOfPageSpace = %ld", (long)topOfPageSpace);
         
         //calculate the bottom limit for objects to be spaced - top of question if it exists, or bottom of page if it doesn't
-        NSInteger bottomOfPageSpace = ([TBXML childElementNamed:kName_Question parentElement:self.pageElement] ? CGRectGetMinY(self.questionFrame) : CGRectGetMaxY(self.pageView.frame));
+        NSInteger bottomOfPageSpace = ([TBXML childElementNamed:kName_Question parentElement:self.pageElement] ? CGRectGetMinY(self.questionFrame) : CGRectGetHeight(self.pageView.frame));
         //NSLog(@"bottomOfPageSpace = %ld", (long)bottomOfPageSpace);
         
         spaceBetweenObjects = round(((       bottomOfPageSpace                          // top of question/bottom of page
@@ -870,7 +797,7 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
             ////TEXT LABEL - note: some defaults are overridden here since existing text label defaults are for within panels, not page objects.
             if ([[TBXML elementName:object_el] isEqual:kName_Label]) {
                 
-                labelLabel = [self createLabelFromElement:object_el parentTextAlignment:UITextAlignmentLeft xPos:object_xpos yPos:object_ypos container:nil];
+                labelLabel = [self createLabelFromElement:object_el parentTextAlignment:NSTextAlignmentLeft xPos:object_xpos yPos:object_ypos container:nil];
                 
                 [labelLabel setTag:(800+labelCount)];
                 if (labelLabel.alpha == 1) {
@@ -990,16 +917,16 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 	} else {
 		//throw exception if pre requiste functions have not been called
 		if (!self.pageElement) {
-			NSException* parseException = [NSException exceptionWithName:@"parseException"
-																  reason:@"The initialiser may not have been called yet, please check this!"
+			NSException* parseException = [NSException exceptionWithName:[self.fileLoader localizedString:@"GTPageInterpreter_parseException_name"]
+																  reason:[self.fileLoader localizedString:@"GTPageInterpreter_parseException_message"]
 																userInfo:nil];
 			@throw parseException;
 		}
 		
 		//throw exception if pre requiste functions have not been called
 		if (!self.pageElementsHaveBeenParsed) {
-			NSException* parseException = [NSException exceptionWithName:@"parseException"
-																  reason:@"The parseXMLPage function may not have been called yet, please check this!"
+			NSException* parseException = [NSException exceptionWithName:[self.fileLoader localizedString:@"GTPageInterpreter_parseException_name"]
+																  reason:[self.fileLoader localizedString:@"GTPageInterpreter_parseXMLPageException_message"]
 																userInfo:nil];
 			@throw parseException;
 		}
@@ -1025,7 +952,7 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 		panel_el					=		[TBXML childElementNamed:kName_Panel parentElement:button_el];
 		
 		//create, add and release panel
-		UISnufflePanel		*tempPanel	=		[self createPanelFromElement:panel_el buttonTag:tag];
+		UISnufflePanel		*tempPanel	=		[self createPanelFromElement:panel_el buttonTag:tag container:self.pageView];
 		if (![self.pageView viewWithTag:tempPanel.tag]) {
 			[self.pageView	addSubview:tempPanel];
 		}
@@ -1033,16 +960,16 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 	} else {
 		//throw exception if pre requiste functions have not been called
 		if (!self.pageElement) {
-			NSException* parseException = [NSException exceptionWithName:@"parseException"
-																  reason:@"The initialiser may not have been called yet, please check this!"
+			NSException* parseException = [NSException exceptionWithName:[self.fileLoader localizedString:@"GTPageInterpreter_parseException_name"]
+																  reason:[self.fileLoader localizedString:@"GTPageInterpreter_parseException_message"]
 																userInfo:nil];
 			@throw parseException;
 		}
 		
 		//throw exception if pre requiste functions have not been called
 		if (!self.buttonElementsHaveBeenParsed) {
-			NSException* parseException = [NSException exceptionWithName:@"parseException"
-																  reason:@"The parseXMLButtons function may not have been called yet, please check this!"
+			NSException* parseException = [NSException exceptionWithName:[self.fileLoader localizedString:@"GTPageInterpreter_parseException_name"]
+																  reason:[self.fileLoader localizedString:@"GTPageInterpreter_parseXMLButtonsException_message"]
 																userInfo:nil];
 			@throw parseException;
 		}
@@ -1054,7 +981,7 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 	NSString *filename = [TBXML valueOfAttributeNamed:kAttr_watermark forElement:self.pageElement];
 	UIImageView *watermark = nil;
 	
-	if (filename != nil) {
+	if (filename != nil && filename.length>0) {
 		watermark = [[UIImageView alloc] initWithImage:[self.fileLoader imageWithFilename:filename]];
 		[watermark setFrame:self.pageView.frame];
 	}
@@ -1193,7 +1120,7 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 		//init variables for button parameters
 		UIImage								*bgImage			= nil;
 		UIColor								*bgColor			= nil;
-		UIColor								*textColor			= [self colorForHex:textColorString];
+		UIColor								*textColor			= [GTPageStyle colorForHex:textColorString];
 		CGRect								frame;
 		CGFloat								size				= DEFAULT_TEXTSIZE_BUTTON;
 		UIControlContentHorizontalAlignment	contentHorizontalAlignment;
@@ -1204,9 +1131,9 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 		//set defaults based on mode
 		if ([mode isEqual:kButtonMode_big]) {
 			frame						= CGRectMake(LARGEBUTTONXOFFSET, yPos + 2, container.frame.size.width - (2 * LARGEBUTTONXOFFSET), 136);
-			bgColor						= [UIColor clearColor]; //self.backgroundColor;
+			bgColor						= [UIColor clearColor];
 			if (textColor == nil) {
-				textColor				= [UIColor whiteColor];
+				textColor				= self.pageStyle.defaultTextColor;
 			}
 			contentHorizontalAlignment	= UIControlContentHorizontalAlignmentCenter;
 			contentVerticalAlignment	= UIControlContentVerticalAlignmentBottom;
@@ -1220,7 +1147,7 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 			tag							+= 110;
 			bgColor						= [UIColor clearColor];
 			if (textColor == nil) {
-				textColor				= self.backgroundColor;
+				textColor				= self.pageStyle.backgroundColor;
 			}
 			if (image == nil) {
 				bgImage = [self.fileLoader imageWithFilename:@"URL_Button.png"];
@@ -1230,17 +1157,17 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 			contentVerticalAlignment	= UIControlContentVerticalAlignmentCenter;
 		} else if ([mode isEqual:kButtonMode_allurl]) {
 			frame						= CGRectMake(BUTTONXOFFSET, yPos + 2, container.frame.size.width - (2 * BUTTONXOFFSET), 36);
-			bgColor						= [UIColor clearColor];//self.backgroundColor;
+			bgColor						= [UIColor clearColor];
 			if (textColor == nil) {
-				textColor				= [UIColor whiteColor];
+				textColor				= self.pageStyle.defaultTextColor;
 			}
 			contentHorizontalAlignment	= UIControlContentHorizontalAlignmentCenter;
 			contentVerticalAlignment	= UIControlContentVerticalAlignmentCenter;
 		} else {
 			frame						= CGRectMake(BUTTONXOFFSET, yPos + 2, container.frame.size.width - (2 * BUTTONXOFFSET), 36);
-			bgColor						= [UIColor clearColor];//self.backgroundColor;
+			bgColor						= [UIColor clearColor];
 			if (textColor == nil) {
-				textColor				= [UIColor whiteColor];
+				textColor				= self.pageStyle.defaultTextColor;
 			}
 			contentHorizontalAlignment	= UIControlContentHorizontalAlignmentLeft;
 			contentVerticalAlignment	= UIControlContentVerticalAlignmentCenter;
@@ -1474,19 +1401,19 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 	if (element != nil) {
 		
 		//read attributes for label
-		NSString	*text		=						[TBXML textForElement:element];
-		NSString	*modifier	=						[TBXML valueOfAttributeNamed:kAttr_modifier forElement:element];
-		UIColor		*color		=	[self colorForHex:	[TBXML valueOfAttributeNamed:kAttr_color	forElement:element]];
-		NSString	*alpha		=						[TBXML valueOfAttributeNamed:kAttr_alpha	forElement:element];
-		NSString	*align		=						[TBXML valueOfAttributeNamed:kAttr_align	forElement:element];
-		NSString	*textalign	=						[TBXML valueOfAttributeNamed:kAttr_textalign	forElement:element];
-		NSString	*size		=						[TBXML valueOfAttributeNamed:kAttr_size		forElement:element];
-		NSString	*x			=						[TBXML valueOfAttributeNamed:kAttr_x		forElement:element];
-		NSString	*y			=						[TBXML valueOfAttributeNamed:kAttr_y		forElement:element];
-		NSString	*w			=						[TBXML valueOfAttributeNamed:kAttr_width	forElement:element];
-		NSString	*h			=						[TBXML valueOfAttributeNamed:kAttr_height	forElement:element];
-		CGFloat		xoffset		=						round([[TBXML valueOfAttributeNamed:kAttr_xoff		forElement:element] floatValue]);
-		CGFloat		yoffset		=						round([[TBXML valueOfAttributeNamed:kAttr_yoff		forElement:element] floatValue]);
+		NSString	*text		=								[TBXML textForElement:element];
+		NSString	*modifier	=								[TBXML valueOfAttributeNamed:kAttr_modifier forElement:element];
+		UIColor		*color		=	[GTPageStyle colorForHex:	[TBXML valueOfAttributeNamed:kAttr_color	forElement:element]];
+		NSString	*alpha		=								[TBXML valueOfAttributeNamed:kAttr_alpha	forElement:element];
+		NSString	*align		=								[TBXML valueOfAttributeNamed:kAttr_align	forElement:element];
+		NSString	*textalign	=								[TBXML valueOfAttributeNamed:kAttr_textalign	forElement:element];
+		NSString	*size		=								[TBXML valueOfAttributeNamed:kAttr_size		forElement:element];
+		NSString	*x			=								[TBXML valueOfAttributeNamed:kAttr_x		forElement:element];
+		NSString	*y			=								[TBXML valueOfAttributeNamed:kAttr_y		forElement:element];
+		NSString	*w			=								[TBXML valueOfAttributeNamed:kAttr_width	forElement:element];
+		NSString	*h			=								[TBXML valueOfAttributeNamed:kAttr_height	forElement:element];
+		CGFloat		xoffset		=								round([[TBXML valueOfAttributeNamed:kAttr_xoff		forElement:element] floatValue]);
+		CGFloat		yoffset		=								round([[TBXML valueOfAttributeNamed:kAttr_yoff		forElement:element] floatValue]);
 		
 		//init variables for object parameters
 		CGRect			frame			= CGRectZero;
@@ -1494,19 +1421,19 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 		BOOL			resize			= YES;
 		UIColor			*bgColor		= nil;
 		NSUInteger		textSize		= DEFAULT_TEXTSIZE_LABEL;
-		NSString		*font			= kFont_label;
+		NSString		*font			= self.pageStyle.labelFontName;
 		CGFloat			labelAlpha		= 1.0;
 		
 		//set parameters to attribute val or defaults	//attribute value															//default value
 		//note: these defaults only apply to text labels inside panels
         if		(x)										{frame.origin.x		=	round([x floatValue]);}								else	{frame.origin.x		= xpostion;}
 		if		(y)										{frame.origin.y		=	round([y floatValue]);}								else	{frame.origin.y		= ypostion;}
-		if		(w)										{frame.size.width	=	round([w floatValue]);}								else	{frame.size.width	= 280;}
+		if		(w)										{frame.size.width	=	round([w floatValue]);}								else	{frame.size.width	= (container ? container.frame.size.width - (2 * DEFAULT_PANEL_OFFSET_X) : 280);}
 		if		(h)										{frame.size.height	=	round([h floatValue]);}								else	{frame.size.height	= 40;}
 		if		((w != nil) && (h != nil))				{resize				= NO;}
 		
-		if		(!bgColor)																											{bgColor			= [UIColor clearColor];}
-		if		(!color)																											{color				= [UIColor whiteColor];}
+		if		(!bgColor)																											{bgColor			= self.pageStyle.defaultLabelBackgroundColor;}
+		if		(!color)																											{color				= self.pageStyle.defaultTextColor;}
 		if		(size)									{textSize			= round(textSize * [size floatValue] / 100);}
 		
 		//if alignment is found calculate position based on alignment
@@ -1533,15 +1460,15 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 		}
 		
 		if (modifier) {
-			if		([modifier isEqual:kLabelModifer_bold])			{font		= kFont_boldlabel;}
-			else if	([modifier isEqual:kLabelModifer_italics])		{font		= kFont_italicslabel;}
-			else if	([modifier isEqual:kLabelModifer_bolditalics])	{font		= kFont_bolditalicslabel;}
+			if		([modifier isEqual:kLabelModifer_bold])			{font		= self.pageStyle.boldLabelFontName;}
+			else if	([modifier isEqual:kLabelModifer_italics])		{font		= self.pageStyle.italicsLabelFontName;}
+			else if	([modifier isEqual:kLabelModifer_bolditalics])	{font		= self.pageStyle.boldItalicsLabelFontName;}
 		}
 		
 		if (textalign) {
-			if		([textalign isEqual:kAlignment_right])	{textAlignment		= UITextAlignmentRight;}
-			else if ([textalign isEqual:kAlignment_center])	{textAlignment		= UITextAlignmentCenter;}
-			else if ([textalign isEqual:kAlignment_left])	{textAlignment		= UITextAlignmentLeft;}
+			if		([textalign isEqual:kAlignment_right])	{textAlignment		= NSTextAlignmentRight;}
+			else if ([textalign isEqual:kAlignment_center])	{textAlignment		= NSTextAlignmentCenter;}
+			else if ([textalign isEqual:kAlignment_left])	{textAlignment		= NSTextAlignmentLeft;}
 		}
 		
 		
@@ -1558,7 +1485,7 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
  *	Parameters:		Element:	The TBXMLElement for the panel
  *	Returns:		A UISnufflePanel object from the attributes specified in the passed TBXML element.
  */
-- (id)createPanelFromElement:(TBXMLElement *)element buttonTag:(NSInteger)buttonTag {
+- (id)createPanelFromElement:(TBXMLElement *)element buttonTag:(NSInteger)buttonTag container:(UIView *)container {
 	
 	//if panel exists create panel
 	if (element) {
@@ -1567,13 +1494,13 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 		NSString		*panel_alignment	= [TBXML valueOfAttributeNamed:kAttr_textalign	forElement:element];
 		UITextAlignment	panelAlign;
 		if ([panel_alignment isEqual:kAlignment_left]) {
-			panelAlign = UITextAlignmentLeft;
+			panelAlign = NSTextAlignmentLeft;
 		} else if ([panel_alignment isEqual:kAlignment_center]) {
-			panelAlign = UITextAlignmentCenter;
+			panelAlign = NSTextAlignmentCenter;
 		} else if ([panel_alignment isEqual:kAlignment_right]) {
-			panelAlign = UITextAlignmentRight;
+			panelAlign = NSTextAlignmentRight;
 		} else {
-			panelAlign = UITextAlignmentLeft;
+			panelAlign = NSTextAlignmentLeft;
 		}
 		
 		//init objects that will be used to add interpreted elements to the page
@@ -1586,7 +1513,8 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 		CGFloat			maxHeight			= 0;
 		
 		UISnufflePanel	*tempPanel			=	[[UISnufflePanel alloc] init];
-		UIView			*tempContainerView	=	[[UIView alloc] initWithFrame:CGRectMake(5, 5, 280, 5)];
+		CGRect			containerFrame		=	(container ? container.frame : CGRectMake(0, 0, 320, 480));
+		UIView			*tempContainerView	=	[[UIView alloc] initWithFrame:CGRectMake(5, 5, CGRectGetWidth(containerFrame) - 40, 5)];
 		
 		//init variables for button placment
 		CGFloat				spaceBetweenObjects = 10.0;
@@ -1680,7 +1608,7 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 		
 		//set up panel
 		[tempPanel setFrame:tempContainerView.frame];
-		[tempPanel setBackgroundColor:self.backgroundColor];
+		[tempPanel setBackgroundColor:self.pageStyle.backgroundColor];
 		[tempPanel setTag:(1000 + buttonTag)];
 		[tempPanel setHidden:YES];
 		[tempPanel setAlpha:0.0];
@@ -1814,27 +1742,27 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 	
 	if (element != nil) {
 		//read attributes for label
-		NSString	*text		=						[TBXML textForElement:element];
-		NSString	*mode		=						[TBXML valueOfAttributeNamed:kAttr_mode		forElement:element];
-		UIColor		*color		=	[self colorForHex:	[TBXML valueOfAttributeNamed:kAttr_color	forElement:element]];
-		NSString	*modifier	=						[TBXML valueOfAttributeNamed:kAttr_modifier	forElement:element];
-		NSString	*alpha		=						[TBXML valueOfAttributeNamed:kAttr_alpha	forElement:element];
-		NSString	*align		=						[TBXML valueOfAttributeNamed:kAttr_align	forElement:element];
-		NSString	*textalign	=						[TBXML valueOfAttributeNamed:kAttr_textalign	forElement:element];
-		NSString	*size		=						[TBXML valueOfAttributeNamed:kAttr_size		forElement:element];
-		NSString	*x			=						[TBXML valueOfAttributeNamed:kAttr_x		forElement:element];
-		NSString	*y			=						[TBXML valueOfAttributeNamed:kAttr_y		forElement:element];
-		NSString	*w			=						[TBXML valueOfAttributeNamed:kAttr_width	forElement:element];
-		NSString	*h			=						[TBXML valueOfAttributeNamed:kAttr_height	forElement:element];
+		NSString	*text		=								[TBXML textForElement:element];
+		NSString	*mode		=								[TBXML valueOfAttributeNamed:kAttr_mode		forElement:element];
+		UIColor		*color		=	[GTPageStyle colorForHex:	[TBXML valueOfAttributeNamed:kAttr_color	forElement:element]];
+		NSString	*modifier	=								[TBXML valueOfAttributeNamed:kAttr_modifier	forElement:element];
+		NSString	*alpha		=								[TBXML valueOfAttributeNamed:kAttr_alpha	forElement:element];
+		NSString	*align		=								[TBXML valueOfAttributeNamed:kAttr_align	forElement:element];
+		NSString	*textalign	=								[TBXML valueOfAttributeNamed:kAttr_textalign	forElement:element];
+		NSString	*size		=								[TBXML valueOfAttributeNamed:kAttr_size		forElement:element];
+		NSString	*x			=								[TBXML valueOfAttributeNamed:kAttr_x		forElement:element];
+		NSString	*y			=								[TBXML valueOfAttributeNamed:kAttr_y		forElement:element];
+		NSString	*w			=								[TBXML valueOfAttributeNamed:kAttr_width	forElement:element];
+		NSString	*h			=								[TBXML valueOfAttributeNamed:kAttr_height	forElement:element];
 		
-					mode		=						(mode == nil ? @"" : mode);
+					mode		=								(mode == nil ? @"" : mode);
 		
 		CGRect			frame			= CGRectZero;
-		UITextAlignment textAlignment	= UITextAlignmentRight;
+		UITextAlignment textAlignment	= NSTextAlignmentRight;
 		BOOL			resize			= YES;
 		UIColor			*bgColor		= nil;
 		NSUInteger		textSize		= DEFAULT_TEXTSIZE_QUESTION_NORMAL;
-		NSString		*font			= kFont_question;
+		NSString		*font			= self.pageStyle.questionFontName;
 		CGFloat			labelAlpha		= 1.0;
 		
 		//overwrite defaults with user set values (xml attributes)
@@ -1844,8 +1772,8 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 		if		(h)										{frame.size.height	=	round([h floatValue]);}								else	{frame.size.height	= 76;}
 		if		((w != nil) && (h != nil))				{resize				= NO;}
 		
-		if		(!bgColor)																								{bgColor			= [UIColor clearColor];}
-		if		(!color)																								{color				= [UIColor whiteColor];}
+		if		(!bgColor)																								{bgColor			= self.pageStyle.defaultLabelBackgroundColor;}
+		if		(!color)																								{color				= self.pageStyle.defaultTextColor;}
 		if		(size)									{textSize			= round(textSize * [size floatValue] / 100);}
 		
 		if (alpha) {
@@ -1853,18 +1781,18 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 		}
 		
 		if (textalign) {
-			if		([textalign isEqual:kAlignment_right])	{textAlignment		= UITextAlignmentRight;}
-			else if ([textalign isEqual:kAlignment_center])	{textAlignment		= UITextAlignmentCenter;}
-			else if ([textalign isEqual:kAlignment_left])	{textAlignment		= UITextAlignmentLeft;}
-		}																										else	{textAlignment		= UITextAlignmentRight;}
+			if		([textalign isEqual:kAlignment_right])	{textAlignment		= NSTextAlignmentRight;}
+			else if ([textalign isEqual:kAlignment_center])	{textAlignment		= NSTextAlignmentCenter;}
+			else if ([textalign isEqual:kAlignment_left])	{textAlignment		= NSTextAlignmentLeft;}
+		}																										else	{textAlignment		= NSTextAlignmentRight;}
 		
 		if		([mode isEqual:kTitleMode_straight]) {
-			bgColor = [UIColor whiteColor];
-			color = self.backgroundColor;
+			bgColor = self.pageStyle.straightQuestionBackgroundColor;
+			color = self.pageStyle.backgroundColor;
 			textSize = round(DEFAULT_TEXTSIZE_QUESTION_STRAIGHT * [size floatValue] / 100);
-			font = kFont_straightquestion;
+			font = self.pageStyle.straightQuestionFontName;
 			frame = CGRectMake(0, frame.origin.y, 320, frame.size.height);
-			textAlignment = UITextAlignmentCenter;
+			textAlignment = NSTextAlignmentCenter;
 		}
 		
 		//if the question can be aligned then align it
@@ -1889,13 +1817,13 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 		
 		if (modifier) {
 			if ([modifier isEqual:kLabelModifer_bold]) {
-				font = kFont_boldlabel;
+				font = self.pageStyle.boldLabelFontName;
 			} else if ([modifier isEqual:kLabelModifer_italics]) {
-				font = kFont_italicslabel;
+				font = self.pageStyle.italicsLabelFontName;
 			} else if ([modifier isEqual:kLabelModifer_bolditalics]) {
-				font = kFont_bolditalicslabel;
+				font = self.pageStyle.boldItalicsLabelFontName;
 			} else if ([modifier isEqual:kLabelModifer_normal]) {
-				font = kFont_label;
+				font = self.pageStyle.labelFontName;
 			}
 		}
 		
@@ -1906,7 +1834,7 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 	}
 }
 
-- (id)createTitleFromElement:(TBXMLElement *)element {
+- (id)createTitleFromElement:(TBXMLElement *)element container:(UIView *)container {
 	
 	
 	if (element) {
@@ -1918,48 +1846,60 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 		TBXMLElement	*title_heading		= [TBXML childElementNamed:kName_TitleHeading		parentElement:element];
 		TBXMLElement	*title_subheading	= [TBXML childElementNamed:kName_TitleSubHeading	parentElement:element];
 		NSInteger		xmltitleheight		= [[TBXML valueOfAttributeNamed:kAttr_height		forElement:element] intValue];
+		CGRect			titleFrame			= CGRectMake(0, 20, CGRectGetWidth(container.frame) - 20, xmltitleheight ? xmltitleheight : 150);
 		
 		UILabel	*tempNumber			= nil;
 		UILabel *tempHeading		= nil;
 		UILabel	*tempSubHeading		= nil;
 		
-		if (title_number)		{tempNumber		= [self createTitleNumberFromElement:title_number			titleMode:mode];}
-		if (title_heading)		{tempHeading	= [self createTitleHeadingFromElement:title_heading			titleMode:mode];}
-		if (title_subheading)	{tempSubHeading	= [self createTitleSubheadingFromElement:title_subheading	titleMode:mode];}
+		//create the title container
+		if ([mode isEqual:kTitleMode_straight]) {
+			titleFrame = CGRectMake(0, 20, CGRectGetWidth(container.frame), CGRectGetHeight(titleFrame));
+			
+		}
+		
+		if (title_number)		{tempNumber		= [self createTitleNumberFromElement:title_number			titleMode:mode containerFrame:titleFrame];}
+		if (title_heading)		{tempHeading	= [self createTitleHeadingFromElement:title_heading			titleMode:mode containerFrame:titleFrame];}
+		if (title_subheading)	{tempSubHeading	= [self createTitleSubheadingFromElement:title_subheading	titleMode:mode containerFrame:titleFrame];}
+		
+		//fixes issue with number getting cut off when heading is short
+		if (tempNumber && tempHeading) {
+			tempNumber.frame = CGRectMake(CGRectGetMinX(tempNumber.frame),
+										  CGRectGetMinY(tempNumber.frame),
+										  CGRectGetWidth(tempNumber.frame),
+										  fmaxf(fminf(CGRectGetHeight(tempNumber.frame), CGRectGetHeight(tempHeading.frame)), 50));
+		}
 		
 		//Uses a loop to find the right size for the heading to fit on 3 lines
 		if ([mode isEqual:kTitleMode_peek]) {
 			NSArray *textArray = [tempHeading.text componentsSeparatedByString:@" "];
 			NSInteger numberoflines = [textArray count];
+			CGFloat desiredHeight = fmaxf(CGRectGetHeight(tempSubHeading.frame), DEFAULT_TITLE_PEEKHEADING_MIN_HEIGHT);
 			
 			tempHeading.text = [textArray componentsJoinedByString:@"\n"];
 			
-			UIFont *tempFont = [UIFont fontWithName:kFont_peekheading size:DEFAULT_TEXTSIZE_TITLE_PEEKHEADING_MAX];
+			UIFont *tempFont = [UIFont fontWithName:self.pageStyle.peekHeadingFontName size:DEFAULT_TEXTSIZE_TITLE_PEEKHEADING_MAX];
 			int i;
 			CGSize labelsize;
 			for (i=DEFAULT_TEXTSIZE_TITLE_PEEKHEADING_MAX; i> DEFAULT_TEXTSIZE_TITLE_PEEKHEADING_MIN; i=i-1) {
 				tempFont = [tempFont fontWithSize:i];
 				CGSize constraintSize = CGSizeMake(tempHeading.frame.size.width, MAXFLOAT);
-				//NSLog(@"Constraint Width: %f",constraintSize.width);
-				labelsize = [tempHeading.text sizeWithFont:tempFont constrainedToSize:constraintSize lineBreakMode:UILineBreakModeWordWrap];
+				labelsize = [tempHeading.text sizeWithFont:tempFont constrainedToSize:constraintSize lineBreakMode:NSLineBreakByWordWrapping];
 				
-				if (labelsize.height <= (numberoflines*tempFont.pointSize+10)){
-					//NSLog(@"Final Width: %f",labelsize.width);
+				CGFloat currentNumberOfLines = ceil(labelsize.height / tempFont.lineHeight);
+				if (labelsize.height <= desiredHeight && currentNumberOfLines == numberoflines) {
 					break;
 				}
 			}
+			
 			if (numberoflines > 1) {
 				tempHeading.frame = CGRectMake(tempHeading.frame.origin.x, tempHeading.frame.origin.y, labelsize.width, labelsize.height);
 				tempHeading.font = tempFont;
 			}
-
-			
-			//resize the heading to fit the text
-			//[tempHeading sizeToFit];
 			
 			tempSubHeading.frame			= CGRectMake(CGRectGetMaxX(tempHeading.frame) + 11, 
 														 tempSubHeading.frame.origin.y, 
-														 self.pageView.frame.size.width - 20 - tempSubHeading.frame.origin.x - 11, 
+														 container.frame.size.width - 20 - tempSubHeading.frame.origin.x - 11, 
 														 fmaxf(tempSubHeading.frame.size.height + 10,labelsize.height + 20));
 			tempHeading.frame				= CGRectMake(tempHeading.frame.origin.x, 
 														 tempHeading.frame.origin.y - 10, 
@@ -1980,13 +1920,21 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 			titleheight = xmltitleheight;
 		}
 		
+		//override title height for subheadings with peek
 		if (tempSubHeading && [mode isEqual:kTitleMode_peek]) {titleheight += tempSubHeading.frame.size.height + CGRectGetMinY(tempSubHeading.frame) - CGRectGetMaxY(tempHeading.frame);}
+		
+		//set newly calculated height but don't let it be less than 43, the min value for shadows to display correctly
+		titleFrame.size.height = fmaxf(titleheight, 43);
+		//set bigger min size if a number is involved
+		if (tempNumber) {
+			titleFrame.size.height = fmaxf(titleheight, 60);
+		}
 		
 		//create the title container
 		if ([mode isEqual:kTitleMode_clear]) {
 			//clear mode
-			titleContainer = [[UIRoundedView alloc] initWithFrame:CGRectMake(0, 20, 300, titleheight)
-														  bgColor:[UIColor clearColor]
+			titleContainer = [[UIRoundedView alloc] initWithFrame:titleFrame
+														  bgColor:self.pageStyle.clearTitleBackgroundColor
 														   radius:ROUNDRECT_RADIUS
 														  topleft:NO
 														 topright:NO
@@ -1996,8 +1944,8 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 			
 		} else if ([mode isEqual:kTitleMode_plain]) {
 			//plain mode
-			titleContainer = [[UIRoundedView alloc] initWithFrame:CGRectMake(0, 20, self.pageView.frame.size.width - 20, titleheight)
-														  bgColor:[UIColor whiteColor]
+			titleContainer = [[UIRoundedView alloc] initWithFrame:titleFrame
+														  bgColor:self.pageStyle.plainTitleBackgroundColor
 														   radius:ROUNDRECT_RADIUS
 														  topleft:NO
 														 topright:YES
@@ -2005,14 +1953,14 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 													   bottomleft:NO
 													  tapDelegate:self.panelDelegate];
 			
-			tempSubHeading.frame = CGRectMake(10, 10, self.pageView.frame.size.width - 30, titleheight - 10);
+			tempSubHeading.frame = CGRectMake(10, 10, container.frame.size.width - 30, titleheight - 10);
 			[tempSubHeading sizeToFit];
-			titleContainer.frame = CGRectMake(0, 20, self.pageView.frame.size.width - 20, tempSubHeading.frame.size.height + 20);
+			titleContainer.frame = CGRectMake(0, 20, container.frame.size.width - 20, tempSubHeading.frame.size.height + 20);
 			titleContainer.clipsToBounds = YES;
 		} else if ([mode isEqual:kTitleMode_straight]) {
 			//straight mode
-			titleContainer = [[UIRoundedView alloc] initWithFrame:CGRectMake(0, 20, self.pageView.frame.size.width, titleheight)
-														  bgColor:[UIColor whiteColor]
+			titleContainer = [[UIRoundedView alloc] initWithFrame:titleFrame
+														  bgColor:self.pageStyle.straightTitleBackgroundColor
 														   radius:ROUNDRECT_RADIUS
 														  topleft:NO
 														 topright:NO
@@ -2023,8 +1971,8 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 		} else if ([mode isEqual:kTitleMode_singlecurve] || [mode isEqual:kTitleMode_peek]) {
 			//single rounded corner mode or
 			//peek mode
-			titleContainer = [[UIRoundedView alloc] initWithFrame:CGRectMake(0, 0, self.pageView.frame.size.width - 20, titleheight)
-														  bgColor:[UIColor whiteColor]
+			titleContainer = [[UIRoundedView alloc] initWithFrame:titleFrame
+														  bgColor:self.pageStyle.singleCurveTitleBackgroundColor
 														   radius:ROUNDRECT_RADIUS * 2
 														  topleft:NO
 														 topright:NO
@@ -2034,8 +1982,8 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 			
 		} else {
 			//no mode specified
-			titleContainer = [[UIRoundedView alloc] initWithFrame:CGRectMake(0, 20, self.pageView.frame.size.width - 20, titleheight)
-														  bgColor:[UIColor whiteColor]
+			titleContainer = [[UIRoundedView alloc] initWithFrame:titleFrame
+														  bgColor:self.pageStyle.defaultTitleBackgroundColor
 														   radius:ROUNDRECT_RADIUS
 														  topleft:NO
 														 topright:YES
@@ -2072,7 +2020,7 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 	
 }
 
-- (id)createSubTitleFromElement:(TBXMLElement *)element underTitle:(UIView *)titleUIView{
+- (id)createSubTitleFromElement:(TBXMLElement *)element underTitle:(UIView *)titleUIView {
 	UIRoundedView	*subTitleContainer = nil;
 	
 	if (element) {
@@ -2080,35 +2028,35 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 		TBXMLElement	*subTitle_element			= [TBXML childElementNamed:kName_TitlePeek		parentElement:element];
 		if (subTitle_element) {
 			
-			NSString	*text		=						[TBXML textForElement:subTitle_element];
-			NSString	*modifier	=						[TBXML valueOfAttributeNamed:kAttr_modifier forElement:subTitle_element];
-			UIColor		*color		=	[self colorForHex:	[TBXML valueOfAttributeNamed:kAttr_color	forElement:subTitle_element]];
-			NSString	*alpha		=						[TBXML valueOfAttributeNamed:kAttr_alpha	forElement:subTitle_element];
-			NSString	*align		=						[TBXML valueOfAttributeNamed:kAttr_textalign	forElement:subTitle_element];
-			NSString	*size		=						[TBXML valueOfAttributeNamed:kAttr_size		forElement:subTitle_element];
-			NSString	*x			=						[TBXML valueOfAttributeNamed:kAttr_x		forElement:subTitle_element];
-			NSString	*y			=						[TBXML valueOfAttributeNamed:kAttr_y		forElement:subTitle_element];
-			NSString	*w			=						[TBXML valueOfAttributeNamed:kAttr_width	forElement:subTitle_element];
-			NSString	*h			=						[TBXML valueOfAttributeNamed:kAttr_height	forElement:subTitle_element];
+			NSString	*text		=								[TBXML textForElement:subTitle_element];
+			NSString	*modifier	=								[TBXML valueOfAttributeNamed:kAttr_modifier forElement:subTitle_element];
+			UIColor		*color		=	[GTPageStyle colorForHex:	[TBXML valueOfAttributeNamed:kAttr_color	forElement:subTitle_element]];
+			NSString	*alpha		=								[TBXML valueOfAttributeNamed:kAttr_alpha	forElement:subTitle_element];
+			NSString	*align		=								[TBXML valueOfAttributeNamed:kAttr_textalign	forElement:subTitle_element];
+			NSString	*size		=								[TBXML valueOfAttributeNamed:kAttr_size		forElement:subTitle_element];
+			NSString	*x			=								[TBXML valueOfAttributeNamed:kAttr_x		forElement:subTitle_element];
+			NSString	*y			=								[TBXML valueOfAttributeNamed:kAttr_y		forElement:subTitle_element];
+			NSString	*w			=								[TBXML valueOfAttributeNamed:kAttr_width	forElement:subTitle_element];
+			NSString	*h			=								[TBXML valueOfAttributeNamed:kAttr_height	forElement:subTitle_element];
 			
 			//init variables for object parameters
 			CGRect			frame			= CGRectZero;
-			UITextAlignment textAlignment	= UITextAlignmentLeft;
+			UITextAlignment textAlignment	= NSTextAlignmentLeft;
 			BOOL			resize			= YES;
 			UIColor			*bgColor		= nil;
 			NSUInteger		textSize		= DEFAULT_TEXTSIZE_TITLE_SUBHEADING;
-			NSString		*font			= kFont_peekpanel;
+			NSString		*font			= self.pageStyle.peekPanelFontName;
 			CGFloat			labelAlpha		= 1.0;
 			
 			//set parameters to attribute val or defaults	//attribute value															//default value
 			if		(x)										{frame.origin.x		=	round([x floatValue]);}								else	{frame.origin.x		= 10;}
 			if		(y)										{frame.origin.y		=	round([y floatValue]);}								else	{frame.origin.y		= 30;}
-			if		(w)										{frame.size.width	=	round([w floatValue]);}								else	{frame.size.width	= self.pageView.frame.size.width - 40;}
+			if		(w)										{frame.size.width	=	round([w floatValue]);}								else	{frame.size.width	= CGRectGetWidth(titleUIView.frame) - 40;}
 			if		(h)										{frame.size.height	=	round([h floatValue]);}								else	{frame.size.height	= 80;}
 			if		((w != nil) && (h != nil))				{resize				= NO;}
 			
-			if		(!bgColor)																											{bgColor			= [UIColor whiteColor];}
-			if		(!color)																											{color				= self.backgroundColor;}
+			if		(!bgColor)																											{bgColor			= self.pageStyle.subTitleBackgroundColor;}
+			if		(!color)																											{color				= self.pageStyle.backgroundColor;}
 			if		(size)									{textSize			= round(textSize * [size floatValue] / 100);}
 			
 			if (alpha) {
@@ -2116,28 +2064,28 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 			}
 			
 			if (modifier) {
-				if		([modifier isEqual:kLabelModifer_bold])			{font		= kFont_boldlabel;}
-				else if	([modifier isEqual:kLabelModifer_italics])		{font		= kFont_italicslabel;}
-				else if	([modifier isEqual:kLabelModifer_bolditalics])	{font		= kFont_bolditalicslabel;}
+				if		([modifier isEqual:kLabelModifer_bold])			{font		= self.pageStyle.boldLabelFontName;}
+				else if	([modifier isEqual:kLabelModifer_italics])		{font		= self.pageStyle.italicsLabelFontName;}
+				else if	([modifier isEqual:kLabelModifer_bolditalics])	{font		= self.pageStyle.boldItalicsLabelFontName;}
 			}
 			
 			if (align) {
-				if		([align isEqual:kAlignment_right])	{textAlignment		= UITextAlignmentRight;}
-				else if ([align isEqual:kAlignment_center])	{textAlignment		= UITextAlignmentCenter;}
-				else if ([align isEqual:kAlignment_left])	{textAlignment		= UITextAlignmentLeft;}
+				if		([align isEqual:kAlignment_right])	{textAlignment		= NSTextAlignmentRight;}
+				else if ([align isEqual:kAlignment_center])	{textAlignment		= NSTextAlignmentCenter;}
+				else if ([align isEqual:kAlignment_left])	{textAlignment		= NSTextAlignmentLeft;}
 			}
 			
 			UILabel			*tempSubTitleText		= nil;
 			
 			if (subTitle_element) {
-				tempSubTitleText = [self createLabelWithFrame:frame autoResize:resize text:text color:color bgColor:[UIColor clearColor] alpha:labelAlpha alignment:textAlignment font:font size:textSize];
+				tempSubTitleText = [self createLabelWithFrame:frame autoResize:resize text:text color:color bgColor:self.pageStyle.defaultLabelBackgroundColor alpha:labelAlpha alignment:textAlignment font:font size:textSize];
 			}
 			
 			
 			//set the initial frame of the subtitle
 			CGRect subTitleFrame = CGRectMake(0,
                                               self.titleFrame.size.height - (tempSubTitleText.frame.size.height + tempSubTitleText.frame.origin.y + (ROUNDRECT_RADIUS)) + 10,
-                                              self.pageView.frame.size.width - 30,
+                                              titleUIView.frame.size.width - 10,
                                               tempSubTitleText.frame.size.height + tempSubTitleText.frame.origin.y + (ROUNDRECT_RADIUS)
                                               );
 			
@@ -2151,53 +2099,39 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 														 tapDelegate:self.panelDelegate];
 			
 			CGRect peekPanelArrowFrame = CGRectMake((subTitleFrame.size.width / 2) - 5 ,subTitleFrame.size.height - 8 , 10, 10);
-			UILabel	*peekPanelArrow = [self createLabelWithFrame:peekPanelArrowFrame autoResize:NO text:@"▼" color:[UIColor whiteColor] bgColor: [UIColor clearColor] alpha:1.0 alignment:UITextAlignmentCenter font:kFont_label size:8];
+			UILabel	*peekPanelArrow = [self createLabelWithFrame:peekPanelArrowFrame autoResize:NO text:@"▼" color:self.pageStyle.defaultTextColor bgColor:self.pageStyle.defaultLabelBackgroundColor alpha:1.0 alignment:NSTextAlignmentCenter font:self.pageStyle.labelFontName size:8];
 			peekPanelArrow.shadowColor = [UIColor darkGrayColor];
 			
-			
-			//[tempSubTitleText setTag:10];
 			[subTitleContainer addSubview:tempSubTitleText];
-            //CGRect subTitleMask = CGRectMake(0, 0, self.titleFrame.size.width, self.pageView.frame.size.height);
-            
-            //UIView *subTitleMask = [[UIView alloc] initWithFrame:CGRectMake(subTitleContainer.frame.origin.x, subTitleContainer.frame.origin.y, subTitleContainer.frame.size.width, self.pageView.frame.size.height)];
-            //[subTitleMask addSubview:(UIView *)subTitleContainer];
-            
 			[subTitleContainer insertSubview:peekPanelArrow aboveSubview:tempSubTitleText];
-			//UIView *gapfiller = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.titleFrame.size.width, self.titleFrame.origin.y)];
-			//gapfiller.backgroundColor = self.backgroundColor;
-            //[gapfiller setTag:99];
-			//[subTitleContainer insertSubview:gapfiller atIndex:0];
-			//[gapfiller release];
 			
 			subTitleContainer.titleMode = kTitleMode_peek;
-			//[subTitleContainer setTag:550];
-            //[subTitleMask setTag:550];
 		}
 	}
 	return subTitleContainer;
 }
 
-- (id)createTitleNumberFromElement:(TBXMLElement *)element	titleMode:(NSString *)titleMode {
+- (id)createTitleNumberFromElement:(TBXMLElement *)element	titleMode:(NSString *)titleMode containerFrame:(CGRect)containerFrame {
 	
 	if (element != nil) {
 		
 		//read attributes for title subheading
-		NSString	*text	=						[TBXML textForElement:element];
-		UIColor		*color	=	[self colorForHex:	[TBXML valueOfAttributeNamed:kAttr_color	forElement:element]];
-		NSString	*alpha	=						[TBXML valueOfAttributeNamed:kAttr_alpha	forElement:element];
-		NSString	*align	=						[TBXML valueOfAttributeNamed:kAttr_textalign	forElement:element];
-		NSString	*size	=						[TBXML valueOfAttributeNamed:kAttr_size		forElement:element];
-		NSString	*x		=						[TBXML valueOfAttributeNamed:kAttr_x		forElement:element];
-		NSString	*y		=						[TBXML valueOfAttributeNamed:kAttr_y		forElement:element];
-		NSString	*w		=						[TBXML valueOfAttributeNamed:kAttr_width	forElement:element];
-		NSString	*h		=						[TBXML valueOfAttributeNamed:kAttr_height	forElement:element];
+		NSString	*text	=								[TBXML textForElement:element];
+		UIColor		*color	=	[GTPageStyle colorForHex:	[TBXML valueOfAttributeNamed:kAttr_color	forElement:element]];
+		NSString	*alpha	=								[TBXML valueOfAttributeNamed:kAttr_alpha	forElement:element];
+		NSString	*align	=								[TBXML valueOfAttributeNamed:kAttr_textalign	forElement:element];
+		NSString	*size	=								[TBXML valueOfAttributeNamed:kAttr_size		forElement:element];
+		NSString	*x		=								[TBXML valueOfAttributeNamed:kAttr_x		forElement:element];
+		NSString	*y		=								[TBXML valueOfAttributeNamed:kAttr_y		forElement:element];
+		NSString	*w		=								[TBXML valueOfAttributeNamed:kAttr_width	forElement:element];
+		NSString	*h		=								[TBXML valueOfAttributeNamed:kAttr_height	forElement:element];
 		
 		CGRect			frame			= CGRectZero;
-		UITextAlignment textAlignment	= UITextAlignmentRight;
+		UITextAlignment textAlignment	= NSTextAlignmentRight;
 		BOOL			resize			= YES;
 		UIColor			*bgColor		= nil;
 		NSUInteger		textSize		= DEFAULT_TEXTSIZE_TITLE_NUMBER;
-		NSString		*font			= kFont_number;
+		NSString		*font			= self.pageStyle.numberFontName;
 		CGFloat			labelAlpha		= 1.0;
 		//overwrite defaults with user set values (xml attributes)
 		if		(x)										{frame.origin.x		= [x floatValue];}								else	{frame.origin.x		= 10;}
@@ -2206,8 +2140,8 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 		if		(h)										{frame.size.height	= [h floatValue];}								else	{frame.size.height	= 150;}
 		if		((w != nil) && (h != nil))				{resize				= NO;}
 		
-		if		(!bgColor)																								{bgColor			= [UIColor clearColor];}
-		if		(!color)																								{color				= self.backgroundColor;}
+		if		(!bgColor)																								{bgColor			= self.pageStyle.defaultLabelBackgroundColor;}
+		if		(!color)																								{color				= self.pageStyle.backgroundColor;}
 		if		(size)									{textSize			= round(textSize * [size floatValue] / 100);}
 		
 		if (alpha) {
@@ -2215,13 +2149,13 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 		}
 		
 		if (align) {
-			if		([align isEqual:kAlignment_right])	{textAlignment		= UITextAlignmentRight;}
-			else if ([align isEqual:kAlignment_center])	{textAlignment		= UITextAlignmentCenter;}
-			else if ([align isEqual:kAlignment_left])	{textAlignment		= UITextAlignmentLeft;}
-		}																										else	{textAlignment		= UITextAlignmentRight;}
+			if		([align isEqual:kAlignment_right])	{textAlignment		= NSTextAlignmentRight;}
+			else if ([align isEqual:kAlignment_center])	{textAlignment		= NSTextAlignmentCenter;}
+			else if ([align isEqual:kAlignment_left])	{textAlignment		= NSTextAlignmentLeft;}
+		}																										else	{textAlignment		= NSTextAlignmentRight;}
 		
 		if (titleMode) {
-			if		([titleMode isEqual:kTitleMode_clear])	{bgColor			= [UIColor clearColor];}
+			if		([titleMode isEqual:kTitleMode_clear])	{bgColor			= self.pageStyle.clearTitleBackgroundColor;}
 		}
 		
 		return [self createLabelWithFrame:frame autoResize:resize text:text color:color bgColor:bgColor alpha:labelAlpha alignment:textAlignment font:font size:textSize];
@@ -2233,27 +2167,27 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 }
 
 
-- (id)createTitleHeadingFromElement:(TBXMLElement *)element	titleMode:(NSString *)titleMode {
+- (id)createTitleHeadingFromElement:(TBXMLElement *)element	titleMode:(NSString *)titleMode containerFrame:(CGRect)containerFrame {
 	
 	
 	if (element != nil) {
 		//read attributes for title subheading
-		NSString	*text	=						[TBXML textForElement:element];
-		UIColor		*color	=	[self colorForHex:	[TBXML valueOfAttributeNamed:kAttr_color	forElement:element]];
-		NSString	*alpha	=						[TBXML valueOfAttributeNamed:kAttr_alpha	forElement:element];
-		NSString	*align	=						[TBXML valueOfAttributeNamed:kAttr_textalign	forElement:element];
-		NSString	*size	=						[TBXML valueOfAttributeNamed:kAttr_size		forElement:element];
-		NSString	*x		=						[TBXML valueOfAttributeNamed:kAttr_x		forElement:element];
-		NSString	*y		=						[TBXML valueOfAttributeNamed:kAttr_y		forElement:element];
-		NSString	*w		=						[TBXML valueOfAttributeNamed:kAttr_width	forElement:element];
-		NSString	*h		=						[TBXML valueOfAttributeNamed:kAttr_height	forElement:element];
+		NSString	*text	=								[TBXML textForElement:element];
+		UIColor		*color	=	[GTPageStyle colorForHex:	[TBXML valueOfAttributeNamed:kAttr_color	forElement:element]];
+		NSString	*alpha	=								[TBXML valueOfAttributeNamed:kAttr_alpha	forElement:element];
+		NSString	*align	=								[TBXML valueOfAttributeNamed:kAttr_textalign	forElement:element];
+		NSString	*size	=								[TBXML valueOfAttributeNamed:kAttr_size		forElement:element];
+		NSString	*x		=								[TBXML valueOfAttributeNamed:kAttr_x		forElement:element];
+		NSString	*y		=								[TBXML valueOfAttributeNamed:kAttr_y		forElement:element];
+		NSString	*w		=								[TBXML valueOfAttributeNamed:kAttr_width	forElement:element];
+		NSString	*h		=								[TBXML valueOfAttributeNamed:kAttr_height	forElement:element];
 		
 		CGRect			frame			= CGRectZero;
-		UITextAlignment textAlignment	= ([titleMode isEqual:kTitleMode_peek] ? UITextAlignmentRight : UITextAlignmentLeft);
+		UITextAlignment textAlignment	= ([titleMode isEqual:kTitleMode_peek] ? NSTextAlignmentRight : NSTextAlignmentLeft);
 		BOOL			resize			= YES;
 		UIColor			*bgColor		= nil;
 		NSUInteger		textSize		= ([titleMode isEqual:kTitleMode_peek] ? DEFAULT_TEXTSIZE_TITLE_HEADING_PEEKMODE : DEFAULT_TEXTSIZE_TITLE_HEADING_NORMALMODE );
-		NSString		*font			= ([titleMode isEqual:kTitleMode_peek] ? kFont_peekheading : kFont_heading);
+		NSString		*font			= ([titleMode isEqual:kTitleMode_peek] ? self.pageStyle.peekHeadingFontName : self.pageStyle.headingFontName);
 		CGFloat			labelAlpha		= 1.0;
 		
 		//set values to attribute values or defaults
@@ -2261,19 +2195,19 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 			//peek mode
 			if		(x)										{frame.origin.x		= [x floatValue];}								else	{frame.origin.x		= 5;}
 			if		(y)										{frame.origin.y		= [y floatValue];}								else	{frame.origin.y		= 10;}
-			if		(w)										{frame.size.width	= [w floatValue];}								else	{frame.size.width	= 95;}
+			if		(w)										{frame.size.width	= [w floatValue];}								else	{frame.size.width	= CGRectGetWidth(containerFrame) / 4 - 2 * DEFAULT_TITLE_PEEKHEADING_PADDING - DEFAULT_TITLE_PEEKHEADING_LINE_WIDTH;}
 			if		(h)										{frame.size.height	= [h floatValue];}								else	{frame.size.height	= 100;}
 			if		((w != nil) && (h != nil))				{resize				= NO;}
 			
 		} else {
 			if		(x)										{frame.origin.x		= [x floatValue];}								else	{frame.origin.x		= 55;}
 			if		(y)										{frame.origin.y		= [y floatValue];}								else	{frame.origin.y		= 5;}
-			if		(w)										{frame.size.width	= [w floatValue];}								else	{frame.size.width	= 240;}
+			if		(w)										{frame.size.width	= [w floatValue];}								else	{frame.size.width	= CGRectGetWidth(containerFrame) - 60;}
 			if		(h)										{frame.size.height	= [h floatValue];}								else	{frame.size.height	= 150;}
 			if		((w != nil) && (h != nil))				{resize				= NO;}
 		}
-		if		(!bgColor)																								{bgColor			= [UIColor clearColor];}
-		if		(!color)																								{color				= self.backgroundColor;}
+		if		(!bgColor)																								{bgColor			= self.pageStyle.clearTitleBackgroundColor;}
+		if		(!color)																								{color				= self.pageStyle.backgroundColor;}
 		if		(size)									{textSize			= round(textSize * [size floatValue] / 100);}
 		
 		if (alpha) {
@@ -2281,19 +2215,19 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 		}
 		
 		if (align) {
-			if		([align isEqual:kAlignment_right])	{textAlignment		= UITextAlignmentRight;}
-			else if ([align isEqual:kAlignment_center])	{textAlignment		= UITextAlignmentCenter;}
-			else if ([align isEqual:kAlignment_left])	{textAlignment		= UITextAlignmentLeft;}
+			if		([align isEqual:kAlignment_right])	{textAlignment		= NSTextAlignmentRight;}
+			else if ([align isEqual:kAlignment_center])	{textAlignment		= NSTextAlignmentCenter;}
+			else if ([align isEqual:kAlignment_left])	{textAlignment		= NSTextAlignmentLeft;}
 		}
 		
 		if (titleMode) {
-			if		([titleMode isEqual:kTitleMode_clear])		{bgColor			= [UIColor clearColor];}
+			if		([titleMode isEqual:kTitleMode_clear])		{bgColor			= self.pageStyle.clearTitleBackgroundColor;}
 			else if ([titleMode isEqual:kTitleMode_straight])	{
-				textAlignment=UITextAlignmentCenter;
+				textAlignment=NSTextAlignmentCenter;
 				UILabel *temp = [self createLabelWithFrame:frame autoResize:resize text:text color:color bgColor:bgColor alpha:labelAlpha alignment:textAlignment font:font size:textSize];
 				frame = temp.frame;
 				frame.origin.x		= 0;
-				frame.size.width = self.pageView.frame.size.width;
+				frame.size.width = containerFrame.size.width;
 				temp.frame = frame;
 				
 				return temp;
@@ -2312,49 +2246,49 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
  *					titleMode:	A NSString containing the specified title mode (straight, single, etc.)
  *	Returns:		A UIView object from the attributes specified in the passed TBXML element.
  */
-- (id)createTitleSubheadingFromElement:(TBXMLElement *)element titleMode:(NSString *)titleMode {
+- (id)createTitleSubheadingFromElement:(TBXMLElement *)element titleMode:(NSString *)titleMode containerFrame:(CGRect)containerFrame {
 	//read attributes for title subheading
-	NSString	*text	=						[TBXML textForElement:element];
-	UIColor		*color	=	[self colorForHex:	[TBXML valueOfAttributeNamed:kAttr_color	forElement:element]];
-	NSString	*alpha	=						[TBXML valueOfAttributeNamed:kAttr_alpha	forElement:element];
-	NSString	*align	=						[TBXML valueOfAttributeNamed:kAttr_textalign	forElement:element];
-	NSString	*size	=						[TBXML valueOfAttributeNamed:kAttr_size		forElement:element];
-	NSString	*x		=						[TBXML valueOfAttributeNamed:kAttr_x		forElement:element];
-	NSString	*y		=						[TBXML valueOfAttributeNamed:kAttr_y		forElement:element];
-	NSString	*w		=						[TBXML valueOfAttributeNamed:kAttr_width	forElement:element];
-	NSString	*h		=						[TBXML valueOfAttributeNamed:kAttr_height	forElement:element];
+	NSString	*text	=								[TBXML textForElement:element];
+	UIColor		*color	=	[GTPageStyle colorForHex:	[TBXML valueOfAttributeNamed:kAttr_color	forElement:element]];
+	NSString	*alpha	=								[TBXML valueOfAttributeNamed:kAttr_alpha	forElement:element];
+	NSString	*align	=								[TBXML valueOfAttributeNamed:kAttr_textalign	forElement:element];
+	NSString	*size	=								[TBXML valueOfAttributeNamed:kAttr_size		forElement:element];
+	NSString	*x		=								[TBXML valueOfAttributeNamed:kAttr_x		forElement:element];
+	NSString	*y		=								[TBXML valueOfAttributeNamed:kAttr_y		forElement:element];
+	NSString	*w		=								[TBXML valueOfAttributeNamed:kAttr_width	forElement:element];
+	NSString	*h		=								[TBXML valueOfAttributeNamed:kAttr_height	forElement:element];
 	
 	//init title parameters with defaults
 	CGRect			frame			= CGRectZero;
-	UITextAlignment textAlignment	= ([titleMode isEqual:kTitleMode_peek] ? UITextAlignmentLeft : UITextAlignmentCenter);
+	UITextAlignment textAlignment	= ([titleMode isEqual:kTitleMode_peek] ? NSTextAlignmentLeft : NSTextAlignmentCenter);
 	BOOL			resize			= YES;
 	UIColor			*bgColor		= nil;
 	NSUInteger		textSize		= DEFAULT_TEXTSIZE_TITLE_SUBHEADING;
-	NSString		*font			= ([titleMode isEqual:kTitleMode_peek] ? kFont_peeksubheading : kFont_subheading);
+	NSString		*font			= ([titleMode isEqual:kTitleMode_peek] ? self.pageStyle.peekSubheadingFontName : self.pageStyle.subheadingFontName);
 	CGFloat			labelAlpha		= 1.0;
 	
 	//check if xml attributes are specified,		if so,				use them.										if not,	use defaults
 	if ([titleMode isEqual:kTitleMode_peek]) {
 		//peek mode
-		if		(x)										{frame.origin.x		= [x floatValue];}								else	{frame.origin.x		= 116;}
+		if		(x)										{frame.origin.x		= [x floatValue];}								else	{frame.origin.x		= CGRectGetWidth(containerFrame) / 4 + DEFAULT_TITLE_PEEKHEADING_PADDING;}
 		if		(y)										{frame.origin.y		= [y floatValue];}								else	{frame.origin.y		= 0;}
-		if		(w)										{frame.size.width	= [w floatValue];}								else	{frame.size.width	= 175;}
+		if		(w)										{frame.size.width	= [w floatValue];}								else	{frame.size.width	= CGRectGetWidth(containerFrame) * 3 / 4 - DEFAULT_TITLE_PEEKHEADING_PADDING - 31;}
 		if		(h)										{frame.size.height	= [h floatValue];}								else	{frame.size.height	= 120;}
 		if		((w != nil) && (h != nil))				{resize				= NO;}
 	} else {
 		if		(x)										{frame.origin.x		= [x floatValue];}								else	{frame.origin.x		= 0;}
 		if		(y)										{frame.origin.y		= [y floatValue];}								else	{frame.origin.y		= 82;}
-		if		(w)										{frame.size.width	= [w floatValue];}								else	{frame.size.width	= 320;}
+		if		(w)										{frame.size.width	= [w floatValue];}								else	{frame.size.width	= CGRectGetWidth(containerFrame);}
 		if		(h)										{frame.size.height	= [h floatValue];}								else	{frame.size.height	= 23;}
 		if		((w != nil) && (h != nil))				{resize				= NO;}
 	}
 	
 	
 	//Background Colour (clear)
-	if		(!bgColor)								{bgColor			= [UIColor clearColor];}
+	if		(!bgColor)								{bgColor			= self.pageStyle.clearTitleBackgroundColor;}
 	
 	//Text Colour (page's background colour)
-	if		(!color)								{color				= self.backgroundColor;}
+	if		(!color)								{color				= self.pageStyle.backgroundColor;}
 	
 	//Text Size (percentage modifier)
 	if		(size)									{textSize			= round(textSize * [size floatValue] / 100);}
@@ -2364,9 +2298,9 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 	}
 	
 	if (align) {
-		if		([align isEqual:kAlignment_right])	{textAlignment		= UITextAlignmentRight;}
-		else if ([align isEqual:kAlignment_center])	{textAlignment		= UITextAlignmentCenter;}
-		else if ([align isEqual:kAlignment_left])	{textAlignment		= UITextAlignmentLeft;}
+		if		([align isEqual:kAlignment_right])	{textAlignment		= NSTextAlignmentRight;}
+		else if ([align isEqual:kAlignment_center])	{textAlignment		= NSTextAlignmentCenter;}
+		else if ([align isEqual:kAlignment_left])	{textAlignment		= NSTextAlignmentLeft;}
 	}
 	
 	//**added to remove multiple return points**	
@@ -2377,17 +2311,17 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 	if (titleMode) {
 		//clear
 		if		([titleMode isEqual:kTitleMode_clear])	{
-			bgColor			= [UIColor clearColor];
-			tempLabel.backgroundColor = [UIColor clearColor];
+			bgColor			= self.pageStyle.clearTitleBackgroundColor;
+			tempLabel.backgroundColor = self.pageStyle.clearTitleBackgroundColor;
 		}
 		//straight
 		else if ([titleMode isEqual:kTitleMode_straight]) {
-			textAlignment=UITextAlignmentCenter;
-			tempLabel.textAlignment = UITextAlignmentCenter;
+			textAlignment=NSTextAlignmentCenter;
+			tempLabel.textAlignment = NSTextAlignmentCenter;
 			//**CONFIRM REDUNDANCY**	UILabel *temp = [self createLabelWithFrame:frame autoResize:resize text:text color:color bgColor:bgColor alpha:labelAlpha alignment:textAlignment font:font size:textSize];
 			frame = tempLabel.frame;
 			frame.origin.x		= 0;
-			frame.size.width = self.pageView.frame.size.width;
+			frame.size.width = containerFrame.size.width;
 			tempLabel.frame = frame;
 			
 			//**CONFIRM REDUNDANCY**	return temp;
@@ -2416,7 +2350,7 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 	[tempLabel setText:text];
 	[tempLabel setFont:[UIFont fontWithName:font size:size]];
 	[tempLabel setTextAlignment:textAlignment];
-	[tempLabel setLineBreakMode:UILineBreakModeWordWrap];
+	[tempLabel setLineBreakMode:NSLineBreakByWordWrapping];
 	
 	//Size
 	[tempLabel setNumberOfLines:0];
@@ -2428,57 +2362,6 @@ NSString * const kFont_bolditalicslabel	= @"Helvetica-BoldOblique";
 	[tempLabel setFrame:CGRectMake(tempLabel.frame.origin.x, tempLabel.frame.origin.y, frame.size.width, tempLabel.frame.size.height)];
 	
 	return tempLabel;
-}
-
-#pragma mark -
-#pragma mark Attribute Parsing Functions
-
-/**
- *	Description:	Takes a hex string and returns a UIColor object that represents that hex color
- *	Parameters:		hexColor - NSString that is the hex representation of that desired color
- *	Returns:		A UIColor with those r, g, b and alpha values in hexColor
- */
-- (UIColor *) colorForHex:(NSString *)hexColor {
-	if (hexColor) {
-		unsigned long long rgbValue;
-		hexColor = [[hexColor stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] uppercaseString];  
-		
-		// strip # if it appears  
-		if ([hexColor hasPrefix:@"#"]) {
-			hexColor = [hexColor substringFromIndex:1];
-		}
-		
-		// String should be 6 characters or 8 characters with an alpha component
-		if (!([hexColor length] == 6 || [hexColor length] == 8)) {
-			return nil;
-		}
-		
-		//parse the string WITHOUT an alpha component and return the coresponding UIColor
-		if ([hexColor length] == 6) {
-			[[NSScanner scannerWithString:hexColor] scanHexLongLong:&rgbValue];
-			
-			return [UIColor colorWithRed:((float)((rgbValue & 0xFF0000) >> 16))/255.0
-								   green:((float)((rgbValue & 0xFF00) >> 8))/255.0
-									blue:((float)(rgbValue & 0xFF))/255.0
-								   alpha:1.0];
-			
-			//parse the string WITH an alpha component and return the coresponding UIColor
-		} else if ([hexColor length] == 8) {
-			[[NSScanner scannerWithString:hexColor] scanHexLongLong:&rgbValue];
-			
-			return [UIColor colorWithRed:((float)((rgbValue & 0xFF000000) >> 32))/255.0
-								   green:((float)((rgbValue & 0xFF0000) >> 16))/255.0
-									blue:((float)((rgbValue & 0xFF00) >> 8))/255.0
-								   alpha:((float)(rgbValue & 0xFF))/255.0];
-		} else {
-			return nil;
-		}
-		
-		
-	} else {
-		return nil;
-	}
-	
 }
 
 @end
