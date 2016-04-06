@@ -276,8 +276,6 @@ NSString * const kLabelModifer_bolditalics	= @"bold-italics";
 		
 		//init xml elements for interpretation
 		TBXMLElement	*title_el			= [TBXML childElementNamed:kName_Title parentElement:self.pageElement];
-		//TBXMLElement	*label_el			= [TBXML childElementNamed:kName_Label parentElement:self.pageElement];
-		//TBXMLElement	*image_el			= [TBXML childElementNamed:kName_Image parentElement:self.pageElement];
 		TBXMLElement	*question_el		= [TBXML childElementNamed:kName_Question parentElement:self.pageElement];
 		TBXMLElement	*second_question_el	= nil;
 		if (question_el != nil) {
@@ -362,7 +360,6 @@ NSString * const kLabelModifer_bolditalics	= @"bold-italics";
             
 ///TODO: use send rather than insert
             
-            //[self.pageView insertSubview:[self.pageView viewWithTag:99] aboveSubview:subTitleView]; //stick the gapfiller above the subtitle
             [self.pageView insertSubview:[self.pageView viewWithTag:90] atIndex:0];           //put the top shadow to back
             [self.pageView insertSubview:[self.pageView viewWithTag:91] atIndex:0];           //put the bottom shadow to back
         }
@@ -630,7 +627,7 @@ NSString * const kLabelModifer_bolditalics	= @"bold-italics";
         //NSMutableArray      *pageObjects        = [NSMutableArray alloc];
         
 		//init xml elements for interpretation
-		TBXMLElement		*object_el			= self.pageElement->firstChild;//[TBXML childElementNamed:kName_Button parentElement:self.pageElement];
+		TBXMLElement		*object_el			= self.pageElement->firstChild;
 		
 		//init variables for xml attributes
 		NSString			*button_mode		= nil;
@@ -644,8 +641,8 @@ NSString * const kLabelModifer_bolditalics	= @"bold-italics";
 		UIImageView         *imageImage			= nil;
 		
 		//init variables used to hold element attribute values
-		NSInteger			numOfButtons		= 0;//[[TBXML valueOfAttributeNamed:kAttr_numOfButtons forElement:self.pageElement] intValue];
-		NSInteger			numOfBigButtons		= 0;//[[TBXML valueOfAttributeNamed:kAttr_numOfBigButtons forElement:self.pageElement] intValue];
+		NSInteger			numOfButtons		= 0;
+		NSInteger			numOfBigButtons		= 0;
         NSInteger           numOfTextLabels     = 0;
         CGFloat             combinedHeightOfTextLabels = 0;
         NSInteger           numOfImages         = 0;
@@ -694,7 +691,6 @@ NSString * const kLabelModifer_bolditalics	= @"bold-italics";
             }
             
             object_el = object_el->nextSibling;
-            //object_el = [TBXML nextSiblingNamed:kName_Button searchFromElement:object_el];
         }
         //NSLog(@"\nCountLoop found:\n %ld regular buttons,\n %ld big buttons,\n %ld text labels,\n %ld images", (long)numOfButtons, (long)numOfBigButtons, (long)numOfTextLabels, (long)numOfImages);
         
@@ -708,9 +704,7 @@ NSString * const kLabelModifer_bolditalics	= @"bold-italics";
 		CGFloat				previousObjectYMax;
         NSInteger           buttonCount         = 1;
         NSInteger           labelCount          = 1;
-		//NSInteger			object_yoffset		= 0;
         NSInteger           object_ypos         = 0;
-		//NSInteger			object_xoffset		= 0;
         NSInteger           object_xpos         = 0;
         
         //reset object_el to the first object
@@ -749,14 +743,12 @@ NSString * const kLabelModifer_bolditalics	= @"bold-italics";
             
             
             //y position handling
-            //object_yoffset = [[TBXML valueOfAttributeNamed:kAttr_yoff forElement:object_el] integerValue];
             object_ypos = [[TBXML valueOfAttributeNamed:kAttr_y forElement:object_el] integerValue];
             if (object_ypos == 0) {
                 object_ypos = (previousObjectYMax + spaceBetweenObjects);
             }
 			
 			//x position handling
-            //object_xoffset = [[TBXML valueOfAttributeNamed:kAttr_xoff forElement:object_el] integerValue];
             object_xpos = [[TBXML valueOfAttributeNamed:kAttr_x forElement:object_el] integerValue];
             if (object_xpos == 0) {
                 object_xpos = (10);
@@ -785,14 +777,7 @@ NSString * const kLabelModifer_bolditalics	= @"bold-italics";
                 //create the arrow and add it to the page's view
                 arrowTemp		= [self createDisclosureIndicatorFromButtonTag:buttonCount container:nil];
                 [self.pageView addSubview:arrowTemp];
-                
-                /*
-                if ([button_mode isEqual:kButtonMode_big]) {
-                    //NSLog(@"BigButton created with frame: x:%f y:%f w:%f h:%f", buttonTemp.frame.origin.x, buttonTemp.frame.origin.y, buttonTemp.frame.size.width, buttonTemp.frame.size.height);
-                } else {
-                    //NSLog(@"Button created with frame: x:%f y:%f w:%f h:%f", buttonTemp.frame.origin.x, buttonTemp.frame.origin.y, buttonTemp.frame.size.width, buttonTemp.frame.size.height);
-                }
-                */
+
                 previousObjectYMax = CGRectGetMaxY(buttonLinesTemp.frame);
                 buttonCount++;
             }
@@ -806,19 +791,7 @@ NSString * const kLabelModifer_bolditalics	= @"bold-italics";
                 if (labelLabel.alpha == 1) {
                     labelLabel.alpha = 0;
                 }
-                
-				/*
-                //set ypos if not set in snml
-                if ([TBXML valueOfAttributeNamed:kAttr_y forElement:object_el] == nil) {
-                    labelLabel.frame = CGRectMake(labelLabel.frame.origin.x, object_ypos, labelLabel.frame.size.width, labelLabel.frame.size.height);
-                }
-                
-                //set xpos if not set in snml
-                if ([TBXML valueOfAttributeNamed:kAttr_x forElement:object_el] == nil && [TBXML valueOfAttributeNamed:kAttr_align forElement:object_el] == nil ) {
-                    labelLabel.frame = CGRectMake(object_xpos, labelLabel.frame.origin.y, labelLabel.frame.size.width, labelLabel.frame.size.height);
-                }
-				 */
-                
+ 
                 //add created label
                 [self.pageView insertSubview:labelLabel atIndex:1];
                 
@@ -834,19 +807,7 @@ NSString * const kLabelModifer_bolditalics	= @"bold-italics";
                 numOfImages++;
                 
                 imageImage = [self createImageFromElement:object_el xPos:object_xpos yPos:object_ypos container:nil];
-				
-				/*
-				//set ypos if not set in snml
-                if ([TBXML valueOfAttributeNamed:kAttr_y forElement:object_el] == nil) {
-                    imageImage.frame = CGRectMake(imageImage.frame.origin.x, object_ypos, imageImage.frame.size.width, imageImage.frame.size.height);
-                }
-				
-                //set xpos if not set in snml
-                if ([TBXML valueOfAttributeNamed:kAttr_x forElement:object_el] == nil && [TBXML valueOfAttributeNamed:kAttr_align forElement:object_el] == nil ) {
-                    imageImage.frame = CGRectMake(object_xpos, imageImage.frame.origin.y, imageImage.frame.size.width, imageImage.frame.size.height);
-                }
-				 */
-                
+				            
                 [self.pageView insertSubview:imageImage atIndex:1];
                 
                 //NSLog(@"Image created with frame: x:%f y:%f w:%f h:%f", buttonTemp.frame.origin.x, buttonTemp.frame.origin.y, buttonTemp.frame.size.width, buttonTemp.frame.size.height);
@@ -858,63 +819,12 @@ NSString * const kLabelModifer_bolditalics	= @"bold-italics";
             
             //iterate to the next object
             object_el = object_el->nextSibling;
-            //object_el = [TBXML nextSiblingNamed:kName_Button searchFromElement:object_el];
+
             //NSLog(@"Button Loop found %d regular buttons and %d big buttons.", numOfButtons, numOfBigButtons);
         
                 
         }
         
-        
-        /*
-////		
-    ////process all the objects
-        
-        while (object_el != nil) {
-        //for (NSInteger buttonCount = 1; buttonCount <= (numOfButtons + numOfBigButtons); buttonCount++) {
-            
-            
-			//grab the mode of the button
-			button_mode		= [TBXML valueOfAttributeNamed:kAttr_mode forElement:object_el];
-			
-			//create the lines around the button and add it to the page's view
-			buttonLinesTemp	= [self createButtonLinesFromButtonElement:object_el buttonTag:buttonCount yPos:previousObjectYMax container:nil];
-			[self.pageView addSubview:buttonLinesTemp];
-    
-			//create the button and add it to the page's view
-			buttonTemp		= [self createButtonFromElement:object_el addTag:buttonCount yPos:previousObjectYMax container:nil];
-			[self.pageView addSubview:buttonTemp];
-			
-			//create the arrow and add it to the page's view
-			arrowTemp		= [self createDisclosureIndicatorFromButtonTag:buttonCount container:nil];
-			[self.pageView addSubview:arrowTemp];
-			
-			//clean up
-			[buttonLinesTemp release];
-			[buttonTemp release];
-			[arrowTemp release];
-			
-			//move to the next button and find the position of that button
-			object_el = [TBXML nextSiblingNamed:kName_Button searchFromElement:object_el];
-			
-			//if there is a new button and the user is setting the offset; grab offset of new button and add it to the last y position
-			if (object_el != nil && object_yoffset != nil) {
-				object_yoffset = [TBXML valueOfAttributeNamed:kAttr_yoff forElement:object_el];
-				
-				//set space to user defined or default (0)
-				if (object_yoffset != nil) {
-					spaceBetweenButtons = [object_yoffset floatValue];
-				} else {
-					spaceBetweenButtons = 0;
-				}
-				
-			}
-			//calculate the buttons position from the offset
-			previousObjectYMax += (([button_mode isEqual:kButtonMode_big] ? 140 : 40) + spaceBetweenButtons);
-			
-			object_el = object_el->nextSibling;
-		}
-        */
-		
 		//set flag
 		self.buttonElementsHaveBeenParsed = YES;
 	} else {
