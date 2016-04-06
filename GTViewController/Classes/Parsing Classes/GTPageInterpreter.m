@@ -672,24 +672,25 @@ NSString * const kLabelModifer_bolditalics	= @"bold-italics";
         while (object_el != nil) {
             //NSLog(@"%@", [TBXML elementName:object_el]);
             
+            NSString *elementName = [TBXML elementName:object_el];
         ////title
-            if([[TBXML elementName:object_el] isEqual:kName_Title]) {
+            if([elementName isEqual:kName_Title]) {
                 //title creation is not handled here
             }
             
-        ////button
-			if ([[TBXML elementName:object_el] isEqual:kName_Button]) {
+            ////button
+            if ([elementName isEqual:kName_Button]) {
                 //get the button mode
                 button_mode		= [TBXML valueOfAttributeNamed:kAttr_mode forElement:object_el];
                 if ([button_mode isEqual:kButtonMode_big]) {
-                     numOfBigButtons++;
+                    numOfBigButtons++;
                 } else {
                     numOfButtons++;
                 }
             }
             
         ////text label
-            if ([[TBXML elementName:object_el] isEqual:kName_Label]) {
+            if ([elementName isEqual:kName_Label]) {
                 numOfTextLabels++;
                 
                 //note: because of the unpredictable height of text labels, we need to calculate their combined height
@@ -701,7 +702,7 @@ NSString * const kLabelModifer_bolditalics	= @"bold-italics";
             }
             
         ////image
-            if ([[TBXML elementName:object_el] isEqual:kName_Image]) {
+            if ([elementName isEqual:kName_Image]) {
                 numOfImages++;
             }
             
@@ -755,7 +756,7 @@ NSString * const kLabelModifer_bolditalics	= @"bold-italics";
     ////Loop through all objects in the page
         while (object_el != nil) {
             
-            
+            NSString *elementName = [TBXML elementName:object_el];
             
             //y position handling
             object_ypos = [[TBXML valueOfAttributeNamed:kAttr_y forElement:object_el] integerValue];
@@ -770,16 +771,16 @@ NSString * const kLabelModifer_bolditalics	= @"bold-italics";
             }
             
             ////TITLE
-            if([[TBXML elementName:object_el] isEqual:kName_Title]) {
+            if([elementName isEqual:kName_Title]) {
                 //title creation is not handled here
                 //NSLog(@"Title already created");
             }
             
             ////BUTTON
-			if ([[TBXML elementName:object_el] isEqual:kName_Button]) {
+			if ([elementName isEqual:kName_Button]) {
+                
                 //get the button mode
                 button_mode		= [TBXML valueOfAttributeNamed:kAttr_mode forElement:object_el];
-                
                 
                 //create the lines around the button and add it to the page's view
                 buttonLinesTemp	= [self createButtonLinesFromButtonElement:object_el buttonTag:buttonCount yPos:object_ypos container:nil];
@@ -798,7 +799,7 @@ NSString * const kLabelModifer_bolditalics	= @"bold-italics";
             }
             
             ////TEXT LABEL - note: some defaults are overridden here since existing text label defaults are for within panels, not page objects.
-            if ([[TBXML elementName:object_el] isEqual:kName_Label]) {
+            if ([elementName isEqual:kName_Label]) {
                 
                 labelLabel = [self createLabelFromElement:object_el parentTextAlignment:NSTextAlignmentLeft xPos:object_xpos yPos:object_ypos container:nil];
                 
@@ -818,7 +819,7 @@ NSString * const kLabelModifer_bolditalics	= @"bold-italics";
             }
             
             ////IMAGE
-            if ([[TBXML elementName:object_el] isEqual:kName_Image]) {
+            if ([elementName isEqual:kName_Image]) {
                 numOfImages++;
                 
                 imageImage = [self createImageFromElement:object_el xPos:object_xpos yPos:object_ypos container:nil];
