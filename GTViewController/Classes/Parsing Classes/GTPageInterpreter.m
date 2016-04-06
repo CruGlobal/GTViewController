@@ -59,6 +59,8 @@ NSString * const kName_Panel			= @"panel";
 NSString * const kName_PanelLabel		= @"text";
 NSString * const kName_PanelImage		= @"image";
 NSString * const kName_Question			= @"question";
+NSString * const kName_Positive_Button  = @"positive-button";
+NSString * const kName_Negative_Button  = @"negative-button";
 
 // Constants for the XML attribute names
 NSString * const kAttr_backgroundImage	= @"backgroundimage";
