@@ -59,8 +59,17 @@ NSString * const kName_Panel			= @"panel";
 NSString * const kName_PanelLabel		= @"text";
 NSString * const kName_PanelImage		= @"image";
 NSString * const kName_Question			= @"question";
+
+// Constants for the follow up modal elements added in v7.0.x of this Pod
 NSString * const kName_Positive_Button  = @"positive-button";
 NSString * const kName_Negative_Button  = @"negative-button";
+NSString * const kName_Followup_Modal   = @"followup-modal";
+NSString * const kName_Fallback         = @"fallback";
+NSString * const kName_Body             = @"body";
+NSString * const kName_Email_Field      = @"email-field";
+NSString * const kName_Email_Title      = @"email-title";
+NSString * const kName_Email_Placeholder= @"email-placeholder";
+NSString * const kName_Thank_You        = @"thank-you";
 
 // Constants for the XML attribute names
 NSString * const kAttr_backgroundImage	= @"backgroundimage";
@@ -79,7 +88,11 @@ NSString * const kAttr_x				= @"x";
 NSString * const kAttr_y				= @"y";
 NSString * const kAttr_width			= @"w";
 NSString * const kAttr_height			= @"h";
+
+// Constants for XML attributes for follow up modal, events and listeners added in v7.0.x of this pod
 NSString * const kAttr_tap_events		= @"tap-events";
+NSString * const kAttr_followup_id      = @"followup-id";
+NSString * const kAttr_context_id       = @"context-id";
 extern NSString * const kAttr_listeners;
 
 NSString * const kAttr_yoff				= @"yoffset";
