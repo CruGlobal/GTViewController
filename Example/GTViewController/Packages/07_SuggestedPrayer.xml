@@ -23,7 +23,14 @@ Thank You for forgiving my sins and giving me eternal life.  Take control of the
 		</panel>
 	</button>
     
-	<question mode="straight" size="96" translate="true">Christ will come into your life 
-as He promised.</question>
+    <question size="90" textalign="center">Is there anything stopping you from saying this right now?</question>
+    
+    <button>
+        <buttontext size="82" translate="true">Did you pray this prayer?</buttontext>
+        <panel>
+            <positive-button tap-events="prayer-page-give-me-follow-up">YES</positive-button>
+            <negative-button tap-events="prayer-page-not-today">Not Today</negative-button>
+        </panel>
+    </button>
     
 </page>
