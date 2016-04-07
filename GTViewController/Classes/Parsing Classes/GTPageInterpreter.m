@@ -13,6 +13,7 @@
 #import	"UISnufflePanel.h"
 #import "UIRoundedView.h"
 #import	"UIDisclosureIndicator.h"
+#import "UIMultiButtonResponseView.h"
 
 //////////Compiler Constants///////////
 #define DEFAULTOFFSET 10.0
@@ -1443,6 +1444,8 @@ NSString * const kLabelModifer_bolditalics	= @"bold-italics";
 		UIImageView		*imageTemp			= nil;
 		UISnuffleButton	*buttonTemp			= nil;
 		
+        UIMultiButtonResponseView *multiButtonResponseView = nil;
+        
 		//init variables for xml attributes
 		CGFloat			maxWidth			= 0;
 		CGFloat			maxHeight			= 0;
@@ -1493,6 +1496,27 @@ NSString * const kLabelModifer_bolditalics	= @"bold-italics";
 				[tempContainerView addSubview:buttonTemp];
 				
             }
+            
+            
+            ////POSITIVE-NEGATIVE BUTTON COMBO
+            if ([[TBXML elementName:object_el] isEqual:kName_Positive_Button] || [[TBXML elementName:object_el] isEqual:kName_Negative_Button]) {
+                
+                multiButtonResponseView = [[UIMultiButtonResponseView alloc]initWithFirstElement:object_el
+                                                                                   secondElement:object_el->nextSibling
+                                                                                       yPosition:object_ypos
+                                                                                   containerView:tempContainerView];
+                
+                maxWidth			= fmaxf(maxWidth, CGRectGetMaxX(multiButtonResponseView.frame));
+                maxHeight			= fmaxf(maxHeight, CGRectGetMaxY(multiButtonResponseView.frame));
+                
+                previousObjectYMax	= CGRectGetMaxY(multiButtonResponseView.frame);
+                
+                //add to container
+                [tempContainerView addSubview:multiButtonResponseView];
+                
+                object_el = object_el->nextSibling;
+            }
+            
             
             ////TEXT LABEL - note: some defaults are overridden here since existing text label defaults are for within panels, not page objects.
             if ([[TBXML elementName:object_el] isEqual:kName_Label]) {
@@ -1557,6 +1581,7 @@ NSString * const kLabelModifer_bolditalics	= @"bold-italics";
 		return nil;
 	}
 }
+
 
 - (id)createQuestionFromElement:(TBXMLElement *)element container:(UIView *)container {
 	

@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		3EA257A72B8B446AA8362101 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A44A8CF92AB420FB766F984 /* libPods.a */; };
+		4FFC1A741CB5F8220057E19B /* UIMultiButtonResponseView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4FFC1A731CB5F8220057E19B /* UIMultiButtonResponseView.m */; };
 		6857937F1BC2F3A2002038CF /* GTPageStyle.m in Sources */ = {isa = PBXBuildFile; fileRef = 6857937E1BC2F3A2002038CF /* GTPageStyle.m */; };
 		685793801BC2F3A2002038CF /* GTPageStyle.m in Sources */ = {isa = PBXBuildFile; fileRef = 6857937E1BC2F3A2002038CF /* GTPageStyle.m */; };
 		685793831BC2FB47002038CF /* GTPageStyleAmharic.m in Sources */ = {isa = PBXBuildFile; fileRef = 685793821BC2FB47002038CF /* GTPageStyleAmharic.m */; };
@@ -164,6 +165,8 @@
 /* Begin PBXFileReference section */
 		1A44A8CF92AB420FB766F984 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		28E91EFD01A90DF9A37D0C7C /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
+		4FFC1A721CB5F7F00057E19B /* UIMultiButtonResponseView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UIMultiButtonResponseView.h; sourceTree = "<group>"; };
+		4FFC1A731CB5F8220057E19B /* UIMultiButtonResponseView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UIMultiButtonResponseView.m; sourceTree = "<group>"; };
 		6857937D1BC2F3A2002038CF /* GTPageStyle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTPageStyle.h; sourceTree = "<group>"; };
 		6857937E1BC2F3A2002038CF /* GTPageStyle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GTPageStyle.m; sourceTree = "<group>"; };
 		685793811BC2FB47002038CF /* GTPageStyleAmharic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTPageStyleAmharic.h; sourceTree = "<group>"; };
@@ -347,6 +350,8 @@
 				68FEC620192BDD1700FC21F2 /* GTShareViewController.m */,
 				68828FF51B90D951005E1EA2 /* GTShareInfo.h */,
 				68828FF61B90D951005E1EA2 /* GTShareInfo.m */,
+				4FFC1A721CB5F7F00057E19B /* UIMultiButtonResponseView.h */,
+				4FFC1A731CB5F8220057E19B /* UIMultiButtonResponseView.m */,
 			);
 			path = "Custom Classes";
 			sourceTree = "<group>";
@@ -819,6 +824,7 @@
 				68C5962419131CAB00BB2AC6 /* GTExampleTableViewController.m in Sources */,
 				68C595A81912DDCF00BB2AC6 /* GTViewController.m in Sources */,
 				68C595981912DDCF00BB2AC6 /* SNInstructions.m in Sources */,
+				4FFC1A741CB5F8220057E19B /* UIMultiButtonResponseView.m in Sources */,
 				68828FF71B90D951005E1EA2 /* GTShareInfo.m in Sources */,
 				686D73301B82659800444718 /* GTFileLoaderExample.m in Sources */,
 				687A32261B2D3DC80098ACE6 /* TBXML.m in Sources */,
