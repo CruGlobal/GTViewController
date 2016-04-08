@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		3EA257A72B8B446AA8362101 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A44A8CF92AB420FB766F984 /* libPods.a */; };
 		4FA058E11CB7FF8A001BB9D9 /* GTFollowupModalView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4FA058E01CB7FF8A001BB9D9 /* GTFollowupModalView.m */; };
+		4FA058E41CB84C83001BB9D9 /* GTLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 4FA058E31CB84C83001BB9D9 /* GTLabel.m */; };
 		4FFC1A741CB5F8220057E19B /* UIMultiButtonResponseView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4FFC1A731CB5F8220057E19B /* UIMultiButtonResponseView.m */; };
 		6857937F1BC2F3A2002038CF /* GTPageStyle.m in Sources */ = {isa = PBXBuildFile; fileRef = 6857937E1BC2F3A2002038CF /* GTPageStyle.m */; };
 		685793801BC2F3A2002038CF /* GTPageStyle.m in Sources */ = {isa = PBXBuildFile; fileRef = 6857937E1BC2F3A2002038CF /* GTPageStyle.m */; };
@@ -168,6 +169,8 @@
 		28E91EFD01A90DF9A37D0C7C /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 		4FA058DF1CB7FF8A001BB9D9 /* GTFollowupModalView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTFollowupModalView.h; sourceTree = "<group>"; };
 		4FA058E01CB7FF8A001BB9D9 /* GTFollowupModalView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GTFollowupModalView.m; sourceTree = "<group>"; };
+		4FA058E21CB84C4F001BB9D9 /* GTLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTLabel.h; sourceTree = "<group>"; };
+		4FA058E31CB84C83001BB9D9 /* GTLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GTLabel.m; sourceTree = "<group>"; };
 		4FFC1A721CB5F7F00057E19B /* UIMultiButtonResponseView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UIMultiButtonResponseView.h; sourceTree = "<group>"; };
 		4FFC1A731CB5F8220057E19B /* UIMultiButtonResponseView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UIMultiButtonResponseView.m; sourceTree = "<group>"; };
 		6857937D1BC2F3A2002038CF /* GTPageStyle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTPageStyle.h; sourceTree = "<group>"; };
@@ -357,6 +360,8 @@
 				68828FF61B90D951005E1EA2 /* GTShareInfo.m */,
 				4FFC1A721CB5F7F00057E19B /* UIMultiButtonResponseView.h */,
 				4FFC1A731CB5F8220057E19B /* UIMultiButtonResponseView.m */,
+				4FA058E21CB84C4F001BB9D9 /* GTLabel.h */,
+				4FA058E31CB84C83001BB9D9 /* GTLabel.m */,
 			);
 			path = "Custom Classes";
 			sourceTree = "<group>";
@@ -849,6 +854,7 @@
 				68C595B01912DDCF00BB2AC6 /* GTInterpreter.m in Sources */,
 				68C595AC1912DDCF00BB2AC6 /* GTAboutViewController.m in Sources */,
 				68C595961912DDCF00BB2AC6 /* GTFileLoader.m in Sources */,
+				4FA058E41CB84C83001BB9D9 /* GTLabel.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

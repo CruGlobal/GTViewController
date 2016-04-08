@@ -13,36 +13,11 @@
 #import	"UISnufflePanel.h"
 #import "UIRoundedView.h"
 #import	"UIDisclosureIndicator.h"
+
 #import "UIMultiButtonResponseView.h"
 #import "GTFollowupModalView.h"
+#import "GTLabel.h"
 
-//////////Compiler Constants///////////
-#define DEFAULTOFFSET 10.0
-#define DEFAULT_PANEL_OFFSET_X 0.0
-#define DEFAULT_PANEL_OFFSET_Y 5.0
-#define DEFAULT_QUESTION_OFFSET_X 0.0
-#define DEFAULT_QUESTION_OFFSET_Y 0
-#define DEFAULTOFFSET 10.0
-#define BUTTONXOFFSET 10
-#define	LARGEBUTTONXOFFSET 20
-#define DROPSHADOW_INSET 10.0
-#define ROUNDRECT_RADIUS 10.0
-#define	DROPSHADOW_LENGTH 30.0
-#define DROPSHADOW_SUBLENGTH 20.0
-
-#define DEFAULT_TEXTSIZE_LABEL 17.0
-#define DEFAULT_TEXTSIZE_BUTTON 20.0
-#define DEFAULT_TEXTSIZE_QUESTION_NORMAL 20.0
-#define DEFAULT_TEXTSIZE_QUESTION_STRAIGHT 17.0
-#define DEFAULT_TEXTSIZE_TITLE_PEEKHEADING_MAX 30
-#define DEFAULT_TEXTSIZE_TITLE_PEEKHEADING_MIN 6
-#define DEFAULT_TEXTSIZE_TITLE_SUBHEADING 17
-#define DEFAULT_TITLE_PEEKHEADING_MIN_HEIGHT 68
-#define DEFAULT_TITLE_PEEKHEADING_PADDING 5
-#define DEFAULT_TITLE_PEEKHEADING_LINE_WIDTH 2
-#define DEFAULT_TEXTSIZE_TITLE_NUMBER 68
-#define DEFAULT_TEXTSIZE_TITLE_HEADING_PEEKMODE 30
-#define DEFAULT_TEXTSIZE_TITLE_HEADING_NORMALMODE 17
 
 
 //////////Run-Time Constants///////////
@@ -147,7 +122,6 @@ NSString * const kLabelModifer_bolditalics	= @"bold-italics";
 - (id)createButtonLinesFromButtonElement:		(TBXMLElement *)element		buttonTag:(NSInteger)buttonTag	yPos:(CGFloat)yPos		container:(UIView *)container;
 - (id)createDisclosureIndicatorFromButtonTag:	(NSInteger)buttonTag		container:(UIView *)container;
 - (id)createImageFromElement:					(TBXMLElement *)element		xPos:(CGFloat)xpostion			yPos:(CGFloat)ypostion	container:(UIView *)container;
-- (id)createLabelFromElement:					(TBXMLElement *)element		parentTextAlignment:(UITextAlignment)panelAlign			xPos:(CGFloat)xpostion			yPos:(CGFloat)ypostion	container:(UIView *)container;
 - (id)createPanelFromElement:					(TBXMLElement *)element		buttonTag:(NSInteger)buttonTag	container:(UIView *)container;
 - (id)createQuestionFromElement:				(TBXMLElement *)element		container:(UIView *)container;
 - (id)createQuestionLabelFromElement:			(TBXMLElement *)element		container:(UIView *)container;
@@ -156,7 +130,6 @@ NSString * const kLabelModifer_bolditalics	= @"bold-italics";
 - (id)createTitleNumberFromElement:				(TBXMLElement *)element		titleMode:(NSString *)titleMode containerFrame:(CGRect)containerFrame;
 - (id)createTitleHeadingFromElement:			(TBXMLElement *)element		titleMode:(NSString *)titleMode containerFrame:(CGRect)containerFrame;
 - (id)createTitleSubheadingFromElement:			(TBXMLElement *)element		titleMode:(NSString *)titleMode containerFrame:(CGRect)containerFrame;
-- (UILabel *)createLabelWithFrame:				(CGRect)frame				autoResize:(BOOL)resize			text:(NSString *)text	color:(UIColor *)color	bgColor:(UIColor *)bgColor	alpha:(CGFloat)alpha	alignment:(UITextAlignment)textAlignment	font:(NSString *)font	size:(NSUInteger)size;
 
 @end
 
@@ -692,7 +665,13 @@ NSString * const kLabelModifer_bolditalics	= @"bold-italics";
                 //note: because of the unpredictable height of text labels, we need to calculate their combined height
 
                 //create a temporary text label and add it's height to the tally
-                labelLabel = [self createLabelFromElement:object_el parentTextAlignment:NSTextAlignmentLeft xPos:0 yPos:0 container:self.pageView];
+                labelLabel = [[GTLabel alloc] initFromElement:object_el
+                                                 parentTextAlignment:NSTextAlignmentLeft
+                                                                xPos:0
+                                                                yPos:0
+                                                           container:self.pageView
+                                                               style:self.pageStyle];
+                
                 combinedHeightOfTextLabels += fmaxf(labelLabel.frame.size.height,40);
                 
             }
@@ -797,8 +776,12 @@ NSString * const kLabelModifer_bolditalics	= @"bold-italics";
             ////TEXT LABEL - note: some defaults are overridden here since existing text label defaults are for within panels, not page objects.
             if ([elementName isEqual:kName_Label]) {
                 
-                labelLabel = [self createLabelFromElement:object_el parentTextAlignment:NSTextAlignmentLeft xPos:object_xpos yPos:object_ypos container:nil];
-                
+                labelLabel = [[GTLabel alloc]initFromElement:object_el
+                                                parentTextAlignment:NSTextAlignmentLeft
+                                                               xPos:object_xpos
+                                                               yPos:object_ypos
+                                                          container:nil
+                                                              style:self.pageStyle];
                 [labelLabel setTag:(800+labelCount)];
                 if (labelLabel.alpha == 1) {
                     labelLabel.alpha = 0;
@@ -1332,108 +1315,6 @@ NSString * const kLabelModifer_bolditalics	= @"bold-italics";
 	
 }
 
-/**
- *	Description:	Creates an UILabel from a label element
- *	Parameters:		Element:	The TBXMLElement for the label
- *	Returns:		A UILabel object from the attributes specified in the passed TBXML element.
- */
-- (id)createLabelFromElement:(TBXMLElement *)element parentTextAlignment:(UITextAlignment)panelAlign xPos:(CGFloat)xpostion yPos:(CGFloat)ypostion container:(UIView *)container {
-	
-	//set container to the page if not set
-	if (container == nil) {
-		container	= self.pageView;
-	}
-	
-	//set default value if not set
-	if (!(xpostion >= 0)) {
-		xpostion = DEFAULT_PANEL_OFFSET_X;
-	}
-	
-	if (!(ypostion >= 0)) {
-		ypostion = DEFAULT_PANEL_OFFSET_Y;
-	}
-	
-	if (element != nil) {
-		
-		//read attributes for label
-		NSString	*text		=								[TBXML textForElement:element];
-		NSString	*modifier	=								[TBXML valueOfAttributeNamed:kAttr_modifier forElement:element];
-		UIColor		*color		=	[GTPageStyle colorForHex:	[TBXML valueOfAttributeNamed:kAttr_color	forElement:element]];
-		NSString	*alpha		=								[TBXML valueOfAttributeNamed:kAttr_alpha	forElement:element];
-		NSString	*align		=								[TBXML valueOfAttributeNamed:kAttr_align	forElement:element];
-		NSString	*textalign	=								[TBXML valueOfAttributeNamed:kAttr_textalign	forElement:element];
-		NSString	*size		=								[TBXML valueOfAttributeNamed:kAttr_size		forElement:element];
-		NSString	*x			=								[TBXML valueOfAttributeNamed:kAttr_x		forElement:element];
-		NSString	*y			=								[TBXML valueOfAttributeNamed:kAttr_y		forElement:element];
-		NSString	*w			=								[TBXML valueOfAttributeNamed:kAttr_width	forElement:element];
-		NSString	*h			=								[TBXML valueOfAttributeNamed:kAttr_height	forElement:element];
-		CGFloat		xoffset		=								round([[TBXML valueOfAttributeNamed:kAttr_xoff		forElement:element] floatValue]);
-		CGFloat		yoffset		=								round([[TBXML valueOfAttributeNamed:kAttr_yoff		forElement:element] floatValue]);
-		
-		//init variables for object parameters
-		CGRect			frame			= CGRectZero;
-		UITextAlignment textAlignment	= panelAlign;
-		BOOL			resize			= YES;
-		UIColor			*bgColor		= nil;
-		NSUInteger		textSize		= DEFAULT_TEXTSIZE_LABEL;
-		NSString		*font			= self.pageStyle.labelFontName;
-		CGFloat			labelAlpha		= 1.0;
-		
-		//set parameters to attribute val or defaults	//attribute value															//default value
-		//note: these defaults only apply to text labels inside panels
-        if		(x)										{frame.origin.x		=	round([x floatValue]);}								else	{frame.origin.x		= xpostion;}
-		if		(y)										{frame.origin.y		=	round([y floatValue]);}								else	{frame.origin.y		= ypostion;}
-		if		(w)										{frame.size.width	=	round([w floatValue]);}								else	{frame.size.width	= (container ? container.frame.size.width - (2 * DEFAULT_PANEL_OFFSET_X) : 280);}
-		if		(h)										{frame.size.height	=	round([h floatValue]);}								else	{frame.size.height	= 40;}
-		if		((w != nil) && (h != nil))				{resize				= NO;}
-		
-		if		(!bgColor)																											{bgColor			= self.pageStyle.defaultLabelBackgroundColor;}
-		if		(!color)																											{color				= self.pageStyle.defaultTextColor;}
-		if		(size)									{textSize			= round(textSize * [size floatValue] / 100);}
-		
-		//if alignment is found calculate position based on alignment
-		if ([align isEqualToString:kAlignment_left]) {
-			
-			frame.origin.x		= DEFAULT_PANEL_OFFSET_X;
-			
-		} else if ([align isEqualToString:kAlignment_center]) {
-			
-			frame.origin.x		= ( 0.5 * container.frame.size.width ) - ( 0.5 * frame.size.width );
-			
-		} else if ([align isEqualToString:kAlignment_right]) {
-			
-			frame.origin.x		= container.frame.size.width - frame.size.width - DEFAULT_PANEL_OFFSET_X;
-			
-		}
-		
-		//apply offset
-		frame.origin.x			+= xoffset;
-		frame.origin.y			+= yoffset;
-		
-		if (alpha) {
-			labelAlpha = [alpha floatValue];
-		}
-		
-		if (modifier) {
-			if		([modifier isEqual:kLabelModifer_bold])			{font		= self.pageStyle.boldLabelFontName;}
-			else if	([modifier isEqual:kLabelModifer_italics])		{font		= self.pageStyle.italicsLabelFontName;}
-			else if	([modifier isEqual:kLabelModifer_bolditalics])	{font		= self.pageStyle.boldItalicsLabelFontName;}
-		}
-		
-		if (textalign) {
-			if		([textalign isEqual:kAlignment_right])	{textAlignment		= NSTextAlignmentRight;}
-			else if ([textalign isEqual:kAlignment_center])	{textAlignment		= NSTextAlignmentCenter;}
-			else if ([textalign isEqual:kAlignment_left])	{textAlignment		= NSTextAlignmentLeft;}
-		}
-		
-		
-		return [self createLabelWithFrame:frame autoResize:resize text:text color:color bgColor:bgColor alpha:labelAlpha alignment:textAlignment font:font size:textSize];
-		
-	} else {
-		return nil;
-	}
-	
-}
 
 /**
  *	Description:	Creates an UISnufflePanel from a panel element
@@ -1541,8 +1422,13 @@ NSString * const kLabelModifer_bolditalics	= @"bold-italics";
             if ([[TBXML elementName:object_el] isEqual:kName_Label]) {
                 
                 //create label
-				labelTemp			= [self createLabelFromElement:object_el parentTextAlignment:panelAlign xPos:object_xpos yPos:object_ypos container:tempContainerView];
-				
+                labelTemp           = [[GTLabel alloc] initFromElement:object_el
+                                                   parentTextAlignment:panelAlign
+                                                                  xPos:object_xpos
+                                                                  yPos:object_ypos
+                                                             container:tempContainerView
+                                                                 style:self.pageStyle];
+                
 				//store the maximum dimensions
 				maxWidth			= fmaxf(maxWidth, CGRectGetMaxX(labelTemp.frame));
 				maxHeight			= fmaxf(maxHeight, CGRectGetMaxY(labelTemp.frame));
@@ -1821,9 +1707,16 @@ NSString * const kLabelModifer_bolditalics	= @"bold-italics";
 				font = self.pageStyle.labelFontName;
 			}
 		}
-		
-		return [self createLabelWithFrame:frame autoResize:resize text:text color:color bgColor:bgColor alpha:labelAlpha alignment:textAlignment font:font size:textSize];
-		
+        
+        return [[GTLabel alloc]initWithFrame:frame
+                                  autoResize:resize text:text
+                                       color:color
+                                     bgColor:bgColor
+                                       alpha:labelAlpha
+                                   alignment:textAlignment
+                                        font:font
+                                        size:textSize];
+
 	} else {
 		return nil;
 	}
@@ -2073,7 +1966,15 @@ NSString * const kLabelModifer_bolditalics	= @"bold-italics";
 			UILabel			*tempSubTitleText		= nil;
 			
 			if (subTitle_element) {
-				tempSubTitleText = [self createLabelWithFrame:frame autoResize:resize text:text color:color bgColor:self.pageStyle.defaultLabelBackgroundColor alpha:labelAlpha alignment:textAlignment font:font size:textSize];
+                tempSubTitleText = [[GTLabel alloc] initWithFrame:frame
+                                                       autoResize:resize
+                                                             text:text
+                                                            color:color
+                                                          bgColor:self.pageStyle.defaultLabelBackgroundColor
+                                                            alpha:labelAlpha
+                                                        alignment:textAlignment
+                                                             font:font
+                                                              size:textSize];
 			}
 			
 			
@@ -2094,7 +1995,16 @@ NSString * const kLabelModifer_bolditalics	= @"bold-italics";
 														 tapDelegate:self.panelDelegate];
 			
 			CGRect peekPanelArrowFrame = CGRectMake((subTitleFrame.size.width / 2) - 5 ,subTitleFrame.size.height - 8 , 10, 10);
-			UILabel	*peekPanelArrow = [self createLabelWithFrame:peekPanelArrowFrame autoResize:NO text:@"▼" color:self.pageStyle.defaultTextColor bgColor:self.pageStyle.defaultLabelBackgroundColor alpha:1.0 alignment:NSTextAlignmentCenter font:self.pageStyle.labelFontName size:8];
+            UILabel *peekPanelArrow = [[GTLabel alloc] initWithFrame:peekPanelArrowFrame
+                                                          autoResize:NO
+                                                                text:@"▼"
+                                                               color:self.pageStyle.defaultTextColor
+                                                             bgColor:self.pageStyle.defaultLabelBackgroundColor
+                                                               alpha:1.0
+                                                           alignment:NSTextAlignmentCenter
+                                                                font:self.pageStyle.labelFontName
+                                                                size:8];
+            
 			peekPanelArrow.shadowColor = [UIColor darkGrayColor];
 			
 			[subTitleContainer addSubview:tempSubTitleText];
@@ -2153,7 +2063,15 @@ NSString * const kLabelModifer_bolditalics	= @"bold-italics";
 			if		([titleMode isEqual:kTitleMode_clear])	{bgColor			= self.pageStyle.clearTitleBackgroundColor;}
 		}
 		
-		return [self createLabelWithFrame:frame autoResize:resize text:text color:color bgColor:bgColor alpha:labelAlpha alignment:textAlignment font:font size:textSize];
+        return [[GTLabel alloc] initWithFrame:frame
+                                   autoResize:resize
+                                         text:text
+                                        color:color
+                                      bgColor:bgColor
+                                        alpha:labelAlpha
+                                    alignment:textAlignment
+                                         font:font
+                                         size:textSize];
 		
 	} else {
 		return nil;
@@ -2219,7 +2137,15 @@ NSString * const kLabelModifer_bolditalics	= @"bold-italics";
 			if		([titleMode isEqual:kTitleMode_clear])		{bgColor			= self.pageStyle.clearTitleBackgroundColor;}
 			else if ([titleMode isEqual:kTitleMode_straight])	{
 				textAlignment=NSTextAlignmentCenter;
-				UILabel *temp = [self createLabelWithFrame:frame autoResize:resize text:text color:color bgColor:bgColor alpha:labelAlpha alignment:textAlignment font:font size:textSize];
+                UILabel *temp = [[GTLabel alloc] initWithFrame:frame
+                                                    autoResize:resize
+                                                          text:text
+                                                         color:color
+                                                       bgColor:bgColor
+                                                         alpha:labelAlpha
+                                                     alignment:textAlignment
+                                                          font:font
+                                                          size:textSize];
 				frame = temp.frame;
 				frame.origin.x		= 0;
 				frame.size.width = containerFrame.size.width;
@@ -2229,7 +2155,15 @@ NSString * const kLabelModifer_bolditalics	= @"bold-italics";
 			}
 		}
 		
-		return [self createLabelWithFrame:frame autoResize:resize text:text color:color bgColor:bgColor alpha:labelAlpha alignment:textAlignment font:font size:textSize];
+        return [[GTLabel alloc] initWithFrame:frame
+                                   autoResize:resize
+                                         text:text
+                                        color:color
+                                      bgColor:bgColor
+                                        alpha:labelAlpha
+                                    alignment:textAlignment
+                                         font:font
+                                         size:textSize];
 	} else {
 		return nil;
 	}
@@ -2299,8 +2233,16 @@ NSString * const kLabelModifer_bolditalics	= @"bold-italics";
 	}
 	
 	//**added to remove multiple return points**	
-	//Sets up the return data, the mode handling modifies this.
-	UILabel *tempLabel = [self createLabelWithFrame:frame autoResize:resize text:text color:color bgColor:bgColor alpha:labelAlpha alignment:textAlignment font:font size:textSize];
+    //Sets up the return data, the mode handling modifies this.
+    UILabel *tempLabel = [[GTLabel alloc] initWithFrame:frame
+                                             autoResize:resize
+                                                   text:text
+                                                  color:color
+                                                bgColor:bgColor
+                                                  alpha:labelAlpha
+                                              alignment:textAlignment
+                                                   font:font
+                                                   size:textSize];
 	
 	//mode handling
 	if (titleMode) {
@@ -2324,38 +2266,6 @@ NSString * const kLabelModifer_bolditalics	= @"bold-italics";
 	}
 	
 	//**CONFIRM REDUNDANCY**	return [self createLabelWithFrame:frame autoResize:resize text:text color:color bgColor:bgColor alpha:labelAlpha alignment:textAlignment font:font size:textSize];
-	return tempLabel;
-}
-
-//Returns a label given label attributes
-- (UILabel *)createLabelWithFrame:(CGRect)frame autoResize:(BOOL)resize text:(NSString *)text color:(UIColor *)color bgColor:(UIColor *)bgColor alpha:(CGFloat)alpha alignment:(UITextAlignment)textAlignment font:(NSString *)font size:(NSUInteger)size {
-	UILabel *tempLabel = [[UILabel alloc] initWithFrame:frame];
-	
-	//Colors
-	[tempLabel setBackgroundColor:bgColor];
-	[tempLabel setTextColor:color];
-	
-	//Set Alpha
-	if (alpha < 1) {
-		[tempLabel setOpaque:NO];
-		[tempLabel setAlpha:alpha];
-	}
-	
-	//Text & Formatting
-	[tempLabel setText:text];
-	[tempLabel setFont:[UIFont fontWithName:font size:size]];
-	[tempLabel setTextAlignment:textAlignment];
-	[tempLabel setLineBreakMode:NSLineBreakByWordWrapping];
-	
-	//Size
-	[tempLabel setNumberOfLines:0];
-	if (resize) {
-		[tempLabel sizeToFit];
-	}
-	
-	//Reset width to fill the width available
-	[tempLabel setFrame:CGRectMake(tempLabel.frame.origin.x, tempLabel.frame.origin.y, frame.size.width, tempLabel.frame.size.height)];
-	
 	return tempLabel;
 }
 
