@@ -33,4 +33,31 @@ Thank You for forgiving my sins and giving me eternal life.  Take control of the
         </panel>
     </button>
     
+    <followup-modal followup-id="1" listeners="prayer-page-give-me-follow-up">
+        <fallback>
+            <followup-title>Jesus has come into your life as he promised.</followup-title>
+            <followup-body>Knowing someone better helps a relationship grow. Would you like to sign up for an email series that can help guide you in your new relationship with Jesus Christ?</followup-body>
+            <input-field name="email" type="email">
+                <input-label>Email</input-label>
+                <input-placeholder>Email</input-placeholder>
+            </input-field>
+            <input-field name="name" type="text">
+                <input-label>Name</input-label>
+                <input-placeholder>Name</input-placeholder>
+            </input-field>
+            <button-pair>
+                <positive-button tap-events="follow-up-send,followup:subscribe">Send</positive-button>
+                <negative-button mode="link" tap-events="follow-up-no-thanks">No Thanks</negative-button>
+            </button-pair>
+            
+            <!-- thank-you should be handled as an embedded page -->
+            <thank-you listeners="follow-up-send">
+                <text modifier="bold" textalign="center">Thank you</text>
+                <text textalign="left">Check your email soon for your first study in following Jesus Christ.</text>
+                <text textalign="left">If you don't receive it, please check your spam folder.</text>
+                <button textalign="center" tap-events="follow-up-thank-you-done">Done</button>
+            </thank-you>
+        </fallback>
+    </followup-modal>
+    
 </page>

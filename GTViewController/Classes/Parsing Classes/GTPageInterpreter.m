@@ -14,6 +14,7 @@
 #import "UIRoundedView.h"
 #import	"UIDisclosureIndicator.h"
 #import "UIMultiButtonResponseView.h"
+#import "GTFollowupModalView.h"
 
 //////////Compiler Constants///////////
 #define DEFAULTOFFSET 10.0
@@ -65,12 +66,6 @@ NSString * const kName_Question			= @"question";
 NSString * const kName_Positive_Button  = @"positive-button";
 NSString * const kName_Negative_Button  = @"negative-button";
 NSString * const kName_Followup_Modal   = @"followup-modal";
-NSString * const kName_Fallback         = @"fallback";
-NSString * const kName_Body             = @"body";
-NSString * const kName_Email_Field      = @"email-field";
-NSString * const kName_Email_Title      = @"email-title";
-NSString * const kName_Email_Placeholder= @"email-placeholder";
-NSString * const kName_Thank_You        = @"thank-you";
 
 // Constants for the XML attribute names
 NSString * const kAttr_backgroundImage	= @"backgroundimage";
@@ -830,6 +825,18 @@ NSString * const kLabelModifer_bolditalics	= @"bold-italics";
                 //NSLog(@"Image created with frame: x:%f y:%f w:%f h:%f", buttonTemp.frame.origin.x, buttonTemp.frame.origin.y, buttonTemp.frame.size.width, buttonTemp.frame.size.height);
                 
                 previousObjectYMax = CGRectGetMaxY(imageImage.frame);
+            }
+            
+            
+            ////FOLLOWUP MODAL
+            if ( [elementName isEqual:kName_Followup_Modal]) {
+                GTFollowupModalView *followupModalView = [[GTFollowupModalView alloc] initFromElement:object_el
+                                                                                            withStyle:self.pageStyle
+                                                                                       presentingView:self.pageView];
+                
+                UIViewController *controller = [[UIViewController alloc]init];
+                
+                // TODO: Listener registration code goes here
             }
             
             //NSLog(@"previousObjectYMax = %f\n", previousObjectYMax);
