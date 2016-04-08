@@ -53,13 +53,15 @@
 
 - (UISnuffleButton *)createButtonFromElement:(TBXMLElement *)element withFrame:(CGRect)frame textColor:(UIColor *)textColor {
     UISnuffleButton *button = [[UISnuffleButton alloc] initWithFrame:frame];
+    NSArray *tapEvents = [[TBXML valueOfAttributeNamed:@"tap-events" forElement:element] componentsSeparatedByString:@","];
     
     [button setTitle:[TBXML textForElement:element] forState:UIControlStateNormal];
     [button setTitleColor:textColor forState:UIControlStateNormal];
     [button setContentHorizontalAlignment:UIControlContentHorizontalAlignmentCenter];
     [button setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
     [button setBackgroundImage:[[GTFileLoader sharedInstance] imageWithFilename:@"URL_Button.png"] forState:UIControlStateNormal];
-
+    [button setTapEvents:tapEvents];
+    
     return button;
 }
 @end

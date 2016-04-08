@@ -51,4 +51,5 @@ extern NSString * const GTPageNotificationEventKeyEventName;
 - (void)page:(GTPage *)page didReceiveTapOnEmailAddress:(NSString *)emailAddress;
 - (void)page:(GTPage *)page didReceiveTapOnAllUrls:(NSArray *)urlArray;
 
+- (void)presentFollowupModal:(UIViewController *)followupModalViewController;
 @end

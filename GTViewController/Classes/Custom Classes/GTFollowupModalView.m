@@ -42,13 +42,13 @@ NSString * const kName_Thank_You            = @"thank-you";
             NSString *modalComponentElementName = [TBXML elementName:modalComponentElement];
             
             if ([modalComponentElementName isEqual:kName_FollowUp_Title]) {
-                UILabel *titleLabel = [self createTitleLabelFromElement:element
+                UILabel *titleLabel = [self createTitleLabelFromElement:modalComponentElement
                                                               withStyle:style
                                                          presentingView:presentingView];
                 
                 [self addSubview:titleLabel];
             } else if ([modalComponentElementName isEqual:kName_FollowUp_Body]) {
-                UILabel *bodyLabel = [self createBodyLabelFromElement:element
+                UILabel *bodyLabel = [self createBodyLabelFromElement:modalComponentElement
                                                             withStyle:style
                                                        presentingView:presentingView];
                 
@@ -78,6 +78,7 @@ NSString * const kName_Thank_You            = @"thank-you";
     [titleLabel setText:[TBXML textForElement:element]];
     [titleLabel setTextAlignment:NSTextAlignmentCenter];
     [titleLabel setTextColor:[style defaultTextColor]];
+    [titleLabel setNumberOfLines:0];
     
     return titleLabel;
 }
@@ -90,6 +91,7 @@ NSString * const kName_Thank_You            = @"thank-you";
     [bodyLabel setText:[TBXML textForElement:element]];
     [bodyLabel setTextAlignment:NSTextAlignmentCenter];
     [bodyLabel setTextColor:[style defaultTextColor]];
+    [bodyLabel setNumberOfLines:0];
     
     return bodyLabel;
 }
@@ -114,7 +116,7 @@ NSString * const kName_Thank_You            = @"thank-you";
         if ([childElementName isEqual:kName_Input_Label]) {
             [inputFieldLabel setFrame:CGRectMake(20, 0, self.frame.size.width - 20, 15)];
             [inputFieldLabel setTextColor: style.defaultTextColor];
-            [inputFieldLabel setText:nil];
+            [inputFieldLabel setText:[TBXML textForElement:inputFieldChildElement]];
         } else if ([childElementName isEqual:kName_Input_Placeholder]) {
             //TODO fill in placeholder
         }

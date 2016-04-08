@@ -1140,6 +1140,10 @@ NSString * const kAttr_listeners	= @"listeners";
     pasteboard.string = websiteString;
 }
 
+- (void)presentFollowupModal:(UIViewController *)followupModalViewController {
+    [self presentViewController:followupModalViewController animated:YES completion:nil];
+}
+
 
 #pragma mark - User Interaction methods
 
@@ -2070,4 +2074,6 @@ NSString * const kAttr_listeners	= @"listeners";
         self.lastTrackedLanguage = self.languageCode;
     }
 }
+
+
 @end

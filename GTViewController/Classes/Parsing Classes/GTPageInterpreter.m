@@ -835,10 +835,22 @@ NSString * const kLabelModifer_bolditalics	= @"bold-italics";
                                                                                        presentingView:self.pageView];
                 
                 UIViewController *controller = [[UIViewController alloc]init];
+                controller.view = followupModalView;
                 
-                // TODO: Listener registration code goes here
+                NSArray *listeners = [[TBXML valueOfAttributeNamed:kAttr_listeners forElement:object_el] componentsSeparatedByString:@","];
+                
+                for (id listener in listeners) {
+                    NSString *listenerName = listener;
+                    
+                    if ([self.delegate respondsToSelector:@selector(registerListenerWithEventName:target:selector:parameter:)]) {
+                        [self.delegate registerListenerWithEventName:listenerName
+                                                                  target:self.delegate
+                                                                selector:@selector(presentFollowupModalView:)
+                                                               parameter:controller];
+
+                    }
+                }
             }
-            
             //NSLog(@"previousObjectYMax = %f\n", previousObjectYMax);
             
             //iterate to the next object

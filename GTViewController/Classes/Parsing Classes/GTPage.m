@@ -229,8 +229,18 @@ extern NSString * const kAttr_watermark;
 - (void)registerListenerWithEventName:(NSString *)eventName target:(id)target selector:(SEL)selector parameter:(id)parameter {
 	
 	target = ( target ? target : self );
-	NSDictionary *pair = ( selector && [target respondsToSelector:selector] ? @{@"target": target, @"selector": NSStringFromSelector(selector)} : nil );
-	
+    NSDictionary *pair;
+    
+    if (selector && [target respondsToSelector:selector]) {
+        if (parameter) {
+            pair = @{@"target": target, @"selector": NSStringFromSelector(selector), @"parameter" : parameter};
+        } else {
+            pair = @{@"target": target, @"selector": NSStringFromSelector(selector)};
+        }
+    } else {
+        pair = nil;
+    }
+    
 	if (eventName && pair) {
 		
 		if (self.listeners[eventName]) {
@@ -1349,6 +1359,15 @@ extern NSString * const kAttr_watermark;
 	
 	//self.isanimating = NO;
 	
+}
+
+
+#pragma mark - Followup Modal methods
+
+- (void)presentFollowupModalView:(UIViewController*)modalViewController {
+    if ([self.pageDelegate respondsToSelector:@selector(presentFollowupModal:)]) {
+        [self.pageDelegate presentFollowupModal:modalViewController];
+    }
 }
 
 - (void)dealloc {
