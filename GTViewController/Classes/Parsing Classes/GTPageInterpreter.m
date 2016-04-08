@@ -1615,9 +1615,9 @@ NSString * const kLabelModifer_bolditalics	= @"bold-italics";
 			NSArray *listeners = [[TBXML valueOfAttributeNamed:kAttr_listeners forElement:element] componentsSeparatedByString:@","];
 			[listeners enumerateObjectsUsingBlock:^(NSString *listener, NSUInteger index, BOOL *stop) {
 				
-				if ([weakSelf.delegate respondsToSelector:@selector(registerListenerWithEventName:target:selector:)]) {
+				if ([weakSelf.delegate respondsToSelector:@selector(registerListenerWithEventName:target:selector:parameter:)]) {
 					
-					[weakSelf.delegate registerListenerWithEventName:listener target:nil selector:@selector(announce)];
+					[weakSelf.delegate registerListenerWithEventName:listener target:nil selector:@selector(announce) parameter:nil];
 					
 				}
 				

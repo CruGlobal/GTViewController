@@ -190,16 +190,20 @@ extern NSString * const kAttr_watermark;
 			
 			id target = pair[@"target"];
 			SEL selector = NSSelectorFromString(pair[@"selector"]);
-			
-			[target performSelector:selector];
-			
+			id parameter = pair[@"parameter"];
+            
+            if (parameter) {
+                [target performSelector:selector withObject:parameter];
+            } else {
+                [target performSelector:selector];
+            }
 		}];
 		
 	}
 	
 }
 
-- (void)registerListenerWithEventName:(NSString *)eventName target:(id)target selector:(SEL)selector {
+- (void)registerListenerWithEventName:(NSString *)eventName target:(id)target selector:(SEL)selector parameter:(id)parameter {
 	
 	target = ( target ? target : self );
 	NSDictionary *pair = ( selector && [target respondsToSelector:selector] ? @{@"target": target, @"selector": NSStringFromSelector(selector)} : nil );
