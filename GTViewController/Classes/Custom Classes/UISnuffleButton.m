@@ -10,6 +10,9 @@
 #import "snuffyViewControllerTouchNotifications.h"
 #import "HorizontalGestureRecognizer.h"
 
+NSString * const UISnuffleButtonNotificationButtonTapEvent = @"org.cru.godtools.gtviewcontroller.uisnufflebutton.notification.buttontapevent";
+NSString * const UISnuffleButtonNotificationButtonTapEventKeyEventName = @"org.cru.godtools.gtviewcontroller.uisnufflebutton.notification.buttontapevent.key.eventname";
+
 //button mode constants
 extern NSString * const kButtonMode_big;
 extern NSString * const kButtonMode_url;
@@ -200,7 +203,12 @@ extern NSString * const kButtonMode_allurl;
 				
 			}
 			
-		}
+            [self.tapEvents enumerateObjectsUsingBlock:^(NSString *eventName, NSUInteger idx, BOOL *stop) {
+                [[NSNotificationCenter defaultCenter] postNotificationName:UISnuffleButtonNotificationButtonTapEvent
+                                                                    object:self
+                                                                  userInfo:@{UISnuffleButtonNotificationButtonTapEventKeyEventName: eventName}];
+            }];
+        }
 		
 		[self reset];
 	}

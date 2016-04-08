@@ -8,6 +8,9 @@
 
 #import <UIKit/UIKit.h>
 
+extern NSString * const UISnuffleButtonNotificationButtonTapEvent;
+extern NSString * const UISnuffleButtonNotificationButtonTapEventKeyEventName;
+
 @protocol UISnuffleButtonTapDelegate;
 
 @interface UISnuffleButton : UIButton
