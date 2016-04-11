@@ -10,6 +10,7 @@
 
 #import "UIMultiButtonResponseView.h"
 #import "GTFileLoader.h"
+#import "GTPageInterpreter.h"
 
 @implementation UIMultiButtonResponseView
 
@@ -18,7 +19,7 @@
     TBXMLElement *positiveElement                  = nil;
     TBXMLElement *negativeElement                  = nil;
     
-    if ([[TBXML elementName:firstElement] isEqual:@"positive-button"]) {
+    if ([[TBXML elementName:firstElement] isEqual:kName_Positive_Button]) {
         positiveElement = firstElement;
         negativeElement = secondElement;
     } else {
@@ -30,19 +31,20 @@
 
     float buttonWidth = responseView.frame.size.width / 2.5 ;
     
-    UISnuffleButton *negativeButton = [self createButtonFromElement:negativeElement
-                                                          withFrame:CGRectMake(10,
-                                                                               responseView.frame.origin.y,
-                                                                               buttonWidth,
-                                                                               50)
-                                                          textColor:container.backgroundColor];
-
-    UISnuffleButton *positiveButton = [self createButtonFromElement:positiveElement
-                                                          withFrame:CGRectMake(responseView.frame.size.width - 10 - buttonWidth,
-                                                                               responseView.frame.origin.y,
-                                                                               buttonWidth,
-                                                                               50)
-                                                          textColor:container.backgroundColor];
+    UISnuffleButton *negativeButton = [[UISnuffleButton alloc] createButtonFromElement:negativeElement
+                                                                                addTag:0
+                                                                                  yPos:y
+                                                                             container:self
+                                                                             withStyle:nil
+                                                                     buttonTapDelegate:nil];
+    
+    
+    UISnuffleButton *positiveButton = [[UISnuffleButton alloc] createButtonFromElement:positiveElement
+                                                                                addTag:0
+                                                                                  yPos:y
+                                                                             container:self
+                                                                             withStyle:nil
+                                                                     buttonTapDelegate:nil];
     
     [responseView addSubview:negativeButton];
     [responseView addSubview:positiveButton];
@@ -50,18 +52,4 @@
     return responseView;
 }
 
-
-- (UISnuffleButton *)createButtonFromElement:(TBXMLElement *)element withFrame:(CGRect)frame textColor:(UIColor *)textColor {
-    UISnuffleButton *button = [[UISnuffleButton alloc] initWithFrame:frame];
-    NSArray *tapEvents = [[TBXML valueOfAttributeNamed:@"tap-events" forElement:element] componentsSeparatedByString:@","];
-    
-    [button setTitle:[TBXML textForElement:element] forState:UIControlStateNormal];
-    [button setTitleColor:textColor forState:UIControlStateNormal];
-    [button setContentHorizontalAlignment:UIControlContentHorizontalAlignmentCenter];
-    [button setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
-    [button setBackgroundImage:[[GTFileLoader sharedInstance] imageWithFilename:@"URL_Button.png"] forState:UIControlStateNormal];
-    [button setTapEvents:tapEvents];
-    
-    return button;
-}
 @end
