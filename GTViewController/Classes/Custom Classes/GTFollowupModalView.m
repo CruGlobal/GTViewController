@@ -102,20 +102,12 @@ NSString * const kName_Thank_You            = @"thank-you";
                 TBXMLElement *firstButtonElement = modalComponentElement->firstChild;
                 TBXMLElement *secondButtonElement = firstButtonElement->nextSibling;
                 
-                UIMultiButtonResponseView *buttonPairView = nil;
+                UIMultiButtonResponseView *buttonPairView = [[UIMultiButtonResponseView alloc] initWithFirstElement:firstButtonElement
+                                                                                                      secondElement:secondButtonElement
+                                                                                                          yPosition:    currentY
+                                                                                                      containerView:self
+                                                                                                          withStyle:style];;
                 
-                if([[TBXML elementName:firstButtonElement] isEqual:kName_Positive_Button]) {
-                    
-                    buttonPairView = [[UIMultiButtonResponseView alloc] initWithFirstElement:firstButtonElement
-                                                                                secondElement:secondButtonElement
-                                                                                    yPosition:currentY
-                                                                                containerView:self];
-                } else {
-                    
-                    buttonPairView = [[UIMultiButtonResponseView alloc] initWithFirstElement:secondButtonElement
-                                                                               secondElement:firstButtonElement
-                                                                                   yPosition:currentY
-                                                                               containerView:self];                }
                 
                 [self addSubview:buttonPairView];
 

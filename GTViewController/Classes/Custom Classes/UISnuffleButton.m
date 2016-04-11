@@ -11,6 +11,7 @@
 #import "HorizontalGestureRecognizer.h"
 
 #import "GTPageInterpreter.h"
+#import "GTFileLoaderExample.h"
 
 NSString * const UISnuffleButtonNotificationButtonTapEvent = @"org.cru.godtools.gtviewcontroller.uisnufflebutton.notification.buttontapevent";
 NSString * const UISnuffleButtonNotificationButtonTapEventKeyEventName = @"org.cru.godtools.gtviewcontroller.uisnufflebutton.notification.buttontapevent.key.eventname";
@@ -154,7 +155,11 @@ extern NSString * const kButtonMode_allurl;
             contentHorizontalAlignment	= UIControlContentHorizontalAlignmentCenter;
             contentVerticalAlignment	= UIControlContentVerticalAlignmentBottom;
             edgeInset					= UIEdgeInsetsMake(0, 0, 7, 0);
-        } else if ([mode isEqual:kButtonMode_url] || [mode isEqual:kButtonMode_email] || [mode isEqual:kButtonMode_phone]) {
+        } else if ([mode isEqual:kButtonMode_url] ||
+                   [mode isEqual:kButtonMode_email] ||
+                   [mode isEqual:kButtonMode_phone] ||
+                   [[TBXML elementName:element] isEqual:kName_Positive_Button] ||
+                   [[TBXML elementName:element] isEqual:kName_Negative_Button]) {
             frame						= CGRectMake(BUTTONXOFFSET,
                                                      yPos + 2,
                                                      container.frame.size.width - (2 * BUTTONXOFFSET),
@@ -166,7 +171,7 @@ extern NSString * const kButtonMode_allurl;
                 textColor				= pageStyle.backgroundColor;
             }
             if (image == nil) {
-                bgImage = [[GTFileLoader fileLoader] imageWithFilename:@"URL_Button.png"];
+                bgImage = [[GTFileLoaderExample fileLoader] imageWithFilename:@"URL_Button.png"];
             }
             hide						= NO;
             contentHorizontalAlignment	= UIControlContentHorizontalAlignmentCenter;

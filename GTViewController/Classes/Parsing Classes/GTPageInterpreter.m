@@ -1246,7 +1246,8 @@ NSString * const kLabelModifer_bolditalics	= @"bold-italics";
                 multiButtonResponseView = [[UIMultiButtonResponseView alloc]initWithFirstElement:object_el
                                                                                    secondElement:object_el->nextSibling
                                                                                        yPosition:object_ypos
-                                                                                   containerView:tempContainerView];
+                                                                                   containerView:tempContainerView
+                                                                                       withStyle:self.pageStyle];
                 
                 maxWidth			= fmaxf(maxWidth, CGRectGetMaxX(multiButtonResponseView.frame));
                 maxHeight			= fmaxf(maxHeight, CGRectGetMaxY(multiButtonResponseView.frame));

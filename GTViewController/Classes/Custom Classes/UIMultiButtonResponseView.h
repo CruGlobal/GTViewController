@@ -10,12 +10,13 @@
 #import "TBXML.h"
 
 #import "UISnuffleButton.h"
+#import "GTPageStyle.h"
 
 @interface UIMultiButtonResponseView : UIView
 
 @property (strong, nonatomic) UISnuffleButton *positiveButton;
 @property (strong, nonatomic) UISnuffleButton *negativeButton;
 
-- (instancetype) initWithFirstElement:(TBXMLElement *)firstElement secondElement:(TBXMLElement *)secondElement yPosition:(CGFloat)y containerView:(UIView *)container;
+- (instancetype) initWithFirstElement:(TBXMLElement *)firstElement secondElement:(TBXMLElement *)secondElement yPosition:(CGFloat)y containerView:(UIView *)container withStyle:(GTPageStyle *) pageStyle;
 
 @end
