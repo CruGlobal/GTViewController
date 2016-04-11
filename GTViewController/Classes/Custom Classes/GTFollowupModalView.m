@@ -10,6 +10,7 @@
 
 #import "GTFollowupModalView.h"
 #import "GTPage.h"
+#import "GTLabel.h"
 
 NSString * const kName_FollowUp_Title       = @"followup-title";
 NSString * const kName_FollowUp_Body        = @"followup-body";
@@ -38,25 +39,60 @@ NSString * const kName_Thank_You            = @"thank-you";
     } else {
         TBXMLElement *modalComponentElement = fallbackElement->firstChild;
         
+        // first pass - vertical spacing
+        int numLabels = 0;
+        int numTextFields = 0;
+        int numButtonPairs = 1; //assume 1 for now
+        while(modalComponentElement != nil) {
+            NSString *modalComponentElementName = [TBXML elementName:modalComponentElement];
+            
+            if ([modalComponentElementName isEqual:kName_FollowUp_Title] ||
+                [modalComponentElementName isEqual:kName_FollowUp_Body]) {
+                numLabels++;
+            } else if ([modalComponentElementName isEqual:kName_Input_Field]) {
+                numTextFields++;
+            }
+            
+            modalComponentElement = modalComponentElement->nextSibling;
+        }
+        
+        int defaultVerticalSpacingToTop = 20;
+        int currentY = defaultVerticalSpacingToTop;
+        
+        modalComponentElement = fallbackElement->firstChild;
+        
+        // first pass - building/rendering
         while(modalComponentElement != nil) {
             NSString *modalComponentElementName = [TBXML elementName:modalComponentElement];
             
             if ([modalComponentElementName isEqual:kName_FollowUp_Title]) {
-                UILabel *titleLabel = [self createTitleLabelFromElement:modalComponentElement
-                                                              withStyle:style
-                                                         presentingView:presentingView];
+                UILabel *titleLabel = [[GTLabel alloc]initFromElement:modalComponentElement
+                                                  parentTextAlignment:UITextAlignmentCenter
+                                                                 xPos:0
+                                                                 yPos:currentY
+                                                            container:presentingView
+                                                                style:style];
+                
+                currentY += titleLabel.frame.size.height + 10;
                 
                 [self addSubview:titleLabel];
             } else if ([modalComponentElementName isEqual:kName_FollowUp_Body]) {
-                UILabel *bodyLabel = [self createBodyLabelFromElement:modalComponentElement
-                                                            withStyle:style
-                                                       presentingView:presentingView];
+                UILabel *bodyLabel = [[GTLabel alloc]initFromElement:modalComponentElement
+                                                 parentTextAlignment:UITextAlignmentCenter
+                                                                xPos:0
+                                                                yPos:currentY
+                                                           container:presentingView
+                                                               style:style];
+                currentY += bodyLabel.frame.size.height + 10;
                 
                 [self addSubview:bodyLabel];
             } else if ([modalComponentElementName isEqual:kName_Input_Field]) {
                 UIView *inputFieldView = [self createInputFieldFromElement:modalComponentElement
+                                                                     withY:currentY
                                                                  withStyle:style
                                                             presentingView:presentingView];
+                
+                currentY += inputFieldView.frame.size.height + 10;
                 
                 [self addSubview:inputFieldView];
             } else if ([modalComponentElementName isEqual:kName_Thank_You]) {
@@ -71,33 +107,7 @@ NSString * const kName_Thank_You            = @"thank-you";
 }
 
 
-- (UILabel*)createTitleLabelFromElement:(TBXMLElement *)element withStyle:(GTPageStyle*)style presentingView:(UIView *)presentingView {
-    UILabel *titleLabel = [[UILabel alloc]init];
-    
-    [titleLabel setFrame:CGRectMake(20, 20, self.frame.size.width - 20, 40)];
-    [titleLabel setText:[TBXML textForElement:element]];
-    [titleLabel setTextAlignment:NSTextAlignmentCenter];
-    [titleLabel setTextColor:[style defaultTextColor]];
-    [titleLabel setNumberOfLines:0];
-    
-    return titleLabel;
-}
-
-
-- (UILabel*)createBodyLabelFromElement:(TBXMLElement *)element withStyle:(GTPageStyle*)style presentingView:(UIView *)presentingView {
-    UILabel *bodyLabel = [[UILabel alloc]init];
-    
-    [bodyLabel setFrame:CGRectMake(20, 120, self.frame.size.width - 20, 40)];
-    [bodyLabel setText:[TBXML textForElement:element]];
-    [bodyLabel setTextAlignment:NSTextAlignmentCenter];
-    [bodyLabel setTextColor:[style defaultTextColor]];
-    [bodyLabel setNumberOfLines:0];
-    
-    return bodyLabel;
-}
-
-
-- (UIView*)createInputFieldFromElement:(TBXMLElement *)element withStyle:(GTPageStyle*)style presentingView:(UIView *)presentingView {
+- (UIView*)createInputFieldFromElement:(TBXMLElement *)element withY:(CGFloat)yPos withStyle:(GTPageStyle*)style presentingView:(UIView *)presentingView {
     
     UIView *inputFieldView = [[UIView alloc]init];
     UILabel *inputFieldLabel = [[UILabel alloc]init];
@@ -105,8 +115,7 @@ NSString * const kName_Thank_You            = @"thank-you";
 
     // format & configure view
     [inputFieldView setBackgroundColor:[UIColor clearColor]];
-    [inputFieldView setFrame:CGRectMake(20, 220, self.frame.size.width - 20, 60)];
-
+    [inputFieldView setFrame:CGRectMake(0, yPos, presentingView.frame.size.width, 70)];
     
     TBXMLElement *inputFieldChildElement = element->firstChild;
     
@@ -114,7 +123,7 @@ NSString * const kName_Thank_You            = @"thank-you";
         NSString *childElementName = [TBXML elementName:inputFieldChildElement];
         
         if ([childElementName isEqual:kName_Input_Label]) {
-            [inputFieldLabel setFrame:CGRectMake(20, 0, self.frame.size.width - 20, 15)];
+            [inputFieldLabel setFrame:CGRectMake(20, 0, inputFieldView.frame.size.width, 15)];
             [inputFieldLabel setTextColor: style.defaultTextColor];
             [inputFieldLabel setText:[TBXML textForElement:inputFieldChildElement]];
         } else if ([childElementName isEqual:kName_Input_Placeholder]) {
@@ -124,9 +133,10 @@ NSString * const kName_Thank_You            = @"thank-you";
         inputFieldChildElement = inputFieldChildElement->nextSibling;
     }
 
-    [inputTextField setFrame:CGRectMake(20, 50, self.frame.size.width - 20, 40)];
+    [inputTextField setFrame:CGRectMake(20, 20, inputFieldView.frame.size.width - 40, 25)];
     [inputTextField setTextColor:[UIColor darkTextColor]];
-
+    [inputTextField setBackgroundColor:[UIColor whiteColor]];
+    
     [inputFieldView addSubview:inputFieldLabel];
     [inputFieldView addSubview:inputTextField];
     
