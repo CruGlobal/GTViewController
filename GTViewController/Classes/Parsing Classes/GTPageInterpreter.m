@@ -38,6 +38,7 @@ NSString * const kName_PanelImage		= @"image";
 NSString * const kName_Question			= @"question";
 
 // Constants for the follow up modal elements added in v7.0.x of this Pod
+NSString * const kName_Button_Pair      = @"button-pair";
 NSString * const kName_Positive_Button  = @"positive-button";
 NSString * const kName_Negative_Button  = @"negative-button";
 NSString * const kName_Followup_Modal   = @"followup-modal";
@@ -118,7 +119,6 @@ NSString * const kLabelModifer_bolditalics	= @"bold-italics";
 @property (nonatomic, assign)	CGRect			questionFrame;
 
 //object creation functions (take an xml element return an iphone interface object, ie a subclass of UIView)
-- (id)createButtonFromElement:					(TBXMLElement *)element		addTag:(NSInteger)tag			yPos:(CGFloat)yPos		container:(UIView *)container;
 - (id)createButtonLinesFromButtonElement:		(TBXMLElement *)element		buttonTag:(NSInteger)buttonTag	yPos:(CGFloat)yPos		container:(UIView *)container;
 - (id)createDisclosureIndicatorFromButtonTag:	(NSInteger)buttonTag		container:(UIView *)container;
 - (id)createImageFromElement:					(TBXMLElement *)element		xPos:(CGFloat)xpostion			yPos:(CGFloat)ypostion	container:(UIView *)container;
@@ -762,7 +762,12 @@ NSString * const kLabelModifer_bolditalics	= @"bold-italics";
                 [self.pageView addSubview:buttonLinesTemp];
                 
                 //create the button and add it to the page's view
-                buttonTemp		= [self createButtonFromElement:object_el addTag:buttonCount yPos:object_ypos container:nil];
+                buttonTemp      = [[UISnuffleButton alloc] createButtonFromElement:object_el
+                                                                            addTag:buttonCount
+                                                                              yPos:object_ypos
+                                                                         container:nil
+                                                                         withStyle:self.pageStyle
+                                                                 buttonTapDelegate:self.buttonDelegate];
                 [self.pageView addSubview:buttonTemp];
                 
                 //create the arrow and add it to the page's view
@@ -984,174 +989,6 @@ NSString * const kLabelModifer_bolditalics	= @"bold-italics";
 
 #pragma mark -
 #pragma mark Create Functions
-
-/**
- *	Description:	Creates a UISnuffleButton given a button element
- *	Parameters:		element:	The TBXMLElement that describes the button
- *					Tag:		The number that identifies the button
- *					yPos:		The y position of the button (which starts with the 2px line at the top)
- *	Returns:		A UISnuffleButton object with parameters set to what is described in the xml element.
- */
-- (id)createButtonFromElement:(TBXMLElement *)element addTag:(NSInteger)tag yPos:(CGFloat)yPos container:(UIView *)container {
-	
-	if (element != nil) {
-		
-		//init variables for xml elements
-		TBXMLElement						*button_label		= [TBXML childElementNamed:kName_ButtonText		parentElement:element];
-		TBXMLElement						*button_image		= [TBXML childElementNamed:kName_Image			parentElement:element];
-		
-		//init button's xml attributes
-		NSString							*mode				= [TBXML valueOfAttributeNamed:kAttr_mode		forElement:element];
-		NSString							*text				= nil;
-        NSString                            *urlTarget          = nil;
-		NSString							*textColorString	= nil;
-		NSString							*textSizeString		= nil;
-		NSString							*y					= nil;
-		NSString							*image				= nil;
-		NSArray								*tapEvents			= nil;
-		
-		if ([mode isEqual:kButtonMode_url] || [mode isEqual:kButtonMode_email] || [mode isEqual:kButtonMode_phone]) {
-			text				= [TBXML valueOfAttributeNamed:kAttr_urlText forElement:element];
-            if (text == nil) {
-                text            = [TBXML textForElement:element];
-            } else {
-                urlTarget       = [TBXML textForElement:element];
-            }
-			textColorString		= [TBXML valueOfAttributeNamed:kAttr_color	forElement:element];
-			textSizeString		= [TBXML valueOfAttributeNamed:kAttr_size	forElement:element];
-			y					= [TBXML valueOfAttributeNamed:kAttr_y		forElement:element];
-		} else if ([mode isEqual:kButtonMode_allurl]) {
-			text				= [TBXML textForElement:element];
-			textColorString		= [TBXML valueOfAttributeNamed:kAttr_color	forElement:element];
-			textSizeString		= [TBXML valueOfAttributeNamed:kAttr_size	forElement:element];
-			y					= [TBXML valueOfAttributeNamed:kAttr_y		forElement:element];
-		} else {
-			text				= [TBXML textForElement:button_label];
-			textColorString		= [TBXML valueOfAttributeNamed:kAttr_color	forElement:button_label];
-			textSizeString		= [TBXML valueOfAttributeNamed:kAttr_size	forElement:button_label];
-			y					= [TBXML valueOfAttributeNamed:kAttr_y		forElement:button_label];
-		}
-		
-		if ([TBXML valueOfAttributeNamed:kAttr_tap_events forElement:element]) {
-			tapEvents = [[TBXML valueOfAttributeNamed:kAttr_tap_events forElement:element] componentsSeparatedByString:@","];
-		}
-		
-		//grab the image path if it exists
-		if (button_image) {
-			image		= [TBXML textForElement:button_image];
-		}
-		
-		//set container to the page if not set
-		if (container == nil) {
-			container	= self.pageView;
-		}
-		
-		//if y attr is set then overwrite yPos
-		if (y != nil) {
-			yPos		= [y floatValue];
-		}
-		
-		//init object ptr to store the button
-		UISnuffleButton						*buttonTemp			= nil;
-		
-		//init variables for button parameters
-		UIImage								*bgImage			= nil;
-		UIColor								*bgColor			= nil;
-		UIColor								*textColor			= [GTPageStyle colorForHex:textColorString];
-		CGRect								frame;
-		CGFloat								size				= DEFAULT_TEXTSIZE_BUTTON;
-		UIControlContentHorizontalAlignment	contentHorizontalAlignment;
-		UIControlContentVerticalAlignment	contentVerticalAlignment;
-		UIEdgeInsets						edgeInset			= UIEdgeInsetsZero;
-		BOOL								hide				= YES;
-		
-		//set defaults based on mode
-		if ([mode isEqual:kButtonMode_big]) {
-			frame						= CGRectMake(LARGEBUTTONXOFFSET, yPos + 2, container.frame.size.width - (2 * LARGEBUTTONXOFFSET), 136);
-			bgColor						= [UIColor clearColor];
-			if (textColor == nil) {
-				textColor				= self.pageStyle.defaultTextColor;
-			}
-			contentHorizontalAlignment	= UIControlContentHorizontalAlignmentCenter;
-			contentVerticalAlignment	= UIControlContentVerticalAlignmentBottom;
-			edgeInset					= UIEdgeInsetsMake(0, 0, 7, 0);
-		} else if ([mode isEqual:kButtonMode_url] || [mode isEqual:kButtonMode_email] || [mode isEqual:kButtonMode_phone]) {
-			frame						= CGRectMake(BUTTONXOFFSET,
-                                                     yPos + 2,
-                                                     container.frame.size.width - (2 * BUTTONXOFFSET),
-                                                     50); //JJ: height of url button
-			
-			tag							+= 110;
-			bgColor						= [UIColor clearColor];
-			if (textColor == nil) {
-				textColor				= self.pageStyle.backgroundColor;
-			}
-			if (image == nil) {
-				bgImage = [self.fileLoader imageWithFilename:@"URL_Button.png"];
-			}
-			hide						= NO;
-			contentHorizontalAlignment	= UIControlContentHorizontalAlignmentCenter;
-			contentVerticalAlignment	= UIControlContentVerticalAlignmentCenter;
-		} else if ([mode isEqual:kButtonMode_allurl]) {
-			frame						= CGRectMake(BUTTONXOFFSET, yPos + 2, container.frame.size.width - (2 * BUTTONXOFFSET), 36);
-			bgColor						= [UIColor clearColor];
-			if (textColor == nil) {
-				textColor				= self.pageStyle.defaultTextColor;
-			}
-			contentHorizontalAlignment	= UIControlContentHorizontalAlignmentCenter;
-			contentVerticalAlignment	= UIControlContentVerticalAlignmentCenter;
-		} else {
-			frame						= CGRectMake(BUTTONXOFFSET, yPos + 2, container.frame.size.width - (2 * BUTTONXOFFSET), 36);
-			bgColor						= [UIColor clearColor];
-			if (textColor == nil) {
-				textColor				= self.pageStyle.defaultTextColor;
-			}
-			contentHorizontalAlignment	= UIControlContentHorizontalAlignmentLeft;
-			contentVerticalAlignment	= UIControlContentVerticalAlignmentCenter;
-			edgeInset					= UIEdgeInsetsMake(0, 10, 0, 0);
-		}
-		
-		
-		
-		//load background image if it exists
-		if (image != nil) {
-			bgImage = [self.fileLoader imageWithFilename:image];
-		}
-		
-		//if size defined then multiply it by that factor
-		if (textSizeString != nil) {
-			size = round(size * [textSizeString floatValue] / 100);
-		}
-		
-		//create, set up and return button
-		buttonTemp = [[UISnuffleButton alloc] initWithFrame:frame tapDelegate:self.buttonDelegate];
-		buttonTemp.tapEvents = tapEvents;
-		[buttonTemp setMode:mode];						//record the button's mode for later use
-		[buttonTemp setBackgroundColor:bgColor];
-		[buttonTemp setTitle:text forState:UIControlStateNormal];
-        //use urlTarget if label text is specified
-        if (urlTarget != nil) {
-            [buttonTemp setUrlTarget:urlTarget];
-        }
-        
-		buttonTemp.titleLabel.font = [UIFont fontWithName:buttonTemp.titleLabel.font.fontName size:size];
-		if (bgImage) {
-			[buttonTemp setBackgroundImage:bgImage forState:UIControlStateNormal];
-		}
-		[buttonTemp setAdjustsImageWhenHighlighted:YES];
-		[buttonTemp setTitleColor:textColor forState:UIControlStateNormal];
-		[buttonTemp setContentHorizontalAlignment:contentHorizontalAlignment];
-		[buttonTemp setContentVerticalAlignment:contentVerticalAlignment];
-		[buttonTemp setContentEdgeInsets:edgeInset];
-		[buttonTemp setTag:tag];
-		[buttonTemp setHidden:hide];
-		
-		return buttonTemp;
-		
-	} else {
-		return nil;
-	}
-}
 
 /**
  *	Description:	Creates an image view for the lines around the button given a button element
@@ -1384,7 +1221,12 @@ NSString * const kLabelModifer_bolditalics	= @"bold-italics";
 			if ([[TBXML elementName:object_el] isEqual:kName_Button]) {
 
 				//create image
-				buttonTemp			= [self createButtonFromElement:object_el addTag:buttonTag yPos:object_ypos container:tempContainerView];
+                buttonTemp          = [[UISnuffleButton alloc]createButtonFromElement:object_el
+                                                                               addTag:buttonTag
+                                                                                 yPos:object_ypos
+                                                                            container:tempContainerView
+                                                                            withStyle:self.pageStyle
+                                                                    buttonTapDelegate:self.buttonDelegate];
 				
 				//store the maximum dimensions
 				maxWidth			= fmaxf(maxWidth, CGRectGetMaxX(buttonTemp.frame));

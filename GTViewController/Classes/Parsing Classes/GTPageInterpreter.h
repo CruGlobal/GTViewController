@@ -56,6 +56,7 @@ extern NSString * const kName_PanelImage;
 extern NSString * const kName_Question;
 
 // Constants for the follow up modal elements added in v7.0.x of this Pod
+extern NSString * const kName_Button_Pair;
 extern NSString * const kName_Positive_Button;
 extern NSString * const kName_Negative_Button;
 extern NSString * const kName_Followup_Modal;

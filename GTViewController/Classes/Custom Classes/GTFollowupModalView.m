@@ -10,7 +10,10 @@
 
 #import "GTFollowupModalView.h"
 #import "GTPage.h"
+#import "GTPageInterpreter.h"
 #import "GTLabel.h"
+#import "UISnuffleButton.h"
+#import "UIMultiButtonResponseView.h"
 
 NSString * const kName_FollowUp_Title       = @"followup-title";
 NSString * const kName_FollowUp_Body        = @"followup-body";
@@ -95,7 +98,30 @@ NSString * const kName_Thank_You            = @"thank-you";
                 currentY += inputFieldView.frame.size.height + 10;
                 
                 [self addSubview:inputFieldView];
-            } else if ([modalComponentElementName isEqual:kName_Thank_You]) {
+            } else if ([modalComponentElementName isEqual:kName_Button_Pair]) {
+                TBXMLElement *firstButtonElement = modalComponentElement->firstChild;
+                TBXMLElement *secondButtonElement = firstButtonElement->nextSibling;
+                
+                UIMultiButtonResponseView *buttonPairView = nil;
+                
+                if([[TBXML elementName:firstButtonElement] isEqual:kName_Positive_Button]) {
+                    
+                    buttonPairView = [[UIMultiButtonResponseView alloc] initWithFirstElement:firstButtonElement
+                                                                                secondElement:secondButtonElement
+                                                                                    yPosition:currentY
+                                                                                containerView:self];
+                } else {
+                    
+                    buttonPairView = [[UIMultiButtonResponseView alloc] initWithFirstElement:secondButtonElement
+                                                                               secondElement:firstButtonElement
+                                                                                   yPosition:currentY
+                                                                               containerView:self];                }
+                
+                [self addSubview:buttonPairView];
+
+                currentY += buttonPairView.frame.size.height + 10;
+                
+            }else if ([modalComponentElementName isEqual:kName_Thank_You]) {
                 self.thankYouPage = nil;
             }
             
