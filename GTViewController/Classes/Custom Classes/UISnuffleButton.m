@@ -157,9 +157,7 @@ extern NSString * const kButtonMode_allurl;
             edgeInset					= UIEdgeInsetsMake(0, 0, 7, 0);
         } else if ([mode isEqual:kButtonMode_url] ||
                    [mode isEqual:kButtonMode_email] ||
-                   [mode isEqual:kButtonMode_phone] ||
-                   [[TBXML elementName:element] isEqual:kName_Positive_Button] ||
-                   [[TBXML elementName:element] isEqual:kName_Negative_Button]) {
+                   [mode isEqual:kButtonMode_phone]) {
             frame						= CGRectMake(BUTTONXOFFSET,
                                                      yPos + 2,
                                                      container.frame.size.width - (2 * BUTTONXOFFSET),
@@ -182,6 +180,38 @@ extern NSString * const kButtonMode_allurl;
             if (textColor == nil) {
                 textColor				= pageStyle.defaultTextColor;
             }
+            contentHorizontalAlignment	= UIControlContentHorizontalAlignmentCenter;
+            contentVerticalAlignment	= UIControlContentVerticalAlignmentCenter;
+        } else if ([mode isEqual:kButtonMode_link]) {
+            frame						= CGRectMake(BUTTONXOFFSET,
+                                                     yPos + 2,
+                                                     container.frame.size.width - (2 * BUTTONXOFFSET),
+                                                     50); //JJ: height of url button
+            
+            tag							+= 110;
+            bgColor						= [UIColor clearColor];
+            if (textColor == nil) {
+                textColor				= pageStyle.defaultTextColor;
+            }
+            hide						= NO;
+            contentHorizontalAlignment	= UIControlContentHorizontalAlignmentCenter;
+            contentVerticalAlignment	= UIControlContentVerticalAlignmentCenter;
+        } else if ([[TBXML elementName:element] isEqual:kName_Positive_Button] ||
+                   [[TBXML elementName:element] isEqual:kName_Negative_Button]) {
+            frame						= CGRectMake(BUTTONXOFFSET,
+                                                     yPos + 2,
+                                                     container.frame.size.width - (2 * BUTTONXOFFSET),
+                                                     50); //JJ: height of url button
+            
+            tag							+= 110;
+            bgColor						= [UIColor clearColor];
+            if (textColor == nil) {
+                textColor				= pageStyle.backgroundColor;
+            }
+            if (image == nil) {
+                bgImage = [[GTFileLoaderExample fileLoader] imageWithFilename:@"URL_Button.png"];
+            }
+            hide						= NO;
             contentHorizontalAlignment	= UIControlContentHorizontalAlignmentCenter;
             contentVerticalAlignment	= UIControlContentVerticalAlignmentCenter;
         } else {
@@ -218,10 +248,21 @@ extern NSString * const kButtonMode_allurl;
             [buttonTemp setUrlTarget:urlTarget];
         }
         
-        buttonTemp.titleLabel.font = [UIFont fontWithName:buttonTemp.titleLabel.font.fontName size:size];
-        if (bgImage) {
-            [buttonTemp setBackgroundImage:bgImage forState:UIControlStateNormal];
+        if ([mode isEqual:kButtonMode_link]) {
+            NSDictionary *stringAttributes = @{NSUnderlineStyleAttributeName: @(NSUnderlineStyleSingle),
+                                            NSForegroundColorAttributeName : textColor};
+            NSAttributedString *underlinedTitle = [[NSAttributedString alloc] initWithString:text
+                                                                                  attributes:stringAttributes];
+
+            [buttonTemp setAttributedTitle:underlinedTitle  forState:UIControlStateNormal];
+        } else {
+            buttonTemp.titleLabel.font = [UIFont fontWithName:buttonTemp.titleLabel.font.fontName size:size];
+            
+            if (bgImage) {
+                [buttonTemp setBackgroundImage:bgImage forState:UIControlStateNormal];
+            }
         }
+        
         [buttonTemp setAdjustsImageWhenHighlighted:YES];
         [buttonTemp setTitleColor:textColor forState:UIControlStateNormal];
         [buttonTemp setContentHorizontalAlignment:contentHorizontalAlignment];

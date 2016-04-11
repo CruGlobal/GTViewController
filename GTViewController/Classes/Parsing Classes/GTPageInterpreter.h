@@ -114,6 +114,7 @@ extern NSString * const kButtonMode_url;
 extern NSString * const kButtonMode_phone;
 extern NSString * const kButtonMode_email;
 extern NSString * const kButtonMode_allurl;
+extern NSString * const kButtonMode_link;
 
 //label modifer constants
 extern NSString * const kLabelModifer_normal;

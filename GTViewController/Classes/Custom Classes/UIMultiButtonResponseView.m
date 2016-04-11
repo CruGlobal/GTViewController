@@ -28,9 +28,7 @@
     }
     
     UIMultiButtonResponseView *responseView = [super initWithFrame:CGRectMake(0, y, container.frame.size.width, 70)];
-    
-    float buttonWidth = responseView.frame.size.width / 2.5 ;
-    
+        
     UISnuffleButton *negativeButton = [[UISnuffleButton alloc] createButtonFromElement:negativeElement
                                                                                 addTag:0
                                                                                   yPos:0
@@ -50,8 +48,7 @@
     [self layoutBasedOnAlignmentPositiveButton:positiveButton
                                 negativeButton:negativeButton
                        multiButtonResponseView:responseView
-                                     alignment:[TBXML valueOfAttributeNamed:kAttr_align
-                                                                 forElement:parentElement]];
+                                     alignment:[TBXML valueOfAttributeNamed:kAttr_align forElement:parentElement]];
     
     [responseView addSubview:negativeButton];
     [responseView addSubview:positiveButton];
@@ -75,7 +72,7 @@
                                             buttonWidth,
                                             50)];
     } else if ([alignment isEqual:@"right"]) {
-        [negativeButton setFrame:CGRectMake(multiButtonResponseView.frame.size.width - 10*2 - buttonWidth * 2,
+        [negativeButton setFrame:CGRectMake(multiButtonResponseView.frame.size.width - 10 * 2 - buttonWidth * 2,
                                             0,
                                             buttonWidth,
                                             50)];

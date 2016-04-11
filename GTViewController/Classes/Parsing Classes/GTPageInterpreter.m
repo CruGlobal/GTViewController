@@ -95,6 +95,7 @@ NSString * const kButtonMode_url		= @"url";
 NSString * const kButtonMode_phone		= @"phone";
 NSString * const kButtonMode_email		= @"email";
 NSString * const kButtonMode_allurl		= @"allurl";
+NSString * const kButtonMode_link       = @"link";
 
 //label modifer constants
 NSString * const kLabelModifer_normal	= @"normal";
