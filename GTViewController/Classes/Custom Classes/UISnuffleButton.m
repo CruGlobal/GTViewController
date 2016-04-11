@@ -161,7 +161,7 @@ extern NSString * const kButtonMode_allurl;
                 textColor				= pageStyle.backgroundColor;
             }
             if (image == nil) {
-                bgImage = [[GTFileLoader sharedInstance] imageWithFilename:@"URL_Button.png"];
+                bgImage = [[GTFileLoader fileLoader] imageWithFilename:@"URL_Button.png"];
             }
             hide						= NO;
             contentHorizontalAlignment	= UIControlContentHorizontalAlignmentCenter;
@@ -189,7 +189,7 @@ extern NSString * const kButtonMode_allurl;
         
         //load background image if it exists
         if (image != nil) {
-            bgImage = [[GTFileLoader sharedInstance] imageWithFilename:image];
+            bgImage = [[GTFileLoader fileLoader] imageWithFilename:image];
         }
         
         //if size defined then multiply it by that factor

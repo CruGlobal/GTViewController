@@ -765,7 +765,7 @@ NSString * const kLabelModifer_bolditalics	= @"bold-italics";
                 buttonTemp      = [[UISnuffleButton alloc] createButtonFromElement:object_el
                                                                             addTag:buttonCount
                                                                               yPos:object_ypos
-                                                                         container:nil
+                                                                         container:self.pageView
                                                                          withStyle:self.pageStyle
                                                                  buttonTapDelegate:self.buttonDelegate];
                 [self.pageView addSubview:buttonTemp];
