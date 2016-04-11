@@ -103,6 +103,11 @@ extern NSString * const kButtonMode_allurl;
             textColorString		= [TBXML valueOfAttributeNamed:kAttr_color	forElement:element];
             textSizeString		= [TBXML valueOfAttributeNamed:kAttr_size	forElement:element];
             y					= [TBXML valueOfAttributeNamed:kAttr_y		forElement:element];
+        } else if ([mode isEqual:@"link"] || [[TBXML elementName:element] isEqual:kName_Positive_Button] || [[TBXML elementName:element] isEqual:kName_Negative_Button]) {
+            text                = [TBXML textForElement:element];
+            textColorString		= [TBXML valueOfAttributeNamed:kAttr_color	forElement:element];
+            textSizeString		= [TBXML valueOfAttributeNamed:kAttr_size	forElement:element];
+            y					= [TBXML valueOfAttributeNamed:kAttr_y		forElement:element];
         } else {
             text				= [TBXML textForElement:button_label];
             textColorString		= [TBXML valueOfAttributeNamed:kAttr_color	forElement:button_label];
