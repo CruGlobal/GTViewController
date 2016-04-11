@@ -71,22 +71,22 @@ NSString * const kName_Thank_You            = @"thank-you";
             if ([modalComponentElementName isEqual:kName_FollowUp_Title]) {
                 UILabel *titleLabel = [[GTLabel alloc]initFromElement:modalComponentElement
                                                   parentTextAlignment:UITextAlignmentCenter
-                                                                 xPos:0
+                                                                 xPos:-1
                                                                  yPos:currentY
                                                             container:presentingView
                                                                 style:style];
                 
-                currentY += titleLabel.frame.size.height + 10;
+                currentY = titleLabel.frame.origin.y + titleLabel.frame.size.height + 10;
                 
                 [self addSubview:titleLabel];
             } else if ([modalComponentElementName isEqual:kName_FollowUp_Body]) {
                 UILabel *bodyLabel = [[GTLabel alloc]initFromElement:modalComponentElement
-                                                 parentTextAlignment:UITextAlignmentCenter
-                                                                xPos:0
+                                                 parentTextAlignment:UITextAlignmentLeft
+                                                                xPos:-1
                                                                 yPos:currentY
                                                            container:presentingView
                                                                style:style];
-                currentY += bodyLabel.frame.size.height + 10;
+                currentY = bodyLabel.frame.origin.y + bodyLabel.frame.size.height + 10;
                 
                 [self addSubview:bodyLabel];
             } else if ([modalComponentElementName isEqual:kName_Input_Field]) {
@@ -95,7 +95,7 @@ NSString * const kName_Thank_You            = @"thank-you";
                                                                  withStyle:style
                                                             presentingView:presentingView];
                 
-                currentY += inputFieldView.frame.size.height + 10;
+                currentY = inputFieldView.frame.origin.y + inputFieldView.frame.size.height + 10;
                 
                 [self addSubview:inputFieldView];
             } else if ([modalComponentElementName isEqual:kName_Button_Pair]) {
@@ -104,9 +104,10 @@ NSString * const kName_Thank_You            = @"thank-you";
                 
                 UIMultiButtonResponseView *buttonPairView = [[UIMultiButtonResponseView alloc] initWithFirstElement:firstButtonElement
                                                                                                       secondElement:secondButtonElement
-                                                                                                          yPosition:    currentY
+                                                                                                      parentElement:modalComponentElement
+                                                                                                          yPosition:currentY
                                                                                                       containerView:self
-                                                                                                          withStyle:style];;
+                                                                                                          withStyle:style];
                 
                 
                 [self addSubview:buttonPairView];
@@ -128,12 +129,17 @@ NSString * const kName_Thank_You            = @"thank-you";
 - (UIView*)createInputFieldFromElement:(TBXMLElement *)element withY:(CGFloat)yPos withStyle:(GTPageStyle*)style presentingView:(UIView *)presentingView {
     
     UIView *inputFieldView = [[UIView alloc]init];
-    UILabel *inputFieldLabel = [[UILabel alloc]init];
+    GTLabel *inputFieldLabel = nil;
     UITextField *inputTextField = [[UITextField alloc]init];
 
     // format & configure view
     [inputFieldView setBackgroundColor:[UIColor clearColor]];
-    [inputFieldView setFrame:CGRectMake(0, yPos, presentingView.frame.size.width, 70)];
+    if ([TBXML valueOfAttributeNamed:kAttr_yoff forElement:element]) {
+        CGFloat yoffset = round([[TBXML valueOfAttributeNamed:kAttr_yoff forElement:element] floatValue]);
+        [inputFieldView setFrame:CGRectMake(0, yPos + yoffset, presentingView.frame.size.width, 70)];
+    } else {
+        [inputFieldView setFrame:CGRectMake(0, yPos, presentingView.frame.size.width, 70)];
+    }
     
     TBXMLElement *inputFieldChildElement = element->firstChild;
     
@@ -141,9 +147,13 @@ NSString * const kName_Thank_You            = @"thank-you";
         NSString *childElementName = [TBXML elementName:inputFieldChildElement];
         
         if ([childElementName isEqual:kName_Input_Label]) {
-            [inputFieldLabel setFrame:CGRectMake(20, 0, inputFieldView.frame.size.width, 15)];
-            [inputFieldLabel setTextColor: style.defaultTextColor];
-            [inputFieldLabel setText:[TBXML textForElement:inputFieldChildElement]];
+            inputFieldLabel = [[GTLabel alloc]initFromElement:inputFieldChildElement
+                                         parentTextAlignment:UITextAlignmentLeft
+                                                        xPos:0
+                                                        yPos:0
+                                                   container:inputFieldView
+                                                       style:style];
+            
         } else if ([childElementName isEqual:kName_Input_Placeholder]) {
             //TODO fill in placeholder
         }
@@ -151,7 +161,7 @@ NSString * const kName_Thank_You            = @"thank-you";
         inputFieldChildElement = inputFieldChildElement->nextSibling;
     }
 
-    [inputTextField setFrame:CGRectMake(20, 20, inputFieldView.frame.size.width - 40, 25)];
+    [inputTextField setFrame:CGRectMake(10, 20, inputFieldView.frame.size.width - 40, 25)];
     [inputTextField setTextColor:[UIColor darkTextColor]];
     [inputTextField setBackgroundColor:[UIColor whiteColor]];
     

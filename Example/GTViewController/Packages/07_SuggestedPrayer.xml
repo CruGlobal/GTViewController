@@ -28,24 +28,26 @@ Thank You for forgiving my sins and giving me eternal life.  Take control of the
     <button>
         <buttontext size="82" translate="true">Did you pray this prayer?</buttontext>
         <panel>
-            <positive-button tap-events="prayer-page-give-me-follow-up">YES</positive-button>
-            <negative-button tap-events="prayer-page-not-today">Not Today</negative-button>
+            <button-pair>
+                <positive-button tap-events="prayer-page-give-me-follow-up">YES</positive-button>
+                <negative-button tap-events="prayer-page-not-today">Not Today</negative-button>
+            </button-pair>
         </panel>
     </button>
     
     <followup-modal followup-id="1" listeners="prayer-page-give-me-follow-up">
         <fallback>
-            <followup-title>Jesus has come into your life as he promised.</followup-title>
-            <followup-body>Knowing someone better helps a relationship grow. Would you like to sign up for an email series that can help guide you in your new relationship with Jesus Christ?</followup-body>
+            <followup-title modifier="bold" size="85" yoffset="40" w="240">Jesus has come into your life as he promised.</followup-title>
+            <followup-body modifier="bold" size="85" yoffset="40" w="240">Knowing someone better helps a relationship grow. Would you like to sign up for an email series that can help guide you in your new relationship with Jesus Christ?</followup-body>
             <input-field name="email" type="email">
-                <input-label>Email</input-label>
+                <input-label modifier="bold" size="80">Email</input-label>
                 <input-placeholder>Email</input-placeholder>
             </input-field>
             <input-field name="name" type="text">
-                <input-label>Name</input-label>
+                <input-label modifier="bold" size="80">Name</input-label>
                 <input-placeholder>Name</input-placeholder>
             </input-field>
-            <button-pair>
+            <button-pair align="right">
                 <positive-button tap-events="follow-up-send,followup:subscribe">Send</positive-button>
                 <negative-button mode="link" tap-events="follow-up-no-thanks">No Thanks</negative-button>
             </button-pair>

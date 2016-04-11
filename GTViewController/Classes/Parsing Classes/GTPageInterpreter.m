@@ -1241,10 +1241,13 @@ NSString * const kLabelModifer_bolditalics	= @"bold-italics";
             
             
             ////POSITIVE-NEGATIVE BUTTON COMBO
-            if ([[TBXML elementName:object_el] isEqual:kName_Positive_Button] || [[TBXML elementName:object_el] isEqual:kName_Negative_Button]) {
+            if ([[TBXML elementName:object_el] isEqual:kName_Button_Pair]) {
+                TBXMLElement *firstChild = object_el->firstChild;
+                TBXMLElement *secondChild = firstChild->nextSibling;
                 
-                multiButtonResponseView = [[UIMultiButtonResponseView alloc]initWithFirstElement:object_el
-                                                                                   secondElement:object_el->nextSibling
+                multiButtonResponseView = [[UIMultiButtonResponseView alloc]initWithFirstElement:firstChild
+                                                                                   secondElement:secondChild
+                                                                                   parentElement:object_el
                                                                                        yPosition:object_ypos
                                                                                    containerView:tempContainerView
                                                                                        withStyle:self.pageStyle];
@@ -1257,7 +1260,6 @@ NSString * const kLabelModifer_bolditalics	= @"bold-italics";
                 //add to container
                 [tempContainerView addSubview:multiButtonResponseView];
                 
-                object_el = object_el->nextSibling;
             }
             
             

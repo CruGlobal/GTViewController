@@ -38,6 +38,7 @@
 #define DEFAULT_TEXTSIZE_TITLE_HEADING_PEEKMODE 30
 #define DEFAULT_TEXTSIZE_TITLE_HEADING_NORMALMODE 17
 
+#define DEFAULT_X_LABEL 10.0
 //////////Run-Time Constants///////////
 
 // Constants for the XML element names that will be considered during the parse.

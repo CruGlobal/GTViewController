@@ -18,11 +18,6 @@
 
 - (instancetype)initFromElement:(TBXMLElement *)element parentTextAlignment:(UITextAlignment)panelAlign xPos:(CGFloat)xpostion yPos:(CGFloat)ypostion container:(UIView *)container style:(GTPageStyle *)style {
     
-    //set default value if not set
-    if (!(xpostion >= 0)) {
-        xpostion = DEFAULT_PANEL_OFFSET_X;
-    }
-    
     if (!(ypostion >= 0)) {
         ypostion = DEFAULT_PANEL_OFFSET_Y;
     }
@@ -58,36 +53,61 @@
         if (x) {
             frame.origin.x = round([x floatValue]);
         } else {
-            frame.origin.x = xpostion;
+            frame.origin.x = DEFAULT_X_LABEL;
         }
         
-        if (y)										{frame.origin.y		=	round([y floatValue]);}								else	{frame.origin.y		= ypostion;}
-        if (w)										{frame.size.width	=	round([w floatValue]);}								else	{frame.size.width	= (container ? container.frame.size.width - (2 * DEFAULT_PANEL_OFFSET_X) : 280);}
-        if		(h)										{frame.size.height	=	round([h floatValue]);}								else	{frame.size.height	= 40;}
-        if		((w != nil) && (h != nil))				{resize				= NO;}
+        if (y) {
+            frame.origin.y = round([y floatValue]);
+        } else {
+            frame.origin.y = ypostion;
+        }
         
-        if		(!bgColor)																											{bgColor			= style.defaultLabelBackgroundColor;}
-        if		(!color)																											{color				= style.defaultTextColor;}
-        if		(size)									{textSize			= round(textSize * [size floatValue] / 100);}
+        if (w) {
+            frame.size.width =	round([w floatValue]);
+        } else {
+            frame.size.width = (container ? container.frame.size.width - (2 * DEFAULT_X_LABEL) : 280);
+        }
+        
+        if (h) {
+            frame.size.height =	round([h floatValue]);
+        } else {
+            frame.size.height = 40;
+        }
+        
+        if ((w != nil) && (h != nil)) {
+            resize = NO;
+        }
+        
+        if (!bgColor) {
+            bgColor = style.defaultLabelBackgroundColor;
+        }
+        
+        if (!color) {
+            color = style.defaultTextColor;
+        }
+        
+        if (size) {
+            textSize = round(textSize * [size floatValue] / 100);
+        }
         
         //if alignment is found calculate position based on alignment
         if ([align isEqualToString:kAlignment_left]) {
             
-            frame.origin.x		= DEFAULT_PANEL_OFFSET_X;
+            frame.origin.x = DEFAULT_X_LABEL;
             
         } else if ([align isEqualToString:kAlignment_center]) {
             
-            frame.origin.x		= ( 0.5 * container.frame.size.width ) - ( 0.5 * frame.size.width );
+            frame.origin.x = ( 0.5 * container.frame.size.width ) - ( 0.5 * frame.size.width );
             
         } else if ([align isEqualToString:kAlignment_right]) {
             
-            frame.origin.x		= container.frame.size.width - frame.size.width - DEFAULT_PANEL_OFFSET_X;
+            frame.origin.x = container.frame.size.width - frame.size.width - DEFAULT_X_LABEL;
             
         }
         
         //apply offset
-        frame.origin.x			+= xoffset;
-        frame.origin.y			+= yoffset;
+        frame.origin.x += xoffset;
+        frame.origin.y += yoffset;
         
         if (alpha) {
             labelAlpha = [alpha floatValue];
