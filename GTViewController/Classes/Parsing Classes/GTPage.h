@@ -11,6 +11,7 @@
 #import <QuartzCore/QuartzCore.h>
 #import "UISnuffleButton.h"
 #import "UIRoundedView.h"
+#import "GTFollowupViewController.h"
 
 extern NSString * const GTPageNotificationEvent;
 extern NSString * const GTPageNotificationEventKeyEventName;
@@ -51,5 +52,7 @@ extern NSString * const GTPageNotificationEventKeyEventName;
 - (void)page:(GTPage *)page didReceiveTapOnEmailAddress:(NSString *)emailAddress;
 - (void)page:(GTPage *)page didReceiveTapOnAllUrls:(NSArray *)urlArray;
 
-- (void)presentFollowupModal:(UIViewController *)followupModalViewController;
+- (void)presentFollowupModal:(GTFollowupViewController *)followupViewController;
+- (void)transitionFollowupToThankYou;
+- (void)dismissFollowupModal;
 @end

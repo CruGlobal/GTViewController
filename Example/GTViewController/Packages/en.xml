@@ -10,10 +10,10 @@
     <page thumb="PageThumb_05.png" filename="05_FourthPoint.xml" translate="true">4 We Must Each Respond To Jesus By Placing Our Trust In Him As Our Saviour And Lord. Only Then Can We Know God Personally.</page>
 	<page thumb="PageThumb_06.png" filename="06_TwoCircles.xml" translate="true">These Circles Describe Two Types Of People</page>
 	<page thumb="PageThumb_07.png" filename="07_SuggestedPrayer.xml" translate="true">You Can Express Your Attitude Toward God Through Prayer.</page>
-	<page thumb="PageThumb_08.png" filename="08_HowCanYouBeSure.xml" translate="true">How Can You Be Sure That All This Has Really Happened?</page>
+	<page thumb="PageThumb_08.png" filename="08_HowCanYouBeSure.xml" listeners="prayer-page-already-made-decision,follow-up-no-thanks,follow-up-thank-you-done" translate="true">How Can You Be Sure That All This Has Really Happened?</page>
     <page thumb="PageThumb_09.png" filename="09_WhatHappens.xml" translate="true">If You Asked Jesus Into Your Life As Saviour And Lord, Many Things Have Happened, Including:</page>
 	<page thumb="PageThumb_10.png" filename="10_HowToGrow.xml" translate="true">How To Grow As A Follower Of Jesus</page>
-	<page thumb="PageThumb_11.png" filename="11_FinalPage.xml" translate="true" listeners="rejected">Special Materials</page>
+	<page thumb="PageThumb_11.png" filename="11_FinalPage.xml" translate="true" listeners="prayer-page-not-today">Special Materials</page>
 	<about filename="00_About.xml" translate="true">About</about>
     <instructions translate="true"></instructions>
 </document>

@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 
 #import "GTFollowupModalView.h"
-#import "GTPage.h"
+#import "GTFollowupThankYouView.h"
 #import "GTPageInterpreter.h"
 #import "GTLabel.h"
 #import "UISnuffleButton.h"
@@ -19,18 +19,17 @@ NSString * const kName_FollowUp_Title       = @"followup-title";
 NSString * const kName_FollowUp_Body        = @"followup-body";
 NSString * const kName_Input_Field          = @"input-field";
 NSString * const kName_Input_Label          = @"input-label";
-NSString * const kName_Input_Placeholder    = @"input-placheholder";
+NSString * const kName_Input_Placeholder    = @"input-placeholder";
 NSString * const kName_Thank_You            = @"thank-you";
 
 @interface GTFollowupModalView()
-
-@property (strong, nonatomic) GTPage *thankYouPage;
 
 @end
 
 @implementation GTFollowupModalView
 
-- (instancetype)initFromElement:(TBXMLElement *)element withStyle:(GTPageStyle*)style presentingView:(UIView *)presentingView {
+- (instancetype)initFromElement:(TBXMLElement *)element withStyle:(GTPageStyle*)style presentingView:(UIView *)presentingView interpreterDelegate:(id<GTInterpreterDelegate>)interpreterDelegate {
+    
     self = [super initWithFrame:presentingView.frame];
     
     [self setBackgroundColor:style.backgroundColor];
@@ -41,23 +40,6 @@ NSString * const kName_Thank_You            = @"thank-you";
         
     } else {
         TBXMLElement *modalComponentElement = fallbackElement->firstChild;
-        
-        // first pass - vertical spacing
-        int numLabels = 0;
-        int numTextFields = 0;
-        int numButtonPairs = 1; //assume 1 for now
-        while(modalComponentElement != nil) {
-            NSString *modalComponentElementName = [TBXML elementName:modalComponentElement];
-            
-            if ([modalComponentElementName isEqual:kName_FollowUp_Title] ||
-                [modalComponentElementName isEqual:kName_FollowUp_Body]) {
-                numLabels++;
-            } else if ([modalComponentElementName isEqual:kName_Input_Field]) {
-                numTextFields++;
-            }
-            
-            modalComponentElement = modalComponentElement->nextSibling;
-        }
         
         int defaultVerticalSpacingToTop = 20;
         int currentY = defaultVerticalSpacingToTop;
@@ -115,7 +97,27 @@ NSString * const kName_Thank_You            = @"thank-you";
                 currentY += buttonPairView.frame.size.height + 10;
                 
             }else if ([modalComponentElementName isEqual:kName_Thank_You]) {
-                self.thankYouPage = nil;
+                
+                self.thankYouView = [[GTFollowupThankYouView alloc]initFromElement:modalComponentElement
+                                                                         withFrame:self.frame
+                                                                     withPageStyle:style];
+                
+                NSArray *listeners = [[TBXML valueOfAttributeNamed:kAttr_listeners forElement:modalComponentElement] componentsSeparatedByString:@","];
+                
+                for (id listener in listeners) {
+                    NSString *listenerName = listener;
+                    
+                    if ([interpreterDelegate respondsToSelector:@selector(registerListenerWithEventName:target:selector:parameter:)]) {
+                        [interpreterDelegate registerListenerWithEventName:listenerName
+                                                                    target:interpreterDelegate
+                                                                  selector:@selector(transitionFollowupToThankYou)
+                                                                 parameter:nil];
+                        
+                    }
+                }
+                
+                
+                
             }
             
             modalComponentElement = modalComponentElement->nextSibling;
@@ -155,7 +157,7 @@ NSString * const kName_Thank_You            = @"thank-you";
                                                        style:style];
             
         } else if ([childElementName isEqual:kName_Input_Placeholder]) {
-            //TODO fill in placeholder
+            inputTextField.placeholder = [TBXML textForElement:inputFieldChildElement];
         }
         
         inputFieldChildElement = inputFieldChildElement->nextSibling;
@@ -164,6 +166,15 @@ NSString * const kName_Thank_You            = @"thank-you";
     [inputTextField setFrame:CGRectMake(10, 20, inputFieldView.frame.size.width - 40, 25)];
     [inputTextField setTextColor:[UIColor darkTextColor]];
     [inputTextField setBackgroundColor:[UIColor whiteColor]];
+    [inputTextField setReturnKeyType:UIReturnKeyDone];
+    inputTextField.delegate = self;
+    
+    if ([[TBXML valueOfAttributeNamed:@"type" forElement:element] isEqual:@"email"]) {
+        inputTextField.keyboardType = UIKeyboardTypeEmailAddress;
+        inputTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
+    } else if([[TBXML valueOfAttributeNamed:@"type" forElement:element] isEqual:@"text"]) {
+        inputTextField.autocapitalizationType = UITextAutocapitalizationTypeWords;
+    }
     
     [inputFieldView addSubview:inputFieldLabel];
     [inputFieldView addSubview:inputTextField];
@@ -171,5 +182,9 @@ NSString * const kName_Thank_You            = @"thank-you";
     return inputFieldView;
 }
 
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+    [textField resignFirstResponder];
+    return NO;
+}
 
 @end
