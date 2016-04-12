@@ -19,6 +19,8 @@
 #import "GTInterpreter.h"
 #import "GTFileLoader.h"
 
+NSString * const GTPageNotificationEvent = @"org.cru.godtools.gtviewcontroller.gtpage.notification.event";
+NSString * const GTPageNotificationEventKeyEventName = @"org.cru.godtools.gtviewcontroller.gtpage.notification.event.key.eventname";
 
 //////////Compiler Constants///////////
 #define CONTENT_PADDING 15
@@ -41,12 +43,14 @@ extern NSString * const kButtonMode_allurl;
 extern NSString * const kAttr_backgroundImage;
 extern NSString * const kAttr_watermark;
 
-@interface GTPage ()
+@interface GTPage () <GTInterpreterDelegate>
 
 @property (nonatomic, weak)		id<GTPageDelegate>	pageDelegate;
 @property (nonatomic, strong)	GTFileLoader *fileLoader;
 
 @property (nonatomic, strong)	NSString			*filename;
+
+@property (nonatomic, strong)	NSMutableDictionary *listeners;
 
 @property (nonatomic, strong)	GTInterpreter		*interpreter;
 @property (nonatomic, strong)	TBXML				*xmlRepresentation;
@@ -83,6 +87,8 @@ extern NSString * const kAttr_watermark;
 @property	CGRect	arrowvieworiginal;
 @property	CGRect	arrowviewlarge;
 @property	CGFloat durationMultiplier;
+
+- (void)registerNotificationHandlersForEvents;
 
 - (void)urlClick:(id)sender;
 - (void)phoneClick:(id)sender;
@@ -123,6 +129,8 @@ extern NSString * const kAttr_watermark;
 	
 	if ((self = [self initWithFrame:frame])) {
 		
+		[self registerNotificationHandlersForEvents];
+		
         self.pageDelegate             = delegate;
         self.fileLoader               = fileLoader;
 
@@ -136,7 +144,7 @@ extern NSString * const kAttr_watermark;
 
 		//parse xml
         NSString * xmlPath            = [self.fileLoader pathOfFileWithFilename:file];
-        self.interpreter              = [GTInterpreter interpreterWithXMLPath:xmlPath fileLoader:self.fileLoader pageView:self panelTapDelegate:self buttonTapDelegate:self];
+        self.interpreter              = [GTInterpreter interpreterWithXMLPath:xmlPath fileLoader:self.fileLoader pageView:self delegate:self panelTapDelegate:self buttonTapDelegate:self];
 
 		[self.interpreter renderPage];
 
@@ -156,6 +164,60 @@ extern NSString * const kAttr_watermark;
 	
 	[self.interpreter cacheImages];
 	
+}
+
+#pragma mark - event listener methods
+
+- (void)registerNotificationHandlersForEvents {
+	
+	self.listeners = [NSMutableDictionary dictionary];
+	
+	__weak typeof(self)weakSelf = self;
+	[[NSNotificationCenter defaultCenter] addObserverForName:GTPageNotificationEvent object:self queue:nil usingBlock:^(NSNotification *note) {
+		
+		NSString *eventName = note.userInfo[GTPageNotificationEventKeyEventName];
+		[weakSelf triggerEventWithName:eventName];
+		
+	}];
+	
+}
+
+- (void)triggerEventWithName:(NSString *)eventName {
+	
+	if (eventName && self.listeners[eventName]) {
+		
+		[self.listeners[eventName] enumerateObjectsUsingBlock:^(NSDictionary *pair, NSUInteger index, BOOL *stop) {
+			
+			id target = pair[@"target"];
+			SEL selector = NSSelectorFromString(pair[@"selector"]);
+			
+			[target performSelector:selector];
+			
+		}];
+		
+	}
+	
+}
+
+- (void)registerListenerWithEventName:(NSString *)eventName target:(id)target selector:(SEL)selector {
+	
+	target = ( target ? target : self );
+	NSDictionary *pair = ( selector && [target respondsToSelector:selector] ? @{@"target": target, @"selector": NSStringFromSelector(selector)} : nil );
+	
+	if (eventName && pair) {
+		
+		if (self.listeners[eventName]) {
+			[self.listeners[eventName] addObject:pair];
+		} else {
+			self.listeners[eventName] = @[pair].mutableCopy;
+		}
+		
+	}
+	
+}
+
+- (void)announce {
+	NSLog(@"ANNOUNCEMENT!!!!");
 }
 
 #pragma mark - Title Animation
@@ -467,6 +529,14 @@ extern NSString * const kAttr_watermark;
 }
 
 - (void)didReceiveTapOnButton:(UISnuffleButton *)button {
+	
+	NSArray *events = button.tapEvents;
+	__weak typeof(self)weakSelf = self;
+	[events enumerateObjectsUsingBlock:^(NSString *event, NSUInteger index, BOOL *stop) {
+
+		[[NSNotificationCenter defaultCenter] postNotificationName:GTPageNotificationEvent object:weakSelf userInfo:@{GTPageNotificationEventKeyEventName: event}];
+
+	}];
 	
 	[self click:button];
 	
@@ -1255,6 +1325,12 @@ extern NSString * const kAttr_watermark;
 	 */
 	
 	//self.isanimating = NO;
+	
+}
+
+- (void)dealloc {
+	
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	
 }
 

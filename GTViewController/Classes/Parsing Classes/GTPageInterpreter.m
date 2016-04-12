@@ -77,6 +77,8 @@ NSString * const kAttr_x				= @"x";
 NSString * const kAttr_y				= @"y";
 NSString * const kAttr_width			= @"w";
 NSString * const kAttr_height			= @"h";
+NSString * const kAttr_tap_events		= @"tap-events";
+extern NSString * const kAttr_listeners;
 
 NSString * const kAttr_yoff				= @"yoffset";
 NSString * const kAttr_xoff				= @"xoffset";
@@ -150,13 +152,14 @@ NSString * const kLabelModifer_bolditalics	= @"bold-italics";
 
 @implementation GTPageInterpreter
 
-- (instancetype)initWithXMLPath:(NSString *)xmlPath fileLoader:(GTFileLoader *)fileLoader pageStyle:(GTPageStyle *)pageStyle pageView:(UIView *)view panelTapDelegate:(id<UIRoundedViewTapDelegate>)panelDelegate buttonTapDelegate:(id<UISnuffleButtonTapDelegate>)buttonDelegate {
+- (instancetype)initWithXMLPath:(NSString *)xmlPath fileLoader:(GTFileLoader *)fileLoader pageStyle:(GTPageStyle *)pageStyle pageView:(UIView *)view delegate:(id<GTInterpreterDelegate>)delegate panelTapDelegate:(id<UIRoundedViewTapDelegate>)panelDelegate buttonTapDelegate:(id<UISnuffleButtonTapDelegate>)buttonDelegate {
 	
 	self = [self init];
 	if (self) {
 		
 		self.fileLoader			= fileLoader;
 		self.pageStyle			= pageStyle;
+		self.delegate			= delegate;
 		self.panelDelegate		= panelDelegate;
 		self.buttonDelegate		= buttonDelegate;
 		
@@ -1076,6 +1079,7 @@ NSString * const kLabelModifer_bolditalics	= @"bold-italics";
 		NSString							*textSizeString		= nil;
 		NSString							*y					= nil;
 		NSString							*image				= nil;
+		NSArray								*tapEvents			= nil;
 		
 		if ([mode isEqual:kButtonMode_url] || [mode isEqual:kButtonMode_email] || [mode isEqual:kButtonMode_phone]) {
 			text				= [TBXML valueOfAttributeNamed:kAttr_urlText forElement:element];
@@ -1097,6 +1101,10 @@ NSString * const kLabelModifer_bolditalics	= @"bold-italics";
 			textColorString		= [TBXML valueOfAttributeNamed:kAttr_color	forElement:button_label];
 			textSizeString		= [TBXML valueOfAttributeNamed:kAttr_size	forElement:button_label];
 			y					= [TBXML valueOfAttributeNamed:kAttr_y		forElement:button_label];
+		}
+		
+		if ([TBXML valueOfAttributeNamed:kAttr_tap_events forElement:element]) {
+			tapEvents = [[TBXML valueOfAttributeNamed:kAttr_tap_events forElement:element] componentsSeparatedByString:@","];
 		}
 		
 		//grab the image path if it exists
@@ -1188,6 +1196,7 @@ NSString * const kLabelModifer_bolditalics	= @"bold-italics";
 		
 		//create, set up and return button
 		buttonTemp = [[UISnuffleButton alloc] initWithFrame:frame tapDelegate:self.buttonDelegate];
+		buttonTemp.tapEvents = tapEvents;
 		[buttonTemp setMode:mode];						//record the button's mode for later use
 		[buttonTemp setBackgroundColor:bgColor];
 		[buttonTemp setTitle:text forState:UIControlStateNormal];
@@ -1641,6 +1650,22 @@ NSString * const kLabelModifer_bolditalics	= @"bold-italics";
 		CGFloat			maxY				=	0;
 		
 						mode				=	(mode == nil ? @"" : mode);
+		
+		if ([TBXML valueOfAttributeNamed:kAttr_listeners forElement:element]) {
+			
+			__weak typeof(self)weakSelf = self;
+			NSArray *listeners = [[TBXML valueOfAttributeNamed:kAttr_listeners forElement:element] componentsSeparatedByString:@","];
+			[listeners enumerateObjectsUsingBlock:^(NSString *listener, NSUInteger index, BOOL *stop) {
+				
+				if ([weakSelf.delegate respondsToSelector:@selector(registerListenerWithEventName:target:selector:)]) {
+					
+					[weakSelf.delegate registerListenerWithEventName:listener target:nil selector:@selector(announce)];
+					
+				}
+				
+			}];
+			
+		}
 		
 		//if the question is made up of labels, put them in the container
 		while (label_el) {
