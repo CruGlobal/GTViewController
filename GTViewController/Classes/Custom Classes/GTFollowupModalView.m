@@ -96,7 +96,7 @@ NSString * const kName_Thank_You            = @"thank-you";
 
                 currentY += buttonPairView.frame.size.height + 10;
                 
-            }else if ([modalComponentElementName isEqual:kName_Thank_You]) {
+            } else if ([modalComponentElementName isEqual:kName_Thank_You]) {
                 
                 self.thankYouView = [[GTFollowupThankYouView alloc]initFromElement:modalComponentElement
                                                                          withFrame:self.frame
@@ -115,9 +115,6 @@ NSString * const kName_Thank_You            = @"thank-you";
                         
                     }
                 }
-                
-                
-                
             }
             
             modalComponentElement = modalComponentElement->nextSibling;
@@ -125,6 +122,27 @@ NSString * const kName_Thank_You            = @"thank-you";
     }
     
     return self;
+}
+
+
+- (void)setWatermark:(UIImageView *) watermarkImageView {
+
+    [self addSubview:[self copyWatermark:watermarkImageView]];
+    [self.thankYouView addSubview:[self copyWatermark:watermarkImageView]];
+}
+
+
+/* see: http://stackoverflow.com/questions/25439234/how-to-clone-a-uiimageview */
+- (UIImageView *)copyWatermark:(UIImageView *)watermarkImageView {
+    UIImageView *watermarkCopy = [[UIImageView alloc]initWithImage:watermarkImageView.image];
+    
+    watermarkCopy.frame = CGRectMake(0, 0, watermarkImageView.frame.size.width, watermarkImageView.frame.size.height);
+    watermarkCopy.alpha = watermarkImageView.alpha;//same view opacity
+    watermarkCopy.layer.opacity = watermarkImageView.layer.opacity;//same layer opacity
+    watermarkCopy.clipsToBounds = watermarkImageView.clipsToBounds;//same clipping settings
+    watermarkCopy.backgroundColor = watermarkImageView.backgroundColor;//same BG color
+
+    return watermarkCopy;
 }
 
 

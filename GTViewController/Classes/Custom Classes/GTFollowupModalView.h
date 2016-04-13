@@ -20,4 +20,5 @@
 
 - (instancetype)initFromElement:(TBXMLElement *)element withStyle:(GTPageStyle*)style presentingView:(UIView *)presentingView interpreterDelegate:(id<GTInterpreterDelegate>)interpreterDelegate;
 
+- (void)setWatermark:(UIImageView *) watermarkImageView;
 @end

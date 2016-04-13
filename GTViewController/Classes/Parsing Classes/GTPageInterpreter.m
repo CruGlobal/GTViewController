@@ -840,6 +840,10 @@ NSString * const kLabelModifer_bolditalics	= @"bold-italics";
 
                     }
                 }
+                
+                if ([self watermark]) {
+                    [followupModalView setWatermark:[self watermark]];
+                }
             }
             //NSLog(@"previousObjectYMax = %f\n", previousObjectYMax);
             
