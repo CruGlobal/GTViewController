@@ -171,10 +171,12 @@ extern NSString * const kAttr_watermark;
 - (void)registerNotificationHandlersForEvents {
 	
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+    
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(didReceivePageEventWithNotification:)
                                                  name:GTPageNotificationEvent
                                                object:nil];
+    
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(didReceiveButtonTapEventWithNotification:)
                                                  name:UISnuffleButtonNotificationButtonTapEvent
@@ -222,8 +224,7 @@ extern NSString * const kAttr_watermark;
             }
 		}];
 		
-	}
-	
+    }
 }
 
 - (void)registerListenerWithEventName:(NSString *)eventName target:(id)target selector:(SEL)selector parameter:(id)parameter {
@@ -1364,11 +1365,26 @@ extern NSString * const kAttr_watermark;
 
 #pragma mark - Followup Modal methods
 
-- (void)presentFollowupModalView:(UIViewController*)modalViewController {
+- (void)presentFollowupModalView:(GTFollowupViewController*)followupViewController {
     if ([self.pageDelegate respondsToSelector:@selector(presentFollowupModal:)]) {
-        [self.pageDelegate presentFollowupModal:modalViewController];
+        [self.pageDelegate presentFollowupModal:followupViewController];
     }
 }
+
+
+- (void)transitionFollowupToThankYou {
+    if ([self.pageDelegate respondsToSelector:@selector(transitionFollowupToThankYou)]) {
+        [self.pageDelegate transitionFollowupToThankYou];
+    }
+}
+
+
+- (void)dismissFollowupModal {
+    if ([self.pageDelegate respondsToSelector:@selector(dismissFollowupModal)]) {
+        [self.pageDelegate dismissFollowupModal];
+    }
+}
+
 
 - (void)dealloc {
 	

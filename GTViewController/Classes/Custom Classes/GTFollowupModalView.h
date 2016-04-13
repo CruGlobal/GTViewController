@@ -10,11 +10,14 @@
 #include "TBXML.h"
 
 #include "GTPageStyle.h"
+#include "GTPageInterpreter.h"
+#import "GTFollowupThankYouView.h"
 
-@interface GTFollowupModalView : UIView
+@interface GTFollowupModalView : UIView<UITextFieldDelegate>
 
 @property (strong, nonatomic) NSArray *listeners;
+@property (strong, nonatomic) GTFollowupThankYouView *thankYouView;
 
-- (instancetype)initFromElement:(TBXMLElement *)element withStyle:(GTPageStyle*)style presentingView:(UIView *)presentingView;
+- (instancetype)initFromElement:(TBXMLElement *)element withStyle:(GTPageStyle*)style presentingView:(UIView *)presentingView interpreterDelegate:(id<GTInterpreterDelegate>)interpreterDelegate;
 
 @end

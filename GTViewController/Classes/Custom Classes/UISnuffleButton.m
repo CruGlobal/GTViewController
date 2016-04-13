@@ -104,7 +104,7 @@ extern NSString * const kButtonMode_allurl;
             textColorString		= [TBXML valueOfAttributeNamed:kAttr_color	forElement:element];
             textSizeString		= [TBXML valueOfAttributeNamed:kAttr_size	forElement:element];
             y					= [TBXML valueOfAttributeNamed:kAttr_y		forElement:element];
-        } else if ([mode isEqual:@"link"] || [[TBXML elementName:element] isEqual:kName_Positive_Button] || [[TBXML elementName:element] isEqual:kName_Negative_Button]) {
+        } else if ([mode isEqual:@"link"] || [[TBXML elementName:element] isEqual:kName_Positive_Button] || [[TBXML elementName:element] isEqual:kName_Negative_Button] || [[TBXML elementName:element] isEqual:@"link-button"]) {
             text                = [TBXML textForElement:element];
             textColorString		= [TBXML valueOfAttributeNamed:kAttr_color	forElement:element];
             textSizeString		= [TBXML valueOfAttributeNamed:kAttr_size	forElement:element];
@@ -182,7 +182,7 @@ extern NSString * const kButtonMode_allurl;
             }
             contentHorizontalAlignment	= UIControlContentHorizontalAlignmentCenter;
             contentVerticalAlignment	= UIControlContentVerticalAlignmentCenter;
-        } else if ([mode isEqual:kButtonMode_link]) {
+        } else if ([mode isEqual:kButtonMode_link] || [[TBXML elementName:element] isEqual:@"link-button"]) {
             frame						= CGRectMake(BUTTONXOFFSET,
                                                      yPos + 2,
                                                      container.frame.size.width - (2 * BUTTONXOFFSET),
@@ -248,7 +248,7 @@ extern NSString * const kButtonMode_allurl;
             [buttonTemp setUrlTarget:urlTarget];
         }
         
-        if ([mode isEqual:kButtonMode_link]) {
+        if ([mode isEqual:kButtonMode_link] || [[TBXML elementName:element] isEqual:@"link-button"]) {
             NSDictionary *stringAttributes = @{NSUnderlineStyleAttributeName: @(NSUnderlineStyleSingle),
                                             NSForegroundColorAttributeName : textColor};
             NSAttributedString *underlinedTitle = [[NSAttributedString alloc] initWithString:text

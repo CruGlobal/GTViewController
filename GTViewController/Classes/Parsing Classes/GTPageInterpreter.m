@@ -15,6 +15,7 @@
 #import	"UIDisclosureIndicator.h"
 
 #import "UIMultiButtonResponseView.h"
+#import "GTFollowupViewController.h"
 #import "GTFollowupModalView.h"
 #import "GTLabel.h"
 
@@ -753,7 +754,7 @@ NSString * const kLabelModifer_bolditalics	= @"bold-italics";
             }
             
             ////BUTTON
-			if ([elementName isEqual:kName_Button]) {
+            if ([elementName isEqual:kName_Button] || [elementName isEqual:@"link-button"]) {
                 
                 //get the button mode
                 button_mode		= [TBXML valueOfAttributeNamed:kAttr_mode forElement:object_el];
@@ -821,10 +822,10 @@ NSString * const kLabelModifer_bolditalics	= @"bold-italics";
             if ( [elementName isEqual:kName_Followup_Modal]) {
                 GTFollowupModalView *followupModalView = [[GTFollowupModalView alloc] initFromElement:object_el
                                                                                             withStyle:self.pageStyle
-                                                                                       presentingView:self.pageView];
+                                                                                       presentingView:self.pageView
+                                                                                  interpreterDelegate:self.delegate];
                 
-                UIViewController *controller = [[UIViewController alloc]init];
-                controller.view = followupModalView;
+                GTFollowupViewController *viewController = [[GTFollowupViewController alloc]initWithFollowupView:followupModalView];
                 
                 NSArray *listeners = [[TBXML valueOfAttributeNamed:kAttr_listeners forElement:object_el] componentsSeparatedByString:@","];
                 
@@ -835,7 +836,7 @@ NSString * const kLabelModifer_bolditalics	= @"bold-italics";
                         [self.delegate registerListenerWithEventName:listenerName
                                                                   target:self.delegate
                                                                 selector:@selector(presentFollowupModalView:)
-                                                               parameter:controller];
+                                                               parameter:viewController];
 
                     }
                 }
@@ -1219,7 +1220,7 @@ NSString * const kLabelModifer_bolditalics	= @"bold-italics";
             }
             
             ////BUTTON
-			if ([[TBXML elementName:object_el] isEqual:kName_Button]) {
+			if ([[TBXML elementName:object_el] isEqual:kName_Button] || [[TBXML elementName:object_el] isEqual:@"link-button"]) {
 
 				//create image
                 buttonTemp          = [[UISnuffleButton alloc]createButtonFromElement:object_el
