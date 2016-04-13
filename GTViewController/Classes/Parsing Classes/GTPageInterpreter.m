@@ -787,7 +787,7 @@ NSString * const kLabelModifer_bolditalics	= @"bold-italics";
                                                 parentTextAlignment:NSTextAlignmentLeft
                                                                xPos:object_xpos
                                                                yPos:object_ypos
-                                                          container:nil
+                                                          container:self.pageView
                                                               style:self.pageStyle];
                 [labelLabel setTag:(800+labelCount)];
                 if (labelLabel.alpha == 1) {
