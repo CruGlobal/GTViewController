@@ -42,8 +42,13 @@
 
 #define DEFAULT_HEIGHT_LABEL 40.0
 #define DEFAULT_HEIGHT_INPUTFIELD 25.0
+#define DEFAULT_HEIGHT_INPUTFIELDLABEL 30.0
 #define DEFAULT_HEIGHT_BUTTONPAIR 40.0
-
+#define DEFAULT_HEIGHT_BUTTON 36.0
+#define DEFAULT_HEIGHT_URLBUTTON 50.0
+#define DEFAULT_HEIGHT_BIGBUTTON 136.0
+#define DEFAULT_HEIGHT_ALLURLBUTTON 36.0
+#define DEFAULT_HEIGHT_LINKBUTTON 40.0
 //////////Run-Time Constants///////////
 
 // Constants for the XML element names that will be considered during the parse.
@@ -54,6 +59,7 @@ extern NSString * const kName_TitleSubHeading;
 extern NSString * const kName_TitlePeek;
 extern NSString * const kName_Button;
 extern NSString * const kName_ButtonText;
+extern NSString * const kName_LinkButton;
 extern NSString * const kName_Label;
 extern NSString * const kName_Image;
 extern NSString * const kName_Panel;
@@ -97,10 +103,11 @@ extern NSString * const kAttr_tap_events;
 extern NSString * const kAttr_followup_id;
 extern NSString * const kAttr_context_id;
 extern NSString * const kAttr_listeners;
+extern NSString * const kAttr_type;
 
 extern NSString * const kAttr_yoff;
 extern NSString * const kAttr_xoff;
-
+extern NSString * const kAttr_xTrailingOff;
 extern NSString * const kAttr_modifier;
 
 extern NSString * const kAttr_urlText;

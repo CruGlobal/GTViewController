@@ -75,7 +75,7 @@
             currentY += label.frame.size.height + betweenElementsSpace;
             
             [self addSubview:label];
-        } else if ([thankYouElementName isEqual:@"link-button"] || [thankYouElementName isEqual:kName_Button]) {
+        } else if ([thankYouElementName isEqual:kName_LinkButton] || [thankYouElementName isEqual:kName_Button]) {
             UISnuffleButton *button = [[UISnuffleButton alloc]createButtonFromElement:thankYouElement
                                                                                addTag:0
                                                                                  yPos:currentY

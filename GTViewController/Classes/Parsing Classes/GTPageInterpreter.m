@@ -30,6 +30,7 @@ NSString * const kName_TitleHeading		= @"heading";
 NSString * const kName_TitleSubHeading	= @"subheading";
 NSString * const kName_TitlePeek		= @"peekpanel";
 NSString * const kName_Button			= @"button";
+NSString * const kName_LinkButton       = @"link-button";
 NSString * const kName_ButtonText		= @"buttontext";
 NSString * const kName_Label			= @"text";
 NSString * const kName_Image			= @"image";
@@ -74,10 +75,11 @@ NSString * const kAttr_tap_events		= @"tap-events";
 NSString * const kAttr_followup_id      = @"followup-id";
 NSString * const kAttr_context_id       = @"context-id";
 extern NSString * const kAttr_listeners;
+NSString * const kAttr_type             = @"type";
 
 NSString * const kAttr_yoff				= @"yoffset";
 NSString * const kAttr_xoff				= @"xoffset";
-
+NSString * const kAttr_xTrailingOff     = @"x-trailing-offset";
 NSString * const kAttr_modifier			= @"modifier";
 
 NSString * const kAttr_urlText          = @"label";

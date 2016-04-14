@@ -6,7 +6,7 @@
 //  Copyright © 2016 Michael Harrison. All rights reserved.
 //
 
-#include <UIKit/UIKit.h>
+#import <UIKit/UIKit.h>
 
 @interface GTInputFieldView : UIView<UITextFieldDelegate>
 

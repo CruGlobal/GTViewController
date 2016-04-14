@@ -6,11 +6,11 @@
 //  Copyright © 2016 Michael Harrison. All rights reserved.
 //
 
-#include <UIKit/UIKit.h>
-#include "TBXML.h"
+#import <UIKit/UIKit.h>
+#import "TBXML.h"
 
-#include "GTPageStyle.h"
-#include "GTPageInterpreter.h"
+#import "GTPageStyle.h"
+#import "GTPageInterpreter.h"
 #import "GTFollowupThankYouView.h"
 
 @interface GTFollowupModalView : UIView<UITextFieldDelegate>

@@ -35,7 +35,7 @@
         NSString	*x			=								[TBXML valueOfAttributeNamed:kAttr_x		forElement:element];
         NSString	*y			=								[TBXML valueOfAttributeNamed:kAttr_y		forElement:element];
         NSString	*w			=								[TBXML valueOfAttributeNamed:kAttr_width	forElement:element];
-        CGFloat    xTrailingOffset =                           round([[TBXML valueOfAttributeNamed:@"x-trailing-offset"		forElement:element] floatValue]);
+        CGFloat    xTrailingOffset =                            round([[TBXML valueOfAttributeNamed:kAttr_xTrailingOff		forElement:element] floatValue]);
         NSString	*h			=								[TBXML valueOfAttributeNamed:kAttr_height	forElement:element];
         CGFloat		xoffset		=								round([[TBXML valueOfAttributeNamed:kAttr_xoff		forElement:element] floatValue]);
         CGFloat		yoffset		=								round([[TBXML valueOfAttributeNamed:kAttr_yoff		forElement:element] floatValue]);

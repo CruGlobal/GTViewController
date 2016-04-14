@@ -88,8 +88,8 @@ extern NSString * const kButtonMode_allurl;
         NSString							*y					= nil;
         NSString							*image				= nil;
         NSArray								*tapEvents			= nil;
-        CGFloat                             h;
-        CGFloat                             w;
+        CGFloat                             h                   = 0;
+        CGFloat                             w                   = 0;
         
         if ([mode isEqual:kButtonMode_url] || [mode isEqual:kButtonMode_email] || [mode isEqual:kButtonMode_phone]) {
             text				= [TBXML valueOfAttributeNamed:kAttr_urlText forElement:element];
@@ -106,7 +106,10 @@ extern NSString * const kButtonMode_allurl;
             textColorString		= [TBXML valueOfAttributeNamed:kAttr_color	forElement:element];
             textSizeString		= [TBXML valueOfAttributeNamed:kAttr_size	forElement:element];
             y					= [TBXML valueOfAttributeNamed:kAttr_y		forElement:element];
-        } else if ([mode isEqual:@"link"] || [[TBXML elementName:element] isEqual:kName_Positive_Button] || [[TBXML elementName:element] isEqual:kName_Negative_Button] || [[TBXML elementName:element] isEqual:@"link-button"]) {
+        } else if ([mode isEqual:kButtonMode_link] ||
+                   [[TBXML elementName:element] isEqual:kName_Positive_Button] ||
+                   [[TBXML elementName:element] isEqual:kName_Negative_Button] ||
+                   [[TBXML elementName:element] isEqual:kName_LinkButton]) {
             text                = [TBXML textForElement:element];
             textColorString		= [TBXML valueOfAttributeNamed:kAttr_color	forElement:element];
             textSizeString		= [TBXML valueOfAttributeNamed:kAttr_size	forElement:element];
@@ -151,7 +154,10 @@ extern NSString * const kButtonMode_allurl;
         
         //set defaults based on mode
         if ([mode isEqual:kButtonMode_big]) {
-            frame						= CGRectMake(LARGEBUTTONXOFFSET, yPos + 2, container.frame.size.width - (2 * LARGEBUTTONXOFFSET), 136);
+            frame						= CGRectMake(LARGEBUTTONXOFFSET,
+                                                     yPos + 2,
+                                                     container.frame.size.width - (2 * LARGEBUTTONXOFFSET),
+                                                     DEFAULT_HEIGHT_BIGBUTTON);
             bgColor						= [UIColor clearColor];
             if (textColor == nil) {
                 textColor				= pageStyle.defaultTextColor;
@@ -165,7 +171,7 @@ extern NSString * const kButtonMode_allurl;
             frame						= CGRectMake(BUTTONXOFFSET,
                                                      yPos + 2,
                                                      container.frame.size.width - (2 * BUTTONXOFFSET),
-                                                     50); //JJ: height of url button
+                                                     DEFAULT_HEIGHT_URLBUTTON); //JJ: height of url button
             
             tag							+= 110;
             bgColor						= [UIColor clearColor];
@@ -179,18 +185,21 @@ extern NSString * const kButtonMode_allurl;
             contentHorizontalAlignment	= UIControlContentHorizontalAlignmentCenter;
             contentVerticalAlignment	= UIControlContentVerticalAlignmentCenter;
         } else if ([mode isEqual:kButtonMode_allurl]) {
-            frame						= CGRectMake(BUTTONXOFFSET, yPos + 2, container.frame.size.width - (2 * BUTTONXOFFSET), 36);
+            frame						= CGRectMake(BUTTONXOFFSET,
+                                                     yPos + 2,
+                                                     container.frame.size.width - (2 * BUTTONXOFFSET),
+                                                     DEFAULT_HEIGHT_ALLURLBUTTON);
             bgColor						= [UIColor clearColor];
             if (textColor == nil) {
                 textColor				= pageStyle.defaultTextColor;
             }
             contentHorizontalAlignment	= UIControlContentHorizontalAlignmentCenter;
             contentVerticalAlignment	= UIControlContentVerticalAlignmentCenter;
-        } else if ([mode isEqual:kButtonMode_link] || [[TBXML elementName:element] isEqual:@"link-button"]) {
+        } else if ([mode isEqual:kButtonMode_link] || [[TBXML elementName:element] isEqual:kName_LinkButton]) {
             frame						= CGRectMake(BUTTONXOFFSET,
                                                      yPos + 2,
                                                      w ?: container.frame.size.width - BUTTONXOFFSET * 2,
-                                                     h ?: 40.0);
+                                                     h ?: DEFAULT_HEIGHT_LINKBUTTON);
             
             tag							+= 110;
             bgColor						= [UIColor clearColor];
@@ -219,7 +228,10 @@ extern NSString * const kButtonMode_allurl;
             contentHorizontalAlignment	= UIControlContentHorizontalAlignmentCenter;
             contentVerticalAlignment	= UIControlContentVerticalAlignmentCenter;
         } else {
-            frame						= CGRectMake(BUTTONXOFFSET, yPos + 2, container.frame.size.width - (2 * BUTTONXOFFSET), 36);
+            frame						= CGRectMake(BUTTONXOFFSET,
+                                                     yPos + 2,
+                                                     container.frame.size.width - (2 * BUTTONXOFFSET),
+                                                     DEFAULT_HEIGHT_BUTTON);
             bgColor						= [UIColor clearColor];
             if (textColor == nil) {
                 textColor				= pageStyle.defaultTextColor;
@@ -252,7 +264,7 @@ extern NSString * const kButtonMode_allurl;
             [buttonTemp setUrlTarget:urlTarget];
         }
         
-        if ([mode isEqual:kButtonMode_link] || [[TBXML elementName:element] isEqual:@"link-button"]) {
+        if ([mode isEqual:kButtonMode_link] || [[TBXML elementName:element] isEqual:kName_LinkButton]) {
             UIFont *font = [UIFont fontWithName:buttonTemp.titleLabel.font.fontName size:size];
             
             NSDictionary *stringAttributes = @{NSUnderlineStyleAttributeName: @(NSUnderlineStyleSingle),

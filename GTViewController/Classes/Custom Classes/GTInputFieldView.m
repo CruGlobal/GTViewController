@@ -31,7 +31,7 @@
     CGFloat w                   = round([[TBXML valueOfAttributeNamed:kAttr_width forElement:element] floatValue]);;
     CGFloat xoffset             = round([[TBXML valueOfAttributeNamed:kAttr_xoff forElement:element] floatValue]);;
     CGFloat yoffset             = round([[TBXML valueOfAttributeNamed:kAttr_yoff forElement:element] floatValue]);
-    CGFloat xTrailingOffset     = round([[TBXML valueOfAttributeNamed:@"x-trailing-offset" forElement:element] floatValue]);;
+    CGFloat xTrailingOffset     = round([[TBXML valueOfAttributeNamed:kAttr_xTrailingOff forElement:element] floatValue]);;
     
     if (!x) {
         x = 0;
@@ -70,7 +70,7 @@
                                                     container:self
                                                         style:style];
             
-            [inputFieldLabel setFrame:CGRectMake(0,0,w,30)];
+            [inputFieldLabel setFrame:CGRectMake(0,0,w,DEFAULT_HEIGHT_INPUTFIELDLABEL)];
         } else if ([childElementName isEqual:kName_Input_Placeholder]) {
             inputTextField.placeholder = [TBXML textForElement:inputFieldChildElement];
         }
@@ -78,10 +78,10 @@
         inputFieldChildElement = inputFieldChildElement->nextSibling;
     }
     
-    if ([[TBXML valueOfAttributeNamed:@"type" forElement:element] isEqual:@"email"]) {
+    if ([[TBXML valueOfAttributeNamed:kAttr_type forElement:element] isEqual:@"email"]) {
         inputTextField.keyboardType = UIKeyboardTypeEmailAddress;
         inputTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
-    } else if([[TBXML valueOfAttributeNamed:@"type" forElement:element] isEqual:@"text"]) {
+    } else if([[TBXML valueOfAttributeNamed:kAttr_type forElement:element] isEqual:@"text"]) {
         inputTextField.autocapitalizationType = UITextAutocapitalizationTypeWords;
     }
 
