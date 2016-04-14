@@ -1,11 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?>
-
-<page watermark="Home_Watermark.png" color="#00759A">
-    
-    <text color="#FFFFFF" textalign="center" y="50" xoffset="40" size="136" w="300" translate="true">Have you heard of</text>
-    <text color="#FFFFFF" modifier="bold" textalign="center" size="156" yoffset="-50" w="300" translate="true">THE FOUR SPIRITUAL</text>
-    <text color="#FFFFFF" modifier="bold" textalign="center" xoffset="-34" size="156" yoffset="-50" w="300" translate="true">LAWS?</text>
-	
-	<text color="#ffffff" alpha="0.8" modifier="italics" textalign="center" size="112" translate="true">Just as there are physical laws that govern the physical universe, so are there spiritual laws that govern your relationship with God.</text>
-    
+<page color="#00759A" tnt-trx-ref-value="" tnt-trx-translated="" translate="" watermark="Home_Watermark.png">
+    <text color="#FFFFFF" gtapi-trx-id="da76705f-187d-4083-8677-593a1b7c58fd" size="136" textalign="center" translate="true" w="300" xoffset="40" y="50">Копнеж</text>
+    <text color="#FFFFFF" gtapi-trx-id="be73de97-89fe-4490-a686-220546e2592c" modifier="bold" size="156" textalign="center" translate="true" w="300" yoffset="-40">за 100%</text>
+    <text color="#FFFFFF" gtapi-trx-id="404edd90-1aff-4bb9-83a2-f0d15c46a6e8" modifier="bold" size="156" textalign="center" translate="true" w="300" xoffset="-34" yoffset="-40">ЖИВОТ</text>
+    <text alpha="0.8" color="#ffffff" gtapi-trx-id="d4b40701-5929-498b-b96e-cc6796d76771" modifier="italics" size="112" textalign="center" translate="true" yoffset="140">Што те исполнува? Љубов, кариера, забава... Дали срцето ти е полно? Исус нуди многу повеќе од тоа. Еве четири вистини што Библијата ги кажува за нас и нашиот живот.</text>
 </page>

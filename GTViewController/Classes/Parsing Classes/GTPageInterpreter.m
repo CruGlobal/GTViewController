@@ -44,6 +44,13 @@ NSString * const kName_Positive_Button  = @"positive-button";
 NSString * const kName_Negative_Button  = @"negative-button";
 NSString * const kName_Followup_Modal   = @"followup-modal";
 
+NSString * const kName_FollowUp_Title       = @"followup-title";
+NSString * const kName_FollowUp_Body        = @"followup-body";
+NSString * const kName_Input_Field          = @"input-field";
+NSString * const kName_Input_Label          = @"input-label";
+NSString * const kName_Input_Placeholder    = @"input-placeholder";
+NSString * const kName_Thank_You            = @"thank-you";
+
 // Constants for the XML attribute names
 NSString * const kAttr_backgroundImage	= @"backgroundimage";
 NSString * const kAttr_numOfButtons		= @"buttons";

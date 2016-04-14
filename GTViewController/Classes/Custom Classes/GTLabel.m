@@ -35,6 +35,7 @@
         NSString	*x			=								[TBXML valueOfAttributeNamed:kAttr_x		forElement:element];
         NSString	*y			=								[TBXML valueOfAttributeNamed:kAttr_y		forElement:element];
         NSString	*w			=								[TBXML valueOfAttributeNamed:kAttr_width	forElement:element];
+        CGFloat    xTrailingOffset =                           round([[TBXML valueOfAttributeNamed:@"x-trailing-offset"		forElement:element] floatValue]);
         NSString	*h			=								[TBXML valueOfAttributeNamed:kAttr_height	forElement:element];
         CGFloat		xoffset		=								round([[TBXML valueOfAttributeNamed:kAttr_xoff		forElement:element] floatValue]);
         CGFloat		yoffset		=								round([[TBXML valueOfAttributeNamed:kAttr_yoff		forElement:element] floatValue]);
@@ -62,7 +63,9 @@
             frame.origin.y = ypostion;
         }
         
-        if (w) {
+        if (xoffset && xTrailingOffset) {
+            frame.size.width = container.frame.size.width - xoffset - xTrailingOffset;
+        } else if (w) {
             frame.size.width =	round([w floatValue]);
         } else {
             frame.size.width = (container ? container.frame.size.width - (2 * DEFAULT_X_LABEL) : 280);
@@ -71,7 +74,7 @@
         if (h) {
             frame.size.height =	round([h floatValue]);
         } else {
-            frame.size.height = 40;
+            frame.size.height = DEFAULT_HEIGHT_LABEL;
         }
         
         if ((w != nil) && (h != nil)) {
@@ -108,7 +111,7 @@
         //apply offset
         frame.origin.x += xoffset;
         frame.origin.y += yoffset;
-        
+
         if (alpha) {
             labelAlpha = [alpha floatValue];
         }

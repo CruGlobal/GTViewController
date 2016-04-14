@@ -12,15 +12,9 @@
 #import "GTFollowupThankYouView.h"
 #import "GTPageInterpreter.h"
 #import "GTLabel.h"
+#import "GTInputFieldView.h"
 #import "UISnuffleButton.h"
 #import "UIMultiButtonResponseView.h"
-
-NSString * const kName_FollowUp_Title       = @"followup-title";
-NSString * const kName_FollowUp_Body        = @"followup-body";
-NSString * const kName_Input_Field          = @"input-field";
-NSString * const kName_Input_Label          = @"input-label";
-NSString * const kName_Input_Placeholder    = @"input-placeholder";
-NSString * const kName_Thank_You            = @"thank-you";
 
 @interface GTFollowupModalView()
 
@@ -41,43 +35,81 @@ NSString * const kName_Thank_You            = @"thank-you";
     } else {
         TBXMLElement *modalComponentElement = fallbackElement->firstChild;
         
-        int defaultVerticalSpacingToTop = 20;
-        int currentY = defaultVerticalSpacingToTop;
+        int numLabels = 0;
+        int numTextInputs = 0;
+        int numButtonPairs = 0;
         
+        CGFloat topLeadingSpace = 0;
+        CGFloat betweenElementsSpace = 0;
+        
+        CGFloat totalVerticalSpace = presentingView.frame.size.height;
+        CGFloat totalUsedSpace = 0;
         modalComponentElement = fallbackElement->firstChild;
+        // first pass - count objects
+        while(modalComponentElement != nil) {
+            NSString *modalComponentElementName = [TBXML elementName:modalComponentElement];
+
+            if ([modalComponentElementName isEqual:kName_FollowUp_Title]) {
+                numLabels++;
+                totalUsedSpace += DEFAULT_HEIGHT_LABEL;
+            } else if ([modalComponentElementName isEqual:kName_FollowUp_Body]) {
+                numLabels++;
+                totalUsedSpace += DEFAULT_HEIGHT_LABEL;
+            } else if ([modalComponentElementName isEqual:kName_Input_Field]) {
+                numTextInputs++;
+                totalUsedSpace += DEFAULT_HEIGHT_INPUTFIELD;
+            } else if ([modalComponentElementName isEqual:kName_Button_Pair]) {
+                numButtonPairs++;
+                totalUsedSpace += DEFAULT_HEIGHT_BUTTONPAIR;
+            }
+            
+            modalComponentElement = modalComponentElement->nextSibling;
+        }
         
-        // first pass - building/rendering
+        // there are too many elements, not sure what to do
+        if (totalUsedSpace >= totalVerticalSpace) {
+            
+        } else {
+            CGFloat availableBufferSpace = totalVerticalSpace - totalUsedSpace;
+            topLeadingSpace =       availableBufferSpace * 0.15;
+            betweenElementsSpace =  (availableBufferSpace * 0.2) / (numLabels + numButtonPairs + numTextInputs);
+        }
+        
+        int currentY = topLeadingSpace;
+
+        // second pass - render objects
+        modalComponentElement = fallbackElement->firstChild;
         while(modalComponentElement != nil) {
             NSString *modalComponentElementName = [TBXML elementName:modalComponentElement];
             
             if ([modalComponentElementName isEqual:kName_FollowUp_Title]) {
-                UILabel *titleLabel = [[GTLabel alloc]initFromElement:modalComponentElement
+                GTLabel *titleLabel = [[GTLabel alloc]initFromElement:modalComponentElement
                                                   parentTextAlignment:UITextAlignmentCenter
                                                                  xPos:-1
                                                                  yPos:currentY
                                                             container:presentingView
                                                                 style:style];
                 
-                currentY = titleLabel.frame.origin.y + titleLabel.frame.size.height + 10;
+                currentY = titleLabel.frame.origin.y + titleLabel.frame.size.height + betweenElementsSpace;
                 
                 [self addSubview:titleLabel];
             } else if ([modalComponentElementName isEqual:kName_FollowUp_Body]) {
-                UILabel *bodyLabel = [[GTLabel alloc]initFromElement:modalComponentElement
+                GTLabel *bodyLabel = [[GTLabel alloc]initFromElement:modalComponentElement
                                                  parentTextAlignment:UITextAlignmentLeft
                                                                 xPos:-1
                                                                 yPos:currentY
                                                            container:presentingView
                                                                style:style];
-                currentY = bodyLabel.frame.origin.y + bodyLabel.frame.size.height + 10;
+                currentY = bodyLabel.frame.origin.y + bodyLabel.frame.size.height + betweenElementsSpace;
                 
                 [self addSubview:bodyLabel];
             } else if ([modalComponentElementName isEqual:kName_Input_Field]) {
-                UIView *inputFieldView = [self createInputFieldFromElement:modalComponentElement
+                GTInputFieldView *inputFieldView = [[GTInputFieldView alloc] createInputFieldFromElement:modalComponentElement
                                                                      withY:currentY
                                                                  withStyle:style
                                                             presentingView:presentingView];
                 
-                currentY = inputFieldView.frame.origin.y + inputFieldView.frame.size.height + 10;
+                currentY = inputFieldView.frame.origin.y + inputFieldView.frame.size.height + betweenElementsSpace;
                 
                 [self addSubview:inputFieldView];
             } else if ([modalComponentElementName isEqual:kName_Button_Pair]) {
@@ -94,7 +126,7 @@ NSString * const kName_Thank_You            = @"thank-you";
                 
                 [self addSubview:buttonPairView];
 
-                currentY += buttonPairView.frame.size.height + 10;
+                currentY += buttonPairView.frame.size.height + betweenElementsSpace;
                 
             } else if ([modalComponentElementName isEqual:kName_Thank_You]) {
                 
@@ -146,63 +178,5 @@ NSString * const kName_Thank_You            = @"thank-you";
 }
 
 
-- (UIView*)createInputFieldFromElement:(TBXMLElement *)element withY:(CGFloat)yPos withStyle:(GTPageStyle*)style presentingView:(UIView *)presentingView {
-    
-    UIView *inputFieldView = [[UIView alloc]init];
-    GTLabel *inputFieldLabel = nil;
-    UITextField *inputTextField = [[UITextField alloc]init];
-
-    // format & configure view
-    [inputFieldView setBackgroundColor:[UIColor clearColor]];
-    if ([TBXML valueOfAttributeNamed:kAttr_yoff forElement:element]) {
-        CGFloat yoffset = round([[TBXML valueOfAttributeNamed:kAttr_yoff forElement:element] floatValue]);
-        [inputFieldView setFrame:CGRectMake(0, yPos + yoffset, presentingView.frame.size.width, 70)];
-    } else {
-        [inputFieldView setFrame:CGRectMake(0, yPos, presentingView.frame.size.width, 70)];
-    }
-    
-    TBXMLElement *inputFieldChildElement = element->firstChild;
-    
-    while (inputFieldChildElement) {
-        NSString *childElementName = [TBXML elementName:inputFieldChildElement];
-        
-        if ([childElementName isEqual:kName_Input_Label]) {
-            inputFieldLabel = [[GTLabel alloc]initFromElement:inputFieldChildElement
-                                         parentTextAlignment:UITextAlignmentLeft
-                                                        xPos:0
-                                                        yPos:0
-                                                   container:inputFieldView
-                                                       style:style];
-            
-        } else if ([childElementName isEqual:kName_Input_Placeholder]) {
-            inputTextField.placeholder = [TBXML textForElement:inputFieldChildElement];
-        }
-        
-        inputFieldChildElement = inputFieldChildElement->nextSibling;
-    }
-
-    [inputTextField setFrame:CGRectMake(10, 20, inputFieldView.frame.size.width - 40, 25)];
-    [inputTextField setTextColor:[UIColor darkTextColor]];
-    [inputTextField setBackgroundColor:[UIColor whiteColor]];
-    [inputTextField setReturnKeyType:UIReturnKeyDone];
-    inputTextField.delegate = self;
-    
-    if ([[TBXML valueOfAttributeNamed:@"type" forElement:element] isEqual:@"email"]) {
-        inputTextField.keyboardType = UIKeyboardTypeEmailAddress;
-        inputTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
-    } else if([[TBXML valueOfAttributeNamed:@"type" forElement:element] isEqual:@"text"]) {
-        inputTextField.autocapitalizationType = UITextAutocapitalizationTypeWords;
-    }
-    
-    [inputFieldView addSubview:inputFieldLabel];
-    [inputFieldView addSubview:inputTextField];
-    
-    return inputFieldView;
-}
-
-- (BOOL)textFieldShouldReturn:(UITextField *)textField {
-    [textField resignFirstResponder];
-    return NO;
-}
 
 @end

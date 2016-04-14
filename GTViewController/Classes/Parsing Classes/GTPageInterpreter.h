@@ -39,6 +39,11 @@
 #define DEFAULT_TEXTSIZE_TITLE_HEADING_NORMALMODE 17
 
 #define DEFAULT_X_LABEL 10.0
+
+#define DEFAULT_HEIGHT_LABEL 40.0
+#define DEFAULT_HEIGHT_INPUTFIELD 25.0
+#define DEFAULT_HEIGHT_BUTTONPAIR 70.0
+
 //////////Run-Time Constants///////////
 
 // Constants for the XML element names that will be considered during the parse.
@@ -61,6 +66,13 @@ extern NSString * const kName_Button_Pair;
 extern NSString * const kName_Positive_Button;
 extern NSString * const kName_Negative_Button;
 extern NSString * const kName_Followup_Modal;
+
+extern NSString * const kName_FollowUp_Title;
+extern NSString * const kName_FollowUp_Body;
+extern NSString * const kName_Input_Field;
+extern NSString * const kName_Input_Label;
+extern NSString * const kName_Input_Placeholder;
+extern NSString * const kName_Thank_You;
 
 // Constants for the XML attribute names
 extern NSString * const kAttr_backgroundImage;

@@ -27,7 +27,7 @@
         negativeElement = firstElement;
     }
     
-    UIMultiButtonResponseView *responseView = [super initWithFrame:CGRectMake(0, y, container.frame.size.width, 70)];
+    UIMultiButtonResponseView *responseView = [super initWithFrame:CGRectMake(0, y, container.frame.size.width, DEFAULT_HEIGHT_BUTTONPAIR)];
         
     UISnuffleButton *negativeButton = [[UISnuffleButton alloc] createButtonFromElement:negativeElement
                                                                                 addTag:0

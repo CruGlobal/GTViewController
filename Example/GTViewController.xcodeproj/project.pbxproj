@@ -10,6 +10,7 @@
 		3EA257A72B8B446AA8362101 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A44A8CF92AB420FB766F984 /* libPods.a */; };
 		4FA058E11CB7FF8A001BB9D9 /* GTFollowupModalView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4FA058E01CB7FF8A001BB9D9 /* GTFollowupModalView.m */; };
 		4FA058E41CB84C83001BB9D9 /* GTLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 4FA058E31CB84C83001BB9D9 /* GTLabel.m */; };
+		4FCBD46D1CBEEC1C00478112 /* GTInputFieldView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4FCBD46C1CBEEC1C00478112 /* GTInputFieldView.m */; };
 		4FFBE41E1CBD3580002AB780 /* GTFollowupViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4FFBE41D1CBD3580002AB780 /* GTFollowupViewController.m */; };
 		4FFBE4211CBD361C002AB780 /* GTFollowupThankYouView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4FFBE4201CBD361C002AB780 /* GTFollowupThankYouView.m */; };
 		4FFC1A741CB5F8220057E19B /* UIMultiButtonResponseView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4FFC1A731CB5F8220057E19B /* UIMultiButtonResponseView.m */; };
@@ -173,6 +174,8 @@
 		4FA058E01CB7FF8A001BB9D9 /* GTFollowupModalView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GTFollowupModalView.m; sourceTree = "<group>"; };
 		4FA058E21CB84C4F001BB9D9 /* GTLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTLabel.h; sourceTree = "<group>"; };
 		4FA058E31CB84C83001BB9D9 /* GTLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GTLabel.m; sourceTree = "<group>"; };
+		4FCBD46B1CBEEBE800478112 /* GTInputFieldView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GTInputFieldView.h; sourceTree = "<group>"; };
+		4FCBD46C1CBEEC1C00478112 /* GTInputFieldView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GTInputFieldView.m; sourceTree = "<group>"; };
 		4FFBE41C1CBD354B002AB780 /* GTFollowupViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTFollowupViewController.h; sourceTree = "<group>"; };
 		4FFBE41D1CBD3580002AB780 /* GTFollowupViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GTFollowupViewController.m; sourceTree = "<group>"; };
 		4FFBE41F1CBD360C002AB780 /* GTFollowupThankYouView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GTFollowupThankYouView.h; sourceTree = "<group>"; };
@@ -370,6 +373,8 @@
 				4FA058E31CB84C83001BB9D9 /* GTLabel.m */,
 				4FFBE41F1CBD360C002AB780 /* GTFollowupThankYouView.h */,
 				4FFBE4201CBD361C002AB780 /* GTFollowupThankYouView.m */,
+				4FCBD46B1CBEEBE800478112 /* GTInputFieldView.h */,
+				4FCBD46C1CBEEC1C00478112 /* GTInputFieldView.m */,
 			);
 			path = "Custom Classes";
 			sourceTree = "<group>";
@@ -850,6 +855,7 @@
 				687A32261B2D3DC80098ACE6 /* TBXML.m in Sources */,
 				6857937F1BC2F3A2002038CF /* GTPageStyle.m in Sources */,
 				68C5959A1912DDCF00BB2AC6 /* UIDisclosureIndicator.m in Sources */,
+				4FCBD46D1CBEEC1C00478112 /* GTInputFieldView.m in Sources */,
 				68C595A01912DDCF00BB2AC6 /* UISnufflePanel.m in Sources */,
 				68C595B21912DDCF00BB2AC6 /* GTPage.m in Sources */,
 				68C5959C1912DDCF00BB2AC6 /* UIRoundedView.m in Sources */,
