@@ -42,7 +42,7 @@
 
 #define DEFAULT_HEIGHT_LABEL 40.0
 #define DEFAULT_HEIGHT_INPUTFIELD 25.0
-#define DEFAULT_HEIGHT_BUTTONPAIR 70.0
+#define DEFAULT_HEIGHT_BUTTONPAIR 40.0
 
 //////////Run-Time Constants///////////
 

@@ -123,7 +123,7 @@
                                                                                                       containerView:self
                                                                                                           withStyle:style];
                 
-                
+                CGRect frame = buttonPairView.frame;
                 [self addSubview:buttonPairView];
 
                 currentY += buttonPairView.frame.size.height + betweenElementsSpace;

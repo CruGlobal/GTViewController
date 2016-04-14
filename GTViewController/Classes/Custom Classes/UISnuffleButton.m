@@ -88,6 +88,8 @@ extern NSString * const kButtonMode_allurl;
         NSString							*y					= nil;
         NSString							*image				= nil;
         NSArray								*tapEvents			= nil;
+        CGFloat                             h;
+        CGFloat                             w;
         
         if ([mode isEqual:kButtonMode_url] || [mode isEqual:kButtonMode_email] || [mode isEqual:kButtonMode_phone]) {
             text				= [TBXML valueOfAttributeNamed:kAttr_urlText forElement:element];
@@ -109,6 +111,8 @@ extern NSString * const kButtonMode_allurl;
             textColorString		= [TBXML valueOfAttributeNamed:kAttr_color	forElement:element];
             textSizeString		= [TBXML valueOfAttributeNamed:kAttr_size	forElement:element];
             y					= [TBXML valueOfAttributeNamed:kAttr_y		forElement:element];
+            h					= round([[TBXML valueOfAttributeNamed:kAttr_height	forElement:element] floatValue]);
+            w					= round([[TBXML valueOfAttributeNamed:kAttr_width  forElement:element] floatValue]);
         } else {
             text				= [TBXML textForElement:button_label];
             textColorString		= [TBXML valueOfAttributeNamed:kAttr_color	forElement:button_label];
@@ -185,8 +189,8 @@ extern NSString * const kButtonMode_allurl;
         } else if ([mode isEqual:kButtonMode_link] || [[TBXML elementName:element] isEqual:@"link-button"]) {
             frame						= CGRectMake(BUTTONXOFFSET,
                                                      yPos + 2,
-                                                     container.frame.size.width - (2 * BUTTONXOFFSET),
-                                                     50); //JJ: height of url button
+                                                     w ?: container.frame.size.width - BUTTONXOFFSET * 2,
+                                                     h ?: 40.0);
             
             tag							+= 110;
             bgColor						= [UIColor clearColor];
@@ -200,8 +204,8 @@ extern NSString * const kButtonMode_allurl;
                    [[TBXML elementName:element] isEqual:kName_Negative_Button]) {
             frame						= CGRectMake(BUTTONXOFFSET,
                                                      yPos + 2,
-                                                     container.frame.size.width - (2 * BUTTONXOFFSET),
-                                                     50); //JJ: height of url button
+                                                     w,
+                                                     h);
             
             tag							+= 110;
             bgColor						= [UIColor clearColor];
@@ -249,8 +253,12 @@ extern NSString * const kButtonMode_allurl;
         }
         
         if ([mode isEqual:kButtonMode_link] || [[TBXML elementName:element] isEqual:@"link-button"]) {
+            UIFont *font = [UIFont fontWithName:buttonTemp.titleLabel.font.fontName size:size];
+            
             NSDictionary *stringAttributes = @{NSUnderlineStyleAttributeName: @(NSUnderlineStyleSingle),
-                                            NSForegroundColorAttributeName : textColor};
+                                            NSForegroundColorAttributeName : textColor,
+                                               NSFontAttributeName : font};
+            
             NSAttributedString *underlinedTitle = [[NSAttributedString alloc] initWithString:text
                                                                                   attributes:stringAttributes];
 

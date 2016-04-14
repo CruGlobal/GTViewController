@@ -29,10 +29,10 @@ Thank You for forgiving my sins and giving me eternal life.  Take control of the
         <buttontext size="82" translate="true">Did you pray this prayer?</buttontext>
         <panel>
             <button-pair>
-                <positive-button tap-events="prayer-page-give-me-follow-up">YES</positive-button>
-                <negative-button tap-events="prayer-page-not-today">Not Today</negative-button>
+                <positive-button h="40" w="120" tap-events="prayer-page-give-me-follow-up">YES</positive-button>
+                <negative-button h="40" w="120" tap-events="prayer-page-not-today">Not Today</negative-button>
             </button-pair>
-            <link-button textalign="center" tap-events="prayer-page-already-decided">I already made this decision</link-button>
+            <link-button h="20" size="70" textalign="center" tap-events="prayer-page-already-decided">I already made this decision</link-button>
         </panel>
     </button>
     
@@ -48,9 +48,9 @@ Thank You for forgiving my sins and giving me eternal life.  Take control of the
                 <input-label modifier="bold" size="80">Name</input-label>
                 <input-placeholder>John Doe (Optional)</input-placeholder>
             </input-field>
-            <button-pair align="right">
-                <positive-button tap-events="follow-up-send">Send</positive-button>
-                <negative-button mode="link" tap-events="follow-up-no-thanks">No Thanks</negative-button>
+            <button-pair align="right" xoffset="30" x-trailing-offset="30">
+                <positive-button h="40" w="80" tap-events="follow-up-send">Send</positive-button>
+                <negative-button h="40" w="120" size="70" mode="link" tap-events="follow-up-no-thanks">No Thanks</negative-button>
             </button-pair>
             
             <!-- thank-you should be handled as an embedded page -->
@@ -74,9 +74,9 @@ Thank You for forgiving my sins and giving me eternal life.  Take control of the
                 <input-label modifier="bold" size="80">Name</input-label>
                 <input-placeholder>John Doe (Optional)</input-placeholder>
             </input-field>
-            <button-pair align="right">
-                <positive-button tap-events="follow-up-send">Send</positive-button>
-                <negative-button mode="link" tap-events="already-decided-follow-up-no-thanks">No Thanks</negative-button>
+            <button-pair align="right" xoffset="30" x-trailing-offset="30">
+                <positive-button h="40" w="80" tap-events="follow-up-send">Send</positive-button>
+                <negative-button mode="link" h="40" w="120" size="70" tap-events="already-decided-follow-up-no-thanks">No Thanks</negative-button>
             </button-pair>
             
             <!-- thank-you should be handled as an embedded page -->

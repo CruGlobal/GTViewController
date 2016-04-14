@@ -27,8 +27,22 @@
         negativeElement = firstElement;
     }
     
-    GTMultiButtonResponseView *responseView = [super initWithFrame:CGRectMake(0, y, container.frame.size.width, DEFAULT_HEIGHT_BUTTONPAIR)];
-        
+    CGFloat xoffset                     = round([[TBXML valueOfAttributeNamed:kAttr_xoff forElement:parentElement] floatValue]);
+    CGFloat xTrailingOffset             = round([[TBXML valueOfAttributeNamed:@"x-trailing-offset" forElement:parentElement] floatValue]);
+    
+    GTMultiButtonResponseView *responseView;
+    CGRect frame;
+    if (xoffset && xTrailingOffset) {
+        frame = CGRectMake(xoffset,
+                   y,
+                   container.frame.size.width - xoffset - xTrailingOffset,
+                   DEFAULT_HEIGHT_BUTTONPAIR);
+    } else {
+        frame = CGRectMake(0, y, container.frame.size.width, DEFAULT_HEIGHT_BUTTONPAIR);
+    }
+    
+    responseView = [super initWithFrame:frame];
+    
     UISnuffleButton *negativeButton = [[UISnuffleButton alloc] createButtonFromElement:negativeElement
                                                                                 addTag:0
                                                                                   yPos:0
@@ -58,29 +72,26 @@
 
 - (void) layoutBasedOnAlignmentPositiveButton:(UISnuffleButton *)positiveButton negativeButton:(UISnuffleButton *)negativeButton multiButtonResponseView:(GTMultiButtonResponseView *) multiButtonResponseView alignment:(NSString *) alignment {
     
-    float buttonWidth = multiButtonResponseView.frame.size.width / 2.5 ;
-    
     if (!alignment || [alignment isEqual:@"center"]) {
         [negativeButton setFrame:CGRectMake(10,
                                             0,
-                                            buttonWidth,
-                                            50)];
+                                            negativeButton.frame.size.width,
+                                            negativeButton.frame.size.height)];
         
-        
-        [positiveButton setFrame:CGRectMake(multiButtonResponseView.frame.size.width - 10 - buttonWidth,
+        [positiveButton setFrame:CGRectMake(multiButtonResponseView.frame.size.width - positiveButton.frame.size.width - 10,
                                             0,
-                                            buttonWidth,
-                                            50)];
+                                            positiveButton.frame.size.width,
+                                            positiveButton.frame.size.height)];
     } else if ([alignment isEqual:@"right"]) {
-        [negativeButton setFrame:CGRectMake(multiButtonResponseView.frame.size.width - 10 * 2 - buttonWidth * 2,
+        [negativeButton setFrame:CGRectMake(multiButtonResponseView.frame.size.width - positiveButton.frame.size.width - negativeButton.frame.size.width - 10,
                                             0,
-                                            buttonWidth,
-                                            50)];
+                                            negativeButton.frame.size.width,
+                                            negativeButton.frame.size.height)];
         
-        [positiveButton setFrame:CGRectMake(multiButtonResponseView.frame.size.width - 10 - buttonWidth,
+        [positiveButton setFrame:CGRectMake(multiButtonResponseView.frame.size.width - positiveButton.frame.size.width - 10,
                                             0,
-                                            buttonWidth,
-                                            50)];
+                                            positiveButton.frame.size.width,
+                                            positiveButton.frame.size.height)];
     }
     
     
