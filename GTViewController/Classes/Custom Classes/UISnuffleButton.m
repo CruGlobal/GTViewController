@@ -11,7 +11,7 @@
 #import "HorizontalGestureRecognizer.h"
 
 #import "GTPageInterpreter.h"
-#import "GTFileLoaderExample.h"
+#import "GTFileLoader.h"
 
 NSString * const UISnuffleButtonNotificationButtonTapEvent = @"org.cru.godtools.gtviewcontroller.uisnufflebutton.notification.buttontapevent";
 NSString * const UISnuffleButtonNotificationButtonTapEventKeyEventName = @"org.cru.godtools.gtviewcontroller.uisnufflebutton.notification.buttontapevent.key.eventname";
@@ -179,7 +179,7 @@ extern NSString * const kButtonMode_allurl;
                 textColor				= pageStyle.backgroundColor;
             }
             if (image == nil) {
-                bgImage = [[GTFileLoaderExample fileLoader] imageWithFilename:@"URL_Button.png"];
+                bgImage = [[GTFileLoader fileLoader] imageWithFilename:@"URL_Button.png"];
             }
             hide						= NO;
             contentHorizontalAlignment	= UIControlContentHorizontalAlignmentCenter;
@@ -222,7 +222,7 @@ extern NSString * const kButtonMode_allurl;
                 textColor				= pageStyle.backgroundColor;
             }
             if (image == nil) {
-                bgImage = [[GTFileLoaderExample fileLoader] imageWithFilename:@"URL_Button.png"];
+                bgImage = [[GTFileLoader fileLoader] imageWithFilename:@"URL_Button.png"];
             }
             hide						= NO;
             contentHorizontalAlignment	= UIControlContentHorizontalAlignmentCenter;
