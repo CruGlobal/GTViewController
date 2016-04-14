@@ -8,11 +8,11 @@
 
 #import <Foundation/Foundation.h>
 
-#import "UIMultiButtonResponseView.h"
+#import "GTMultiButtonResponseView.h"
 #import "GTFileLoader.h"
 #import "GTPageInterpreter.h"
 
-@implementation UIMultiButtonResponseView
+@implementation GTMultiButtonResponseView
 
 
 - (instancetype) initWithFirstElement:(TBXMLElement *)firstElement secondElement:(TBXMLElement *)secondElement parentElement:(TBXMLElement *) parentElement yPosition:(CGFloat)y containerView:(UIView *)container withStyle:(GTPageStyle *) pageStyle{
@@ -27,7 +27,7 @@
         negativeElement = firstElement;
     }
     
-    UIMultiButtonResponseView *responseView = [super initWithFrame:CGRectMake(0, y, container.frame.size.width, DEFAULT_HEIGHT_BUTTONPAIR)];
+    GTMultiButtonResponseView *responseView = [super initWithFrame:CGRectMake(0, y, container.frame.size.width, DEFAULT_HEIGHT_BUTTONPAIR)];
         
     UISnuffleButton *negativeButton = [[UISnuffleButton alloc] createButtonFromElement:negativeElement
                                                                                 addTag:0
@@ -56,7 +56,7 @@
     return responseView;
 }
 
-- (void) layoutBasedOnAlignmentPositiveButton:(UISnuffleButton *)positiveButton negativeButton:(UISnuffleButton *)negativeButton multiButtonResponseView:(UIMultiButtonResponseView *) multiButtonResponseView alignment:(NSString *) alignment {
+- (void) layoutBasedOnAlignmentPositiveButton:(UISnuffleButton *)positiveButton negativeButton:(UISnuffleButton *)negativeButton multiButtonResponseView:(GTMultiButtonResponseView *) multiButtonResponseView alignment:(NSString *) alignment {
     
     float buttonWidth = multiButtonResponseView.frame.size.width / 2.5 ;
     

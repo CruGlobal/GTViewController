@@ -14,7 +14,7 @@
 #import "UIRoundedView.h"
 #import	"UIDisclosureIndicator.h"
 
-#import "UIMultiButtonResponseView.h"
+#import "GTMultiButtonResponseView.h"
 #import "GTFollowupViewController.h"
 #import "GTFollowupModalView.h"
 #import "GTLabel.h"
@@ -1194,7 +1194,7 @@ NSString * const kLabelModifer_bolditalics	= @"bold-italics";
 		UIImageView		*imageTemp			= nil;
 		UISnuffleButton	*buttonTemp			= nil;
 		
-        UIMultiButtonResponseView *multiButtonResponseView = nil;
+        GTMultiButtonResponseView *multiButtonResponseView = nil;
         
 		//init variables for xml attributes
 		CGFloat			maxWidth			= 0;
@@ -1258,7 +1258,7 @@ NSString * const kLabelModifer_bolditalics	= @"bold-italics";
                 TBXMLElement *firstChild = object_el->firstChild;
                 TBXMLElement *secondChild = firstChild->nextSibling;
                 
-                multiButtonResponseView = [[UIMultiButtonResponseView alloc]initWithFirstElement:firstChild
+                multiButtonResponseView = [[GTMultiButtonResponseView alloc]initWithFirstElement:firstChild
                                                                                    secondElement:secondChild
                                                                                    parentElement:object_el
                                                                                        yPosition:object_ypos

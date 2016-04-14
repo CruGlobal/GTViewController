@@ -12,7 +12,7 @@
 #import "UISnuffleButton.h"
 #import "GTPageStyle.h"
 
-@interface UIMultiButtonResponseView : UIView
+@interface GTMultiButtonResponseView : UIView
 
 @property (strong, nonatomic) UISnuffleButton *positiveButton;
 @property (strong, nonatomic) UISnuffleButton *negativeButton;

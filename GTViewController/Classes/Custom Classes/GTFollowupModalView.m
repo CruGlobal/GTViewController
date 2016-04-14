@@ -14,7 +14,7 @@
 #import "GTLabel.h"
 #import "GTInputFieldView.h"
 #import "UISnuffleButton.h"
-#import "UIMultiButtonResponseView.h"
+#import "GTMultiButtonResponseView.h"
 
 @interface GTFollowupModalView()
 
@@ -116,7 +116,7 @@
                 TBXMLElement *firstButtonElement = modalComponentElement->firstChild;
                 TBXMLElement *secondButtonElement = firstButtonElement->nextSibling;
                 
-                UIMultiButtonResponseView *buttonPairView = [[UIMultiButtonResponseView alloc] initWithFirstElement:firstButtonElement
+                GTMultiButtonResponseView *buttonPairView = [[GTMultiButtonResponseView alloc] initWithFirstElement:firstButtonElement
                                                                                                       secondElement:secondButtonElement
                                                                                                       parentElement:modalComponentElement
                                                                                                           yPosition:currentY
