@@ -32,125 +32,125 @@
     
     if (!fallbackElement) {
         return self;
+    }
+    
+    TBXMLElement *modalComponentElement = fallbackElement->firstChild;
+    
+    int numLabels = 0;
+    int numTextInputs = 0;
+    int numButtonPairs = 0;
+    
+    CGFloat topLeadingSpace = 0;
+    CGFloat betweenElementsSpace = 0;
+    
+    CGFloat totalVerticalSpace = presentingView.frame.size.height;
+    CGFloat totalUsedSpace = 0;
+    modalComponentElement = fallbackElement->firstChild;
+    // first pass - count objects
+    while(modalComponentElement != nil) {
+        NSString *modalComponentElementName = [TBXML elementName:modalComponentElement];
+        
+        if ([modalComponentElementName isEqual:kName_FollowUp_Title]) {
+            numLabels++;
+            totalUsedSpace += DEFAULT_HEIGHT_LABEL;
+        } else if ([modalComponentElementName isEqual:kName_FollowUp_Body]) {
+            numLabels++;
+            totalUsedSpace += DEFAULT_HEIGHT_LABEL;
+        } else if ([modalComponentElementName isEqual:kName_Input_Field]) {
+            numTextInputs++;
+            totalUsedSpace += DEFAULT_HEIGHT_INPUTFIELD;
+        } else if ([modalComponentElementName isEqual:kName_Button_Pair]) {
+            numButtonPairs++;
+            totalUsedSpace += DEFAULT_HEIGHT_BUTTONPAIR;
+        }
+        
+        modalComponentElement = modalComponentElement->nextSibling;
+    }
+    
+    // there are too many elements, not sure what to do
+    if (totalUsedSpace >= totalVerticalSpace) {
+        
     } else {
-        TBXMLElement *modalComponentElement = fallbackElement->firstChild;
+        CGFloat availableBufferSpace = totalVerticalSpace - totalUsedSpace;
+        topLeadingSpace =       availableBufferSpace * 0.15;
+        betweenElementsSpace =  (availableBufferSpace * 0.2) / (numLabels + numButtonPairs + numTextInputs);
+    }
+    
+    int currentY = topLeadingSpace;
+    
+    // second pass - render objects
+    modalComponentElement = fallbackElement->firstChild;
+    while(modalComponentElement != nil) {
+        NSString *modalComponentElementName = [TBXML elementName:modalComponentElement];
         
-        int numLabels = 0;
-        int numTextInputs = 0;
-        int numButtonPairs = 0;
-        
-        CGFloat topLeadingSpace = 0;
-        CGFloat betweenElementsSpace = 0;
-        
-        CGFloat totalVerticalSpace = presentingView.frame.size.height;
-        CGFloat totalUsedSpace = 0;
-        modalComponentElement = fallbackElement->firstChild;
-        // first pass - count objects
-        while(modalComponentElement != nil) {
-            NSString *modalComponentElementName = [TBXML elementName:modalComponentElement];
-
-            if ([modalComponentElementName isEqual:kName_FollowUp_Title]) {
-                numLabels++;
-                totalUsedSpace += DEFAULT_HEIGHT_LABEL;
-            } else if ([modalComponentElementName isEqual:kName_FollowUp_Body]) {
-                numLabels++;
-                totalUsedSpace += DEFAULT_HEIGHT_LABEL;
-            } else if ([modalComponentElementName isEqual:kName_Input_Field]) {
-                numTextInputs++;
-                totalUsedSpace += DEFAULT_HEIGHT_INPUTFIELD;
-            } else if ([modalComponentElementName isEqual:kName_Button_Pair]) {
-                numButtonPairs++;
-                totalUsedSpace += DEFAULT_HEIGHT_BUTTONPAIR;
-            }
+        if ([modalComponentElementName isEqual:kName_FollowUp_Title]) {
+            GTLabel *titleLabel = [[GTLabel alloc]initFromElement:modalComponentElement
+                                              parentTextAlignment:UITextAlignmentCenter
+                                                             xPos:-1
+                                                             yPos:currentY
+                                                        container:presentingView
+                                                            style:style];
             
-            modalComponentElement = modalComponentElement->nextSibling;
-        }
-        
-        // there are too many elements, not sure what to do
-        if (totalUsedSpace >= totalVerticalSpace) {
+            currentY = titleLabel.frame.origin.y + titleLabel.frame.size.height + betweenElementsSpace;
             
-        } else {
-            CGFloat availableBufferSpace = totalVerticalSpace - totalUsedSpace;
-            topLeadingSpace =       availableBufferSpace * 0.15;
-            betweenElementsSpace =  (availableBufferSpace * 0.2) / (numLabels + numButtonPairs + numTextInputs);
-        }
-        
-        int currentY = topLeadingSpace;
-
-        // second pass - render objects
-        modalComponentElement = fallbackElement->firstChild;
-        while(modalComponentElement != nil) {
-            NSString *modalComponentElementName = [TBXML elementName:modalComponentElement];
+            [self addSubview:titleLabel];
+        } else if ([modalComponentElementName isEqual:kName_FollowUp_Body]) {
+            GTLabel *bodyLabel = [[GTLabel alloc]initFromElement:modalComponentElement
+                                             parentTextAlignment:UITextAlignmentLeft
+                                                            xPos:-1
+                                                            yPos:currentY
+                                                       container:presentingView
+                                                           style:style];
+            currentY = bodyLabel.frame.origin.y + bodyLabel.frame.size.height + betweenElementsSpace;
             
-            if ([modalComponentElementName isEqual:kName_FollowUp_Title]) {
-                GTLabel *titleLabel = [[GTLabel alloc]initFromElement:modalComponentElement
-                                                  parentTextAlignment:UITextAlignmentCenter
-                                                                 xPos:-1
-                                                                 yPos:currentY
-                                                            container:presentingView
-                                                                style:style];
+            [self addSubview:bodyLabel];
+        } else if ([modalComponentElementName isEqual:kName_Input_Field]) {
+            GTInputFieldView *inputFieldView = [[GTInputFieldView alloc] createInputFieldFromElement:modalComponentElement
+                                                                                               withY:currentY
+                                                                                           withStyle:style
+                                                                                      presentingView:presentingView];
+            
+            currentY = inputFieldView.frame.origin.y + inputFieldView.frame.size.height + betweenElementsSpace;
+            
+            [self addSubview:inputFieldView];
+        } else if ([modalComponentElementName isEqual:kName_Button_Pair]) {
+            TBXMLElement *firstButtonElement = modalComponentElement->firstChild;
+            TBXMLElement *secondButtonElement = firstButtonElement->nextSibling;
+            
+            GTMultiButtonResponseView *buttonPairView = [[GTMultiButtonResponseView alloc] initWithFirstElement:firstButtonElement
+                                                                                                  secondElement:secondButtonElement
+                                                                                                  parentElement:modalComponentElement
+                                                                                                      yPosition:currentY
+                                                                                                  containerView:self
+                                                                                                      withStyle:style];
+            
+            CGRect frame = buttonPairView.frame;
+            [self addSubview:buttonPairView];
+            
+            currentY += buttonPairView.frame.size.height + betweenElementsSpace;
+            
+        } else if ([modalComponentElementName isEqual:kName_Thank_You]) {
+            
+            self.thankYouView = [[GTFollowupThankYouView alloc]initFromElement:modalComponentElement
+                                                                     withFrame:self.frame
+                                                                 withPageStyle:style];
+            
+            NSArray *listeners = [[TBXML valueOfAttributeNamed:kAttr_listeners forElement:modalComponentElement] componentsSeparatedByString:@","];
+            
+            for (id listener in listeners) {
+                NSString *listenerName = listener;
                 
-                currentY = titleLabel.frame.origin.y + titleLabel.frame.size.height + betweenElementsSpace;
-                
-                [self addSubview:titleLabel];
-            } else if ([modalComponentElementName isEqual:kName_FollowUp_Body]) {
-                GTLabel *bodyLabel = [[GTLabel alloc]initFromElement:modalComponentElement
-                                                 parentTextAlignment:UITextAlignmentLeft
-                                                                xPos:-1
-                                                                yPos:currentY
-                                                           container:presentingView
-                                                               style:style];
-                currentY = bodyLabel.frame.origin.y + bodyLabel.frame.size.height + betweenElementsSpace;
-                
-                [self addSubview:bodyLabel];
-            } else if ([modalComponentElementName isEqual:kName_Input_Field]) {
-                GTInputFieldView *inputFieldView = [[GTInputFieldView alloc] createInputFieldFromElement:modalComponentElement
-                                                                     withY:currentY
-                                                                 withStyle:style
-                                                            presentingView:presentingView];
-                
-                currentY = inputFieldView.frame.origin.y + inputFieldView.frame.size.height + betweenElementsSpace;
-                
-                [self addSubview:inputFieldView];
-            } else if ([modalComponentElementName isEqual:kName_Button_Pair]) {
-                TBXMLElement *firstButtonElement = modalComponentElement->firstChild;
-                TBXMLElement *secondButtonElement = firstButtonElement->nextSibling;
-                
-                GTMultiButtonResponseView *buttonPairView = [[GTMultiButtonResponseView alloc] initWithFirstElement:firstButtonElement
-                                                                                                      secondElement:secondButtonElement
-                                                                                                      parentElement:modalComponentElement
-                                                                                                          yPosition:currentY
-                                                                                                      containerView:self
-                                                                                                          withStyle:style];
-                
-                CGRect frame = buttonPairView.frame;
-                [self addSubview:buttonPairView];
-
-                currentY += buttonPairView.frame.size.height + betweenElementsSpace;
-                
-            } else if ([modalComponentElementName isEqual:kName_Thank_You]) {
-                
-                self.thankYouView = [[GTFollowupThankYouView alloc]initFromElement:modalComponentElement
-                                                                         withFrame:self.frame
-                                                                     withPageStyle:style];
-                
-                NSArray *listeners = [[TBXML valueOfAttributeNamed:kAttr_listeners forElement:modalComponentElement] componentsSeparatedByString:@","];
-                
-                for (id listener in listeners) {
-                    NSString *listenerName = listener;
+                if ([interpreterDelegate respondsToSelector:@selector(registerListenerWithEventName:target:selector:parameter:)]) {
+                    [interpreterDelegate registerListenerWithEventName:listenerName
+                                                                target:interpreterDelegate
+                                                              selector:@selector(transitionFollowupToThankYou)
+                                                             parameter:nil];
                     
-                    if ([interpreterDelegate respondsToSelector:@selector(registerListenerWithEventName:target:selector:parameter:)]) {
-                        [interpreterDelegate registerListenerWithEventName:listenerName
-                                                                    target:interpreterDelegate
-                                                                  selector:@selector(transitionFollowupToThankYou)
-                                                                 parameter:nil];
-                        
-                    }
                 }
             }
-            
-            modalComponentElement = modalComponentElement->nextSibling;
         }
+        
+        modalComponentElement = modalComponentElement->nextSibling;
     }
     
     return self;
