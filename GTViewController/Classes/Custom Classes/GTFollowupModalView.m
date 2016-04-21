@@ -46,6 +46,7 @@
     CGFloat totalVerticalSpace = presentingView.frame.size.height;
     CGFloat totalUsedSpace = 0;
     modalComponentElement = fallbackElement->firstChild;
+    
     // first pass - count objects
     while(modalComponentElement != nil) {
         NSString *modalComponentElementName = [TBXML elementName:modalComponentElement];
@@ -80,6 +81,7 @@
     
     // second pass - render objects
     modalComponentElement = fallbackElement->firstChild;
+    
     while(modalComponentElement != nil) {
         NSString *modalComponentElementName = [TBXML elementName:modalComponentElement];
         
@@ -124,7 +126,6 @@
                                                                                                   containerView:self
                                                                                                       withStyle:style];
             
-            CGRect frame = buttonPairView.frame;
             [self addSubview:buttonPairView];
             
             currentY += buttonPairView.frame.size.height + betweenElementsSpace;

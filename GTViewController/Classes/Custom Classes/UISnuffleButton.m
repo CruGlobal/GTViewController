@@ -446,9 +446,13 @@ extern NSString * const kButtonMode_allurl;
 			}
 			
             [self.tapEvents enumerateObjectsUsingBlock:^(NSString *eventName, NSUInteger idx, BOOL *stop) {
-                [[NSNotificationCenter defaultCenter] postNotificationName:UISnuffleButtonNotificationButtonTapEvent
-                                                                    object:self
-                                                                  userInfo:@{UISnuffleButtonNotificationButtonTapEventKeyEventName: eventName}];
+                if (eventName) {
+                    NSString *trimmedEventName = [eventName stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+                    
+                    [[NSNotificationCenter defaultCenter] postNotificationName:UISnuffleButtonNotificationButtonTapEvent
+                                                                        object:self
+                                                                      userInfo:@{UISnuffleButtonNotificationButtonTapEventKeyEventName: trimmedEventName}];
+                }
             }];
         }
 		

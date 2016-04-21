@@ -312,11 +312,12 @@ NSString * const kAttr_listeners	= @"listeners";
 - (void)registerListenerWithName:(NSString *)eventName forPageNumber:(NSInteger)pageNumber {
 	
 	if (eventName && pageNumber) {
+        NSString *trimmedEventName = [eventName stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
         
-		if (self.listeners[eventName]) {
-			[self.listeners[eventName] addObject:@(pageNumber)];
+		if (self.listeners[trimmedEventName]) {
+			[self.listeners[trimmedEventName] addObject:@(pageNumber)];
 		} else {
-			self.listeners[eventName] = @[@(pageNumber)].mutableCopy;
+			self.listeners[trimmedEventName] = @[@(pageNumber)].mutableCopy;
 		}
 		
 	}
@@ -328,10 +329,11 @@ NSString * const kAttr_listeners	= @"listeners";
     NSString *eventName = notification.userInfo[GTPageNotificationEventKeyEventName];
     
     if (eventName && self.listeners[eventName]) {
+        NSString *trimmedEventName = [eventName stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
         
-        NSNumber *pageNumber = self.listeners[eventName][0];
+        NSNumber *pageNumber = self.listeners[trimmedEventName][0];
         [self switchToPageWithIndex:pageNumber.integerValue];
-        [self.centerPage triggerEventWithName:eventName];
+        [self.centerPage triggerEventWithName:trimmedEventName];
         
         // dismiss a follow up modal if it is present and displayed
         if (self.followupViewController) {
