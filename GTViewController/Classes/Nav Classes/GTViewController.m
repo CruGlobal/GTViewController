@@ -154,7 +154,7 @@ NSString * const kAttr_listeners	= @"listeners";
 @property (nonatomic, assign)	BOOL isRotated;
 @property (nonatomic, assign)	BOOL instructionsAreRunning;
 
-@property (nonatomic, weak)     GTFollowupViewController    *followupViews;
+@property (nonatomic, weak)     GTFollowupViewController    *followupViewController;
 @property (nonatomic, strong)	GTAboutViewController		*aboutPage;
 @property (nonatomic, strong)	GTPageMenuViewController	*pageMenu;
 @property (nonatomic, strong)	GTShareInfo					*shareInfo;
@@ -334,7 +334,7 @@ NSString * const kAttr_listeners	= @"listeners";
         [self.centerPage triggerEventWithName:eventName];
         
         // dismiss a follow up modal if it is present and displayed
-        if (self.followupViews) {
+        if (self.followupViewController) {
             [self dismissViewControllerAnimated:YES completion:nil];
         }
     }
@@ -1156,16 +1156,16 @@ NSString * const kAttr_listeners	= @"listeners";
 }
 
 - (void)presentFollowupModal:(GTFollowupViewController *)followupModalViewController {
-    self.followupViews = followupModalViewController;
-    [self presentViewController:self.followupViews animated:YES completion:nil];
+    self.followupViewController = followupModalViewController;
+    [self presentViewController:self.followupViewController animated:YES completion:nil];
 }
 
 - (void)transitionFollowupToThankYou {
-    [self.followupViews transitionToThankYou];
+    [self.followupViewController transitionToThankYou];
 }
 
 - (void)dismissFollowupModal {
-    [self.followupViews dismissViewControllerAnimated:YES completion:nil];
+    [self.followupViewController dismissViewControllerAnimated:YES completion:nil];
 }
 
 #pragma mark - User Interaction methods

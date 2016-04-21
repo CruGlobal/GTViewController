@@ -31,7 +31,7 @@
     TBXMLElement *fallbackElement = element->firstChild;
     
     if (!fallbackElement) {
-        
+        return self;
     } else {
         TBXMLElement *modalComponentElement = fallbackElement->firstChild;
         
