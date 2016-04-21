@@ -11,6 +11,13 @@
 #import "GTFollowupModalView.h"
 #import "GTFollowupThankYouView.h"
 
+extern NSString *const GTFollowupViewControllerFieldSubscriptionNotificationName;
+extern NSString *const GTFollowupViewControllerFieldSubscriptionEventName;
+extern NSString *const GTFollowupViewControllerFieldKeyEmail;
+extern NSString *const GTFollowupViewControllerFieldKeyName;
+extern NSString *const GTFollowupViewControllerFieldKeyFollowupId;
+
+
 @interface GTFollowupViewController : UIViewController
 
 @property (strong,nonatomic) GTFollowupModalView *followupModalView;

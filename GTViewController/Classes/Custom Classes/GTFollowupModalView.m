@@ -25,8 +25,10 @@
 - (instancetype)initFromElement:(TBXMLElement *)element withStyle:(GTPageStyle*)style presentingView:(UIView *)presentingView interpreterDelegate:(id<GTInterpreterDelegate>)interpreterDelegate {
     
     self = [super initWithFrame:presentingView.frame];
-    
+
     [self setBackgroundColor:style.backgroundColor];
+    [self setFollowupId:[TBXML valueOfAttributeNamed:@"followup-id" forElement:element]];
+    self.inputFieldViews = [[NSMutableArray alloc]init];
     
     TBXMLElement *fallbackElement = element->firstChild;
     
@@ -114,6 +116,7 @@
             
             currentY = inputFieldView.frame.origin.y + inputFieldView.frame.size.height + betweenElementsSpace;
             
+            [self.inputFieldViews addObject:inputFieldView];
             [self addSubview:inputFieldView];
         } else if ([modalComponentElementName isEqual:kName_Button_Pair]) {
             TBXMLElement *firstButtonElement = modalComponentElement->firstChild;
@@ -177,7 +180,5 @@
 
     return watermarkCopy;
 }
-
-
 
 @end
