@@ -2045,6 +2045,13 @@ NSString * const kAttr_listeners	= @"listeners";
     [self runInstructionsIfNecessary];    
 }
 
+- (void)viewDidDisappear:(BOOL)animated {
+    [super viewDidDisappear:animated];
+    
+    // clear these out b/c the next package that's loaded might have different listeners
+    self.listeners = @[].mutableCopy;
+}
+
 - (void)didReceiveMemoryWarning {
     // Releases the view if it doesn't have a superview.
     [super didReceiveMemoryWarning];
