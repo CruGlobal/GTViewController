@@ -7,6 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "TBXML.h"
+
+@class GTPageStyle;
 
 @interface GTInputFieldView : UIView<UITextFieldDelegate>
 

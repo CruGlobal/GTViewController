@@ -9,7 +9,10 @@
 #import <Foundation/Foundation.h>
 
 #import "GTFollowUpViewController.h"
+
 #import "GTInputFieldView.h"
+#import "GTFollowupModalView.h"
+#import "GTFollowupThankYouView.h"
 
 NSString *const GTFollowupViewControllerFieldSubscriptionNotificationName       = @"org.cru.godtools.GTFollowupModalView.followupSubscriptionNotificationName";
 NSString *const GTFollowupViewControllerFieldSubscriptionEventName              = @"followup:subscribe";
