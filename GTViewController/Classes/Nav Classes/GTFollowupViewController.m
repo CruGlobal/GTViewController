@@ -12,7 +12,7 @@
 #import "GTInputFieldView.h"
 
 NSString *const GTFollowupViewControllerFieldSubscriptionNotificationName       = @"org.cru.godtools.GTFollowupModalView.followupSubscriptionNotificationName";
-NSString *const GTFollowupViewControllerFieldSubscriptionEventName              = @"org.cru.godtools.GTFollowupModalView.followupSubscriptionEventName";
+NSString *const GTFollowupViewControllerFieldSubscriptionEventName              = @"followup:subscribe";
 NSString *const GTFollowupViewControllerFieldKeyEmail                           = @"org.cru.godtools.GTFollowupModalView.fieldKeyEmail";
 NSString *const GTFollowupViewControllerFieldKeyName                            = @"org.cru.godtools.GTFollowupModalView.fieldKeyName";
 NSString *const GTFollowupViewControllerFieldKeyFollowupId                      = @"org.cru.godtools.GTFollowupModalView.fieldKeyFollowupId";
