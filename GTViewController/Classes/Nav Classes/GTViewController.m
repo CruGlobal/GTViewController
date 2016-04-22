@@ -2049,7 +2049,7 @@ NSString * const kAttr_listeners	= @"listeners";
     [super viewDidDisappear:animated];
     
     // clear these out b/c the next package that's loaded might have different listeners
-    self.listeners = @[].mutableCopy;
+    self.listeners = @{}.mutableCopy;
 }
 
 - (void)didReceiveMemoryWarning {
