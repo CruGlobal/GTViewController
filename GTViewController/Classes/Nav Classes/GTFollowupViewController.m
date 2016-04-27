@@ -22,7 +22,9 @@ NSString *const GTFollowupViewControllerFieldKeyFollowupId                      
 
 @interface GTFollowupViewController ()
 
-@property (strong, nonatomic) NSNumber *keyboardIsShowing;
+@property (strong, nonatomic)       NSNumber *keyboardIsShowing;
+@property (weak, nonatomic)         UITextField *activeField;
+@property (assign, nonatomic)       CGFloat originalHeight;
 
 @end
 
@@ -36,6 +38,13 @@ NSString *const GTFollowupViewControllerFieldKeyFollowupId                      
         self.followupThankYouView = followupModalView.thankYouView;
         [self.view insertSubview:self.followupModalView atIndex:0];
         [self.view insertSubview:self.followupThankYouView belowSubview:self.followupModalView];
+        self.originalHeight = followupModalView.frame.size.height;
+        
+        [self.followupModalView.inputFieldViews enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            GTInputFieldView *inputFieldView = obj;
+            inputFieldView.inputTextField.delegate = self;
+        }];
+        
         return self;
     }
     
@@ -49,6 +58,12 @@ NSString *const GTFollowupViewControllerFieldKeyFollowupId                      
         self.followupModalView = followupModalView;
         self.followupThankYouView = thankYouView;
         self.view = followupModalView;
+        self.originalHeight = followupModalView.frame.size.height;
+        
+        [self.followupModalView.inputFieldViews enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            GTInputFieldView *inputFieldView = obj;
+            inputFieldView.inputTextField.delegate = self;
+        }];
         
         return self;
     }
@@ -143,48 +158,101 @@ NSString *const GTFollowupViewControllerFieldKeyFollowupId                      
         return;
     }
     
-    [self setViewMovedUp:YES notification:notification];
+    [self moveView:notification];
     self.keyboardIsShowing = @YES;
 }
 
 -(void)keyboardWillHide:(NSNotification *) notification {
-    if (![self.keyboardIsShowing boolValue] || self.view.frame.origin.y >= 0) {
+    self.keyboardIsShowing = @NO;
+    
+    if (self.view.frame.origin.y >= 0) {
         return;
     }
     
-    [self setViewMovedUp:NO notification:notification];
-    self.keyboardIsShowing = @NO;
+    [self resetViewPosition:notification];
 }
 
 
 //method to move the view up/down whenever the keyboard is shown/dismissed
--(void)setViewMovedUp:(BOOL)movedUp notification:(NSNotification *)notification {
+-(void)moveView:(NSNotification *)notification {
     NSDictionary *userInfo = notification.userInfo;
+    
+    CGRect keyboardEndFrame;
+    
+    [[userInfo objectForKey:UIKeyboardFrameEndUserInfoKey] getValue:&keyboardEndFrame];
+    
+    CGRect keyboardFrame = [self.view convertRect:keyboardEndFrame toView:nil];
+    CGRect inputFieldViewFrame = self.activeField.superview.frame;
+    
+    CGRect unobscuredByKeyboardFrame = self.view.frame;
+    unobscuredByKeyboardFrame.size.height -= keyboardFrame.size.height;
+    
+    // offset the height of the inputFieldView, b/c it is a label stacked on an input
+    // if just the frame is considered, then the label could show while the input is hidden
+    unobscuredByKeyboardFrame.size.height -= inputFieldViewFrame.size.height;
+    
+    if (CGRectContainsPoint(unobscuredByKeyboardFrame, inputFieldViewFrame.origin) ) {
+        return;
+    }
+
+    CGFloat viewVerticalDelta = (inputFieldViewFrame.origin.y + inputFieldViewFrame.size.height) - unobscuredByKeyboardFrame.size.height;
     
     // Get animation info from userInfo
     NSTimeInterval animationDuration;
     UIViewAnimationCurve animationCurve;
+    CGRect newViewFrame = self.view.frame;
     
     [[userInfo objectForKey:UIKeyboardAnimationCurveUserInfoKey] getValue:&animationCurve];
     [[userInfo objectForKey:UIKeyboardAnimationDurationUserInfoKey] getValue:&animationDuration];
-    
-    CGRect keyboardEndFrame;
-
-    [[userInfo objectForKey:UIKeyboardFrameEndUserInfoKey] getValue:&keyboardEndFrame];
     
     [UIView beginAnimations:nil context:nil];
     [UIView setAnimationDuration:animationDuration];
     [UIView setAnimationCurve:animationCurve];
     
-    CGRect newViewFrame = self.view.frame;
-    CGRect keyboardFrame = [self.view convertRect:keyboardEndFrame toView:nil];
-    
-    newViewFrame.origin.y -= keyboardFrame.size.height * (movedUp ? 1 : -1);
-    newViewFrame.size.height += keyboardFrame.size.height * (movedUp ? 1 : -1);
+    newViewFrame.origin.y -= viewVerticalDelta;
+    newViewFrame.size.height += viewVerticalDelta;
     self.view.frame = newViewFrame;
     
     [UIView commitAnimations];
 }
 
+- (void) resetViewPosition:(NSNotification *) notification {
+    NSDictionary *userInfo = notification.userInfo;
+    
+    // Get animation info from userInfo
+    NSTimeInterval animationDuration;
+    UIViewAnimationCurve animationCurve;
+    CGRect myFrame = self.view.frame;
+    
+    [[userInfo objectForKey:UIKeyboardAnimationCurveUserInfoKey] getValue:&animationCurve];
+    [[userInfo objectForKey:UIKeyboardAnimationDurationUserInfoKey] getValue:&animationDuration];
+    
+    [UIView beginAnimations:nil context:nil];
+    [UIView setAnimationDuration:animationDuration];
+    [UIView setAnimationCurve:animationCurve];
+    
+    myFrame.origin.y = 0;
+    myFrame.size.height = self.originalHeight;
+    
+    self.view.frame = myFrame;
+    
+    [UIView commitAnimations];
+}
+
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+    [textField resignFirstResponder];
+    return NO;
+}
+
+
+- (void)textFieldDidBeginEditing:(UITextField *)textField {
+    self.activeField = textField;
+}
+
+
+- (void)textFieldDidEndEditing:(UITextField *)textField {
+    self.activeField = nil;
+}
 
 @end

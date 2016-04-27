@@ -17,7 +17,6 @@
 @interface GTInputFieldView ()
 
 @property (strong, nonatomic) NSString              *inputFieldType;
-@property (strong, nonatomic) UITextField           *inputTextField;
 @end
 
 @implementation GTInputFieldView
@@ -96,8 +95,7 @@
     [self.inputTextField setFrame:CGRectMake(0, inputFieldLabel.frame.size.height, w, h)];
     [self.inputTextField setTextColor:[UIColor darkTextColor]];
     [self.inputTextField setBackgroundColor:[UIColor whiteColor]];
-    [self.inputTextField setReturnKeyType:UIReturnKeyDone];
-    self.inputTextField.delegate = self;
+    [self.inputTextField setReturnKeyType:UIReturnKeyNext];
     
     [inputFieldView setFrame:CGRectMake(x, y, w, self.inputTextField.frame.size.height + inputFieldLabel.frame.size.height)];
     
@@ -111,12 +109,5 @@
 - (NSString *)inputFieldValue {
     return self.inputTextField.text;
 }
-
-
-- (BOOL)textFieldShouldReturn:(UITextField *)textField {
-    [textField resignFirstResponder];
-    return NO;
-}
-
 
 @end
