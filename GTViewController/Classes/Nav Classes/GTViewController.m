@@ -268,8 +268,10 @@ NSString * const kAttr_listeners	= @"listeners";
         
         self.gestureRecognizer	= [[HorizontalGestureRecognizer alloc] initWithDelegate:self target:self.view];
         
+        // clear these out b/c the next package that's loaded might have different listeners
+        self.listeners = @{}.mutableCopy;
+
         [self loadResourceWithConfigFilename:filename];
-        
     }
     
     return self;
@@ -277,7 +279,10 @@ NSString * const kAttr_listeners	= @"listeners";
 }
 
 - (void)loadResourceWithConfigFilename:(NSString *)filename {
-    
+
+    // clear these out b/c the next package that's loaded might have different listeners
+    self.listeners = @{}.mutableCopy;
+
     self.configFilename	= filename;
     
     [self.fileLoader clearCache];
@@ -298,6 +303,9 @@ NSString * const kAttr_listeners	= @"listeners";
         self.parallelConfigFilename = nil;
     }
     
+    // clear these out b/c the next package that's loaded might have different listeners
+    self.listeners = @{}.mutableCopy;
+
     [self loadResourceWithConfigFilename:filename];
     
 }
@@ -2044,6 +2052,7 @@ NSString * const kAttr_listeners	= @"listeners";
     
     [self runInstructionsIfNecessary];    
 }
+
 
 - (void)didReceiveMemoryWarning {
     // Releases the view if it doesn't have a superview.

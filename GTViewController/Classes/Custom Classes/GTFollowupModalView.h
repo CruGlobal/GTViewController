@@ -18,6 +18,9 @@
 @property (strong, nonatomic) NSArray *listeners;
 @property (strong, nonatomic) GTFollowupThankYouView *thankYouView;
 
+@property (strong, nonatomic) NSMutableArray *inputFieldViews;
+@property (strong, nonatomic) NSString *followupId;
+
 - (instancetype)initFromElement:(TBXMLElement *)element withStyle:(GTPageStyle*)style presentingView:(UIView *)presentingView interpreterDelegate:(id<GTInterpreterDelegate>)interpreterDelegate;
 
 - (void)setWatermark:(UIImageView *) watermarkImageView;

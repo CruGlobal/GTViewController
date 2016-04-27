@@ -14,13 +14,19 @@
 #import "GTInputFieldView.h"
 #import "GTLabel.h"
 
+@interface GTInputFieldView ()
+
+@property (strong, nonatomic) NSString              *inputFieldType;
+@property (strong, nonatomic) UITextField           *inputTextField;
+@end
+
 @implementation GTInputFieldView
 
 
 - (instancetype)createInputFieldFromElement:(TBXMLElement *)element withY:(CGFloat)yPos withStyle:(GTPageStyle*)style presentingView:(UIView *)presentingView {
     
     GTLabel *inputFieldLabel = nil;
-    UITextField *inputTextField = [[UITextField alloc]init];
+    self.inputTextField = [[UITextField alloc]init];
     
     // format & configure view
     [self setBackgroundColor:[UIColor clearColor]];
@@ -72,31 +78,38 @@
             
             [inputFieldLabel setFrame:CGRectMake(0,0,w,DEFAULT_HEIGHT_INPUTFIELDLABEL)];
         } else if ([childElementName isEqual:kName_Input_Placeholder]) {
-            inputTextField.placeholder = [TBXML textForElement:inputFieldChildElement];
+            self.inputTextField.placeholder = [TBXML textForElement:inputFieldChildElement];
         }
         
         inputFieldChildElement = inputFieldChildElement->nextSibling;
     }
     
     if ([[TBXML valueOfAttributeNamed:kAttr_type forElement:element] isEqual:@"email"]) {
-        inputTextField.keyboardType = UIKeyboardTypeEmailAddress;
-        inputTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
+        self.inputTextField.keyboardType = UIKeyboardTypeEmailAddress;
+        self.inputTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
+        self.inputFieldType = @"email";
     } else if([[TBXML valueOfAttributeNamed:kAttr_type forElement:element] isEqual:@"text"]) {
-        inputTextField.autocapitalizationType = UITextAutocapitalizationTypeWords;
+        self.inputTextField.autocapitalizationType = UITextAutocapitalizationTypeWords;
+        self.inputFieldType = @"name";
     }
 
-    [inputTextField setFrame:CGRectMake(0, inputFieldLabel.frame.size.height, w, h)];
-    [inputTextField setTextColor:[UIColor darkTextColor]];
-    [inputTextField setBackgroundColor:[UIColor whiteColor]];
-    [inputTextField setReturnKeyType:UIReturnKeyDone];
-    inputTextField.delegate = self;
+    [self.inputTextField setFrame:CGRectMake(0, inputFieldLabel.frame.size.height, w, h)];
+    [self.inputTextField setTextColor:[UIColor darkTextColor]];
+    [self.inputTextField setBackgroundColor:[UIColor whiteColor]];
+    [self.inputTextField setReturnKeyType:UIReturnKeyDone];
+    self.inputTextField.delegate = self;
     
-    [inputFieldView setFrame:CGRectMake(x, y, w, inputTextField.frame.size.height + inputFieldLabel.frame.size.height)];
+    [inputFieldView setFrame:CGRectMake(x, y, w, self.inputTextField.frame.size.height + inputFieldLabel.frame.size.height)];
     
     [inputFieldView addSubview:inputFieldLabel];
-    [inputFieldView addSubview:inputTextField];
+    [inputFieldView addSubview:self.inputTextField];
     
     return self;
+}
+
+
+- (NSString *)inputFieldValue {
+    return self.inputTextField.text;
 }
 
 

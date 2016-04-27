@@ -10,6 +10,16 @@
 
 #import "GTFollowUpViewController.h"
 
+#import "GTInputFieldView.h"
+#import "GTFollowupModalView.h"
+#import "GTFollowupThankYouView.h"
+
+NSString *const GTFollowupViewControllerFieldSubscriptionNotificationName       = @"org.cru.godtools.GTFollowupModalView.followupSubscriptionNotificationName";
+NSString *const GTFollowupViewControllerFieldSubscriptionEventName              = @"followup:subscribe";
+NSString *const GTFollowupViewControllerFieldKeyEmail                           = @"org.cru.godtools.GTFollowupModalView.fieldKeyEmail";
+NSString *const GTFollowupViewControllerFieldKeyName                            = @"org.cru.godtools.GTFollowupModalView.fieldKeyName";
+NSString *const GTFollowupViewControllerFieldKeyFollowupId                      = @"org.cru.godtools.GTFollowupModalView.fieldKeyFollowupId";
+
 @implementation GTFollowupViewController
 
 
@@ -39,6 +49,49 @@
     
     return nil;
 }
+
+
+- (void) viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(sendFollowupSubscribeListener:)
+                                                 name:UISnuffleButtonNotificationButtonTapEvent
+                                               object:nil];
+}
+
+- (void) viewDidDisappear:(BOOL)animated {
+    [super viewDidDisappear:animated];
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:UISnuffleButtonNotificationButtonTapEvent
+                                                  object:nil];
+}
+
+
+- (void) sendFollowupSubscribeListener:(NSNotification *)notification {
+    if (![notification.userInfo[UISnuffleButtonNotificationButtonTapEventKeyEventName] isEqualToString:GTFollowupViewControllerFieldSubscriptionEventName]) {
+        return;
+    }
+    
+    __block NSMutableDictionary *followupDetailsDictionary = [[NSMutableDictionary alloc]init];
+    [followupDetailsDictionary setValue:self.followupModalView.followupId forKey:GTFollowupViewControllerFieldKeyFollowupId];
+    
+    [self.followupModalView.inputFieldViews enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        GTInputFieldView *inputFieldView = obj;
+        
+        if ([[inputFieldView inputFieldType] isEqualToString:@"name"] && inputFieldView.inputFieldValue) {
+            [followupDetailsDictionary setValue:inputFieldView.inputFieldValue forKey:GTFollowupViewControllerFieldKeyName];
+        } else if ([[inputFieldView inputFieldType] isEqualToString:@"email"]) {
+            [followupDetailsDictionary setValue:inputFieldView.inputFieldValue forKey:GTFollowupViewControllerFieldKeyEmail];
+        }
+    }];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:GTFollowupViewControllerFieldSubscriptionNotificationName
+                                                        object:nil
+                                                      userInfo:followupDetailsDictionary];
+}
+
 
 - (void)transitionToThankYou {
     [self.view addSubview:self.followupThankYouView];
