@@ -22,7 +22,6 @@ NSString *const GTFollowupViewControllerFieldKeyFollowupId                      
 
 @interface GTFollowupViewController ()
 
-@property (strong, nonatomic)       NSNumber *keyboardIsShowing;
 @property (weak, nonatomic)         UITextField *activeField;
 @property (assign, nonatomic)       CGFloat originalHeight;
 
@@ -74,9 +73,7 @@ NSString *const GTFollowupViewControllerFieldKeyFollowupId                      
 
 - (void) viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    
-    self.keyboardIsShowing = @NO;
-    
+        
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(sendFollowupSubscribeListener:)
                                                  name:UISnuffleButtonNotificationButtonTapEvent
@@ -154,16 +151,14 @@ NSString *const GTFollowupViewControllerFieldKeyFollowupId                      
 #pragma mark Animation methods to prevent text field from being hidden
 // logic adapted from from: http://stackoverflow.com/questions/1126726/how-to-make-a-uitextfield-move-up-when-keyboard-is-present
 -(void)keyboardWillShow:(NSNotification *) notification {
-    if ([self.keyboardIsShowing boolValue] || self.view.frame.origin.y < 0) {
+    if (self.view.frame.origin.y < 0) {
         return;
     }
     
     [self moveView:notification];
-    self.keyboardIsShowing = @YES;
 }
 
 -(void)keyboardWillHide:(NSNotification *) notification {
-    self.keyboardIsShowing = @NO;
     
     if (self.view.frame.origin.y >= 0) {
         return;
