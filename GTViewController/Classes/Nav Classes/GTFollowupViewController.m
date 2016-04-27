@@ -149,7 +149,7 @@ NSString *const GTFollowupViewControllerFieldKeyFollowupId                      
 
 
 #pragma mark Animation methods to prevent text field from being hidden
-// logic adapted from from: http://stackoverflow.com/questions/1126726/how-to-make-a-uitextfield-move-up-when-keyboard-is-present
+
 -(void)keyboardWillShow:(NSNotification *) notification {
     if (self.view.frame.origin.y < 0) {
         return;
@@ -168,7 +168,7 @@ NSString *const GTFollowupViewControllerFieldKeyFollowupId                      
 }
 
 
-//method to move the view up/down whenever the keyboard is shown/dismissed
+//method to move the view up when the keyboard would cover the "active" textField
 -(void)moveView:(NSNotification *)notification {
     NSDictionary *userInfo = notification.userInfo;
     
@@ -192,6 +192,11 @@ NSString *const GTFollowupViewControllerFieldKeyFollowupId                      
 
     CGFloat viewVerticalDelta = (inputFieldViewFrame.origin.y + inputFieldViewFrame.size.height) - unobscuredByKeyboardFrame.size.height;
     
+    [self animateViewWithVerticalDelta:viewVerticalDelta userInfo:userInfo];
+}
+
+
+- (void) animateViewWithVerticalDelta:(CGFloat)verticalDelta userInfo:(NSDictionary *)userInfo {
     // Get animation info from userInfo
     NSTimeInterval animationDuration;
     UIViewAnimationCurve animationCurve;
@@ -204,8 +209,8 @@ NSString *const GTFollowupViewControllerFieldKeyFollowupId                      
     [UIView setAnimationDuration:animationDuration];
     [UIView setAnimationCurve:animationCurve];
     
-    newViewFrame.origin.y -= viewVerticalDelta;
-    newViewFrame.size.height += viewVerticalDelta;
+    newViewFrame.origin.y -= verticalDelta;
+    newViewFrame.size.height += verticalDelta;
     self.view.frame = newViewFrame;
     
     [UIView commitAnimations];
@@ -234,6 +239,7 @@ NSString *const GTFollowupViewControllerFieldKeyFollowupId                      
     [UIView commitAnimations];
 }
 
+#pragma mark - UITextFieldDelegate methods
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
     [textField resignFirstResponder];
