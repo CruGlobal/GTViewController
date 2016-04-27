@@ -163,6 +163,8 @@ NSString * const kAttr_listeners	= @"listeners";
 @property (nonatomic, assign)	BOOL						isFirstRunSinceCreation;
 @property (nonatomic, strong)	NSArray						*allURLsButtonArray;
 
+@property (nonatomic, assign)   BOOL                        bypassPresentingNavbar;
+
 //config functions
 - (NSMutableArray *)pageArrayForConfigFile:(NSString *)filename;
 
@@ -345,9 +347,11 @@ NSString * const kAttr_listeners	= @"listeners";
         
         // dismiss a follow up modal if it is present and displayed
         if (self.followupViewController) {
+            self.bypassPresentingNavbar = YES;
             __weak typeof(self) weakSelf = self;
+            
             [self dismissViewControllerAnimated:YES completion:^{
-                [weakSelf hideNavToolbar];
+                weakSelf.bypassPresentingNavbar = NO;
             }];
         }
     }
@@ -1180,9 +1184,11 @@ NSString * const kAttr_listeners	= @"listeners";
 }
 
 - (void)dismissFollowupModal {
+    self.bypassPresentingNavbar = YES;
     __weak typeof(self) weakSelf = self;
+    
     [self.followupViewController dismissViewControllerAnimated:YES completion:^{
-        [weakSelf hideNavToolbar];
+        weakSelf.bypassPresentingNavbar = NO;
     }];
     
 }
@@ -2001,8 +2007,6 @@ NSString * const kAttr_listeners	= @"listeners";
     
     [super viewWillAppear:animated];
     
-    //[self setUpViewController];
-    
     //calculate the positions the views will have during animation
     self.inViewInCenterCenter = CGPointMake(self.view.frame.size.width / 2, self.view.center.y);
     self.outOfViewOnRightCenter = CGPointMake((3 * self.inViewInCenterCenter.x) + self.gapBetweenViews, self.inViewInCenterCenter.y);
@@ -2019,7 +2023,10 @@ NSString * const kAttr_listeners	= @"listeners";
     
     [self navToolbarAddRemoveSwitchButton];
     [self navToolbarAddRemoveRefreshButton];
-    [self showNavToolbar];
+    
+    if (!self.bypassPresentingNavbar) {
+        [self showNavToolbar];
+    }
     
 }
 
