@@ -13,7 +13,7 @@
 
 @interface GTInputFieldView : UIView<UITextFieldDelegate>
 
-- (instancetype)createInputFieldFromElement:(TBXMLElement *)element withY:(CGFloat)yPos withStyle:(GTPageStyle*)style presentingView:(UIView *)presentingView;
+- (instancetype)inputFieldWithElement:(TBXMLElement *)element withY:(CGFloat)yPos withStyle:(GTPageStyle*)style presentingView:(UIView *)presentingView;
 
 - (NSString *)inputFieldType;
 - (NSString *)inputFieldValue;

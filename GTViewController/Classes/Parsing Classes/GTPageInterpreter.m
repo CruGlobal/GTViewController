@@ -676,7 +676,7 @@ NSString * const kLabelModifer_bolditalics	= @"bold-italics";
                 //note: because of the unpredictable height of text labels, we need to calculate their combined height
 
                 //create a temporary text label and add it's height to the tally
-                labelLabel = [[GTLabel alloc] initFromElement:object_el
+                labelLabel = [[GTLabel alloc] initWithElement:object_el
                                                  parentTextAlignment:NSTextAlignmentLeft
                                                                 xPos:0
                                                                 yPos:0
@@ -773,12 +773,12 @@ NSString * const kLabelModifer_bolditalics	= @"bold-italics";
                 [self.pageView addSubview:buttonLinesTemp];
                 
                 //create the button and add it to the page's view
-                buttonTemp      = [[UISnuffleButton alloc] createButtonFromElement:object_el
-                                                                            addTag:buttonCount
-                                                                              yPos:object_ypos
-                                                                         container:self.pageView
-                                                                         withStyle:self.pageStyle
-                                                                 buttonTapDelegate:self.buttonDelegate];
+                buttonTemp      = [[UISnuffleButton alloc] buttonWithElement:object_el
+                                                                      addTag:buttonCount
+                                                                        yPos:object_ypos
+                                                                   container:self.pageView
+                                                                   withStyle:self.pageStyle
+                                                           buttonTapDelegate:self.buttonDelegate];
                 [self.pageView addSubview:buttonTemp];
                 
                 //create the arrow and add it to the page's view
@@ -792,7 +792,7 @@ NSString * const kLabelModifer_bolditalics	= @"bold-italics";
             ////TEXT LABEL - note: some defaults are overridden here since existing text label defaults are for within panels, not page objects.
             if ([elementName isEqual:kName_Label]) {
                 
-                labelLabel = [[GTLabel alloc]initFromElement:object_el
+                labelLabel = [[GTLabel alloc]initWithElement:object_el
                                                 parentTextAlignment:NSTextAlignmentLeft
                                                                xPos:object_xpos
                                                                yPos:object_ypos
@@ -1234,17 +1234,17 @@ NSString * const kLabelModifer_bolditalics	= @"bold-italics";
             
             ////BUTTON
 			if ([[TBXML elementName:object_el] isEqual:kName_Button] || [[TBXML elementName:object_el] isEqual:@"link-button"]) {
-
-				//create image
-                buttonTemp          = [[UISnuffleButton alloc]createButtonFromElement:object_el
-                                                                               addTag:buttonTag
-                                                                                 yPos:object_ypos
-                                                                            container:tempContainerView
-                                                                            withStyle:self.pageStyle
-                                                                    buttonTapDelegate:self.buttonDelegate];
-				
-				//store the maximum dimensions
-				maxWidth			= fmaxf(maxWidth, CGRectGetMaxX(buttonTemp.frame));
+                
+                //create image
+                buttonTemp          = [[UISnuffleButton alloc]buttonWithElement:object_el
+                                                                         addTag:buttonTag
+                                                                           yPos:object_ypos
+                                                                      container:tempContainerView
+                                                                      withStyle:self.pageStyle
+                                                              buttonTapDelegate:self.buttonDelegate];
+                
+                //store the maximum dimensions
+                maxWidth			= fmaxf(maxWidth, CGRectGetMaxX(buttonTemp.frame));
 				maxHeight			= fmaxf(maxHeight, CGRectGetMaxY(buttonTemp.frame));
 				
 				previousObjectYMax	= CGRectGetMaxY(buttonTemp.frame);
@@ -1282,7 +1282,7 @@ NSString * const kLabelModifer_bolditalics	= @"bold-italics";
             if ([[TBXML elementName:object_el] isEqual:kName_Label]) {
                 
                 //create label
-                labelTemp           = [[GTLabel alloc] initFromElement:object_el
+                labelTemp           = [[GTLabel alloc] initWithElement:object_el
                                                    parentTextAlignment:panelAlign
                                                                   xPos:object_xpos
                                                                   yPos:object_ypos

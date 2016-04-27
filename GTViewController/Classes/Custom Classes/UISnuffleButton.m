@@ -71,7 +71,7 @@ extern NSString * const kButtonMode_allurl;
  *					yPos:		The y position of the button (which starts with the 2px line at the top)
  *	Returns:		A UISnuffleButton object with parameters set to what is described in the xml element.
  */
-- (id)createButtonFromElement:(TBXMLElement *)element addTag:(NSInteger)tag yPos:(CGFloat)yPos container:(UIView *)container withStyle:(GTPageStyle *)pageStyle buttonTapDelegate:(id<UISnuffleButtonTapDelegate>)buttonDelegate {
+- (id)buttonWithElement:(TBXMLElement *)element addTag:(NSInteger)tag yPos:(CGFloat)yPos container:(UIView *)container withStyle:(GTPageStyle *)pageStyle buttonTapDelegate:(id<UISnuffleButtonTapDelegate>)buttonDelegate {
     
     if (element != nil) {
         
