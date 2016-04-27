@@ -278,6 +278,9 @@ NSString *const GTFollowupViewControllerFieldKeyFollowupId                      
 
 - (void)textFieldDidBeginEditing:(UITextField *)textField {
     self.activeField = textField;
+    if (![textField.superview.superview viewWithTag:textField.tag + 1]) {
+        [textField setReturnKeyType:UIReturnKeyDone];
+    }
 }
 
 
