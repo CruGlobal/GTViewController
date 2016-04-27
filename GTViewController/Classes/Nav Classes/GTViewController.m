@@ -345,7 +345,10 @@ NSString * const kAttr_listeners	= @"listeners";
         
         // dismiss a follow up modal if it is present and displayed
         if (self.followupViewController) {
-            [self dismissViewControllerAnimated:YES completion:nil];
+            __weak typeof(self) weakSelf = self;
+            [self dismissViewControllerAnimated:YES completion:^{
+                [weakSelf hideNavToolbar];
+            }];
         }
     }
 }
@@ -1015,6 +1018,8 @@ NSString * const kAttr_listeners	= @"listeners";
         
     }
     
+    self.navToolbarIsShown		= NO;
+    
     CGRect toolbarFrame			= self.navToolbar.frame;
     toolbarFrame.origin.y		= self.view.frame.size.height - TOOLBAR_PEEK;
     CGRect toolbarButtonFrame	= self.navToolbarButton.frame;
@@ -1035,7 +1040,7 @@ NSString * const kAttr_listeners	= @"listeners";
 
 - (void)hideNavToolbarDidStop {
     
-    self.navToolbarIsShown		= NO;
+    
     
 }
 
@@ -1175,7 +1180,11 @@ NSString * const kAttr_listeners	= @"listeners";
 }
 
 - (void)dismissFollowupModal {
-    [self.followupViewController dismissViewControllerAnimated:YES completion:nil];
+    __weak typeof(self) weakSelf = self;
+    [self.followupViewController dismissViewControllerAnimated:YES completion:^{
+        [weakSelf hideNavToolbar];
+    }];
+    
 }
 
 #pragma mark - User Interaction methods
@@ -1448,9 +1457,7 @@ NSString * const kAttr_listeners	= @"listeners";
     
     if (touch.tapCount == 20) {
         [self fiftyTap];
-    }
-    
-    if (touch.tapCount == 1) {
+    } else if (touch.tapCount > 1) {
         [self.centerPage tapAnywhere];
         
         if (self.navToolbarIsShown) {
