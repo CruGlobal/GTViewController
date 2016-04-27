@@ -75,6 +75,7 @@
     betweenElementsSpace =  (availableBufferSpace * 0.2) / (numLabels + numButtonPairs + numTextInputs);
     
     int currentY = topLeadingSpace;
+    int inputFieldTag = 0;
     
     // second pass - render objects
     modalComponentElement = fallbackElement->firstChild;
@@ -110,6 +111,9 @@
                                                                                 presentingView:presentingView];
             
             currentY = inputFieldView.frame.origin.y + inputFieldView.frame.size.height + betweenElementsSpace;
+            
+            // i love C sleight of hand :)
+            inputFieldView.inputTextField.tag = inputFieldTag++;
             
             [self.inputFieldViews addObject:inputFieldView];
             [self addSubview:inputFieldView];

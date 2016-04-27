@@ -191,19 +191,21 @@ NSString *const GTFollowupViewControllerFieldKeyFollowupId                      
     }
 
     CGFloat viewVerticalDelta = (inputFieldViewFrame.origin.y + inputFieldViewFrame.size.height) - unobscuredByKeyboardFrame.size.height;
-    
-    [self animateViewWithVerticalDelta:viewVerticalDelta userInfo:userInfo];
-}
-
-
-- (void) animateViewWithVerticalDelta:(CGFloat)verticalDelta userInfo:(NSDictionary *)userInfo {
-    // Get animation info from userInfo
-    NSTimeInterval animationDuration;
     UIViewAnimationCurve animationCurve;
-    CGRect newViewFrame = self.view.frame;
+    NSTimeInterval animationDuration;
     
     [[userInfo objectForKey:UIKeyboardAnimationCurveUserInfoKey] getValue:&animationCurve];
     [[userInfo objectForKey:UIKeyboardAnimationDurationUserInfoKey] getValue:&animationDuration];
+
+    [self animateViewWithVerticalDelta:viewVerticalDelta
+                     animationDuration:animationDuration
+                        animationCurve:animationCurve];
+}
+
+
+- (void) animateViewWithVerticalDelta:(CGFloat)verticalDelta animationDuration:(NSTimeInterval) animationDuration animationCurve:(UIViewAnimationCurve)animationCurve {
+    // Get animation info from userInfo
+    CGRect newViewFrame = self.view.frame;
     
     [UIView beginAnimations:nil context:nil];
     [UIView setAnimationDuration:animationDuration];
@@ -215,6 +217,7 @@ NSString *const GTFollowupViewControllerFieldKeyFollowupId                      
     
     [UIView commitAnimations];
 }
+
 
 - (void) resetViewPosition:(NSNotification *) notification {
     NSDictionary *userInfo = notification.userInfo;
@@ -239,10 +242,36 @@ NSString *const GTFollowupViewControllerFieldKeyFollowupId                      
     [UIView commitAnimations];
 }
 
+- (CGFloat)calculateVerticalDeltaFromCurrentField:(UIView *)currentField toNextField:(UIView *)nextField {
+    return nextField.frame.origin.y - currentField.frame.origin.y;
+    
+}
+
 #pragma mark - UITextFieldDelegate methods
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
-    [textField resignFirstResponder];
+    NSInteger nextTag = textField.tag + 1;
+    
+    UIResponder *nextResponder = [textField.superview.superview viewWithTag:nextTag];
+    
+    if (nextResponder) {
+        UITextField *nextActiveField = (UITextField*)nextResponder;
+        
+        CGFloat verticalDelta = [self calculateVerticalDeltaFromCurrentField:self.activeField.superview
+                                                                 toNextField:nextActiveField.superview];
+        
+        self.activeField = nextActiveField;
+        
+        [self animateViewWithVerticalDelta:verticalDelta animationDuration:0.3 animationCurve:UIViewAnimationCurveEaseOut];
+        
+        if (![nextActiveField.superview.superview viewWithTag:++nextTag]) {
+            [nextActiveField setReturnKeyType:UIReturnKeyDone];
+        }
+        
+        [nextResponder becomeFirstResponder];
+    } else {
+        [textField resignFirstResponder];
+    }
     return NO;
 }
 
