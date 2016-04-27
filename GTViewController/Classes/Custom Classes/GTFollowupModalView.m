@@ -70,14 +70,9 @@
         modalComponentElement = modalComponentElement->nextSibling;
     }
     
-    // there are too many elements, not sure what to do
-    if (totalUsedSpace >= totalVerticalSpace) {
-        
-    } else {
-        CGFloat availableBufferSpace = totalVerticalSpace - totalUsedSpace;
-        topLeadingSpace =       availableBufferSpace * 0.15;
-        betweenElementsSpace =  (availableBufferSpace * 0.2) / (numLabels + numButtonPairs + numTextInputs);
-    }
+    CGFloat availableBufferSpace = totalVerticalSpace - totalUsedSpace;
+    topLeadingSpace =       availableBufferSpace * 0.15;
+    betweenElementsSpace =  (availableBufferSpace * 0.2) / (numLabels + numButtonPairs + numTextInputs);
     
     int currentY = topLeadingSpace;
     
