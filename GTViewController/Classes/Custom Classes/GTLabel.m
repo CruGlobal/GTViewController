@@ -16,7 +16,7 @@
 @implementation GTLabel
 
 
-- (instancetype)initFromElement:(TBXMLElement *)element parentTextAlignment:(UITextAlignment)panelAlign xPos:(CGFloat)xpostion yPos:(CGFloat)ypostion container:(UIView *)container style:(GTPageStyle *)style {
+- (instancetype)initWithElement:(TBXMLElement *)element parentTextAlignment:(UITextAlignment)panelAlign xPos:(CGFloat)xpostion yPos:(CGFloat)ypostion container:(UIView *)container style:(GTPageStyle *)style {
     
     if (!(ypostion >= 0)) {
         ypostion = DEFAULT_PANEL_OFFSET_Y;

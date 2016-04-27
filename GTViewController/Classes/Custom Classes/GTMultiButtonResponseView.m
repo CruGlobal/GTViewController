@@ -43,21 +43,21 @@
     
     responseView = [super initWithFrame:frame];
     
-    UISnuffleButton *negativeButton = [[UISnuffleButton alloc] createButtonFromElement:negativeElement
-                                                                                addTag:0
-                                                                                  yPos:0
-                                                                             container:responseView
-                                                                             withStyle:pageStyle
-                                                                     buttonTapDelegate:nil];
+    UISnuffleButton *negativeButton = [[UISnuffleButton alloc] buttonWithElement:negativeElement
+                                                                          addTag:0
+                                                                            yPos:0
+                                                                       container:responseView
+                                                                       withStyle:pageStyle
+                                                               buttonTapDelegate:nil];
     
-
     
-    UISnuffleButton *positiveButton = [[UISnuffleButton alloc] createButtonFromElement:positiveElement
-                                                                                addTag:0
-                                                                                  yPos:0
-                                                                             container:responseView
-                                                                             withStyle:pageStyle
-                                                                     buttonTapDelegate:nil];
+    
+    UISnuffleButton *positiveButton = [[UISnuffleButton alloc] buttonWithElement:positiveElement
+                                                                          addTag:0
+                                                                            yPos:0
+                                                                       container:responseView
+                                                                       withStyle:pageStyle
+                                                               buttonTapDelegate:nil];
     
     [self layoutBasedOnAlignmentPositiveButton:positiveButton
                                 negativeButton:negativeButton

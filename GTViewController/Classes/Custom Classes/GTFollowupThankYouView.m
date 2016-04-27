@@ -48,14 +48,9 @@
         thankYouElement = thankYouElement->nextSibling;
     }
     
-    // there are too many elements, not sure what to do
-    if (totalUsedSpace >= totalVerticalSpace) {
-        
-    } else {
-        CGFloat availableBufferSpace = totalVerticalSpace - totalUsedSpace;
-        topLeadingSpace =       availableBufferSpace * 0.2;
-        betweenElementsSpace =  (availableBufferSpace * 0.2) / (numLabels + numButtonPairs + numTextInputs);
-    }
+    CGFloat availableBufferSpace = totalVerticalSpace - totalUsedSpace;
+    topLeadingSpace =       availableBufferSpace * 0.2;
+    betweenElementsSpace =  (availableBufferSpace * 0.2) / (numLabels + numButtonPairs + numTextInputs);
     
     int currentY = topLeadingSpace;
     
@@ -65,7 +60,7 @@
         NSString *thankYouElementName = [TBXML elementName:thankYouElement];
         
         if ([thankYouElementName isEqual:kName_Label]) {
-            UILabel *label = [[GTLabel alloc]initFromElement:thankYouElement
+            UILabel *label = [[GTLabel alloc]initWithElement:thankYouElement
                                          parentTextAlignment:UITextAlignmentLeft
                                                         xPos:-1
                                                         yPos:currentY
@@ -76,12 +71,12 @@
             
             [self addSubview:label];
         } else if ([thankYouElementName isEqual:kName_LinkButton] || [thankYouElementName isEqual:kName_Button]) {
-            UISnuffleButton *button = [[UISnuffleButton alloc]createButtonFromElement:thankYouElement
-                                                                               addTag:0
-                                                                                 yPos:currentY
-                                                                            container:self
-                                                                            withStyle:style
-                                                                    buttonTapDelegate:nil];
+            UISnuffleButton *button = [[UISnuffleButton alloc]buttonWithElement:thankYouElement
+                                                                         addTag:0
+                                                                           yPos:currentY
+                                                                      container:self
+                                                                      withStyle:style
+                                                              buttonTapDelegate:nil];
             
             currentY += button.frame.origin.y + betweenElementsSpace;
             

@@ -22,7 +22,7 @@ extern NSString * const UISnuffleButtonNotificationButtonTapEventKeyEventName;
 @property (nonatomic, strong) NSString			*urlTarget;
 @property (nonatomic, strong) NSArray			*tapEvents;
 
-- (id)createButtonFromElement:(TBXMLElement *)element addTag:(NSInteger)tag yPos:(CGFloat)yPos container:(UIView *)container withStyle:(GTPageStyle *)pageStyle buttonTapDelegate:(id<UISnuffleButtonTapDelegate>)buttonDelegate;
+- (id)buttonWithElement:(TBXMLElement *)element addTag:(NSInteger)tag yPos:(CGFloat)yPos container:(UIView *)container withStyle:(GTPageStyle *)pageStyle buttonTapDelegate:(id<UISnuffleButtonTapDelegate>)buttonDelegate;
 -(instancetype)initWithFrame:(CGRect)frame tapDelegate:(id<UISnuffleButtonTapDelegate>)tapDelegate;
 -(void)reset;
 

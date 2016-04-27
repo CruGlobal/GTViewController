@@ -86,7 +86,7 @@
         NSString *modalComponentElementName = [TBXML elementName:modalComponentElement];
         
         if ([modalComponentElementName isEqual:kName_FollowUp_Title]) {
-            GTLabel *titleLabel = [[GTLabel alloc]initFromElement:modalComponentElement
+            GTLabel *titleLabel = [[GTLabel alloc]initWithElement:modalComponentElement
                                               parentTextAlignment:UITextAlignmentCenter
                                                              xPos:-1
                                                              yPos:currentY
@@ -97,7 +97,7 @@
             
             [self addSubview:titleLabel];
         } else if ([modalComponentElementName isEqual:kName_FollowUp_Body]) {
-            GTLabel *bodyLabel = [[GTLabel alloc]initFromElement:modalComponentElement
+            GTLabel *bodyLabel = [[GTLabel alloc]initWithElement:modalComponentElement
                                              parentTextAlignment:UITextAlignmentLeft
                                                             xPos:-1
                                                             yPos:currentY
@@ -107,10 +107,10 @@
             
             [self addSubview:bodyLabel];
         } else if ([modalComponentElementName isEqual:kName_Input_Field]) {
-            GTInputFieldView *inputFieldView = [[GTInputFieldView alloc] createInputFieldFromElement:modalComponentElement
-                                                                                               withY:currentY
-                                                                                           withStyle:style
-                                                                                      presentingView:presentingView];
+            GTInputFieldView *inputFieldView = [[GTInputFieldView alloc] inputFieldWithElement:modalComponentElement
+                                                                                         withY:currentY
+                                                                                     withStyle:style
+                                                                                presentingView:presentingView];
             
             currentY = inputFieldView.frame.origin.y + inputFieldView.frame.size.height + betweenElementsSpace;
             

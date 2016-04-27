@@ -17,7 +17,7 @@
 @implementation GTInputFieldView
 
 
-- (instancetype)createInputFieldFromElement:(TBXMLElement *)element withY:(CGFloat)yPos withStyle:(GTPageStyle*)style presentingView:(UIView *)presentingView {
+- (instancetype)inputFieldWithElement:(TBXMLElement *)element withY:(CGFloat)yPos withStyle:(GTPageStyle*)style presentingView:(UIView *)presentingView {
     
     GTLabel *inputFieldLabel = nil;
     UITextField *inputTextField = [[UITextField alloc]init];
@@ -63,7 +63,7 @@
         NSString *childElementName = [TBXML elementName:inputFieldChildElement];
         
         if ([childElementName isEqual:kName_Input_Label]) {
-            inputFieldLabel = [[GTLabel alloc]initFromElement:inputFieldChildElement
+            inputFieldLabel = [[GTLabel alloc]initWithElement:inputFieldChildElement
                                           parentTextAlignment:UITextAlignmentLeft
                                                          xPos:0
                                                          yPos:0
