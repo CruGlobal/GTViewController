@@ -14,33 +14,11 @@
 #import "UIRoundedView.h"
 #import	"UIDisclosureIndicator.h"
 
-//////////Compiler Constants///////////
-#define DEFAULTOFFSET 10.0
-#define DEFAULT_PANEL_OFFSET_X 0.0
-#define DEFAULT_PANEL_OFFSET_Y 5.0
-#define DEFAULT_QUESTION_OFFSET_X 0.0
-#define DEFAULT_QUESTION_OFFSET_Y 0
-#define DEFAULTOFFSET 10.0
-#define BUTTONXOFFSET 10
-#define	LARGEBUTTONXOFFSET 20
-#define DROPSHADOW_INSET 10.0
-#define ROUNDRECT_RADIUS 10.0
-#define	DROPSHADOW_LENGTH 30.0
-#define DROPSHADOW_SUBLENGTH 20.0
+#import "GTMultiButtonResponseView.h"
+#import "GTFollowupViewController.h"
+#import "GTFollowupModalView.h"
+#import "GTLabel.h"
 
-#define DEFAULT_TEXTSIZE_LABEL 17.0
-#define DEFAULT_TEXTSIZE_BUTTON 20.0
-#define DEFAULT_TEXTSIZE_QUESTION_NORMAL 20.0
-#define DEFAULT_TEXTSIZE_QUESTION_STRAIGHT 17.0
-#define DEFAULT_TEXTSIZE_TITLE_PEEKHEADING_MAX 30
-#define DEFAULT_TEXTSIZE_TITLE_PEEKHEADING_MIN 6
-#define DEFAULT_TEXTSIZE_TITLE_SUBHEADING 17
-#define DEFAULT_TITLE_PEEKHEADING_MIN_HEIGHT 68
-#define DEFAULT_TITLE_PEEKHEADING_PADDING 5
-#define DEFAULT_TITLE_PEEKHEADING_LINE_WIDTH 2
-#define DEFAULT_TEXTSIZE_TITLE_NUMBER 68
-#define DEFAULT_TEXTSIZE_TITLE_HEADING_PEEKMODE 30
-#define DEFAULT_TEXTSIZE_TITLE_HEADING_NORMALMODE 17
 
 
 //////////Run-Time Constants///////////
@@ -52,6 +30,7 @@ NSString * const kName_TitleHeading		= @"heading";
 NSString * const kName_TitleSubHeading	= @"subheading";
 NSString * const kName_TitlePeek		= @"peekpanel";
 NSString * const kName_Button			= @"button";
+NSString * const kName_LinkButton       = @"link-button";
 NSString * const kName_ButtonText		= @"buttontext";
 NSString * const kName_Label			= @"text";
 NSString * const kName_Image			= @"image";
@@ -59,6 +38,19 @@ NSString * const kName_Panel			= @"panel";
 NSString * const kName_PanelLabel		= @"text";
 NSString * const kName_PanelImage		= @"image";
 NSString * const kName_Question			= @"question";
+
+// Constants for the follow up modal elements added in v7.0.x of this Pod
+NSString * const kName_Button_Pair      = @"button-pair";
+NSString * const kName_Positive_Button  = @"positive-button";
+NSString * const kName_Negative_Button  = @"negative-button";
+NSString * const kName_Followup_Modal   = @"followup-modal";
+
+NSString * const kName_FollowUp_Title       = @"followup-title";
+NSString * const kName_FollowUp_Body        = @"followup-body";
+NSString * const kName_Input_Field          = @"input-field";
+NSString * const kName_Input_Label          = @"input-label";
+NSString * const kName_Input_Placeholder    = @"input-placeholder";
+NSString * const kName_Thank_You            = @"thank-you";
 
 // Constants for the XML attribute names
 NSString * const kAttr_backgroundImage	= @"backgroundimage";
@@ -77,12 +69,17 @@ NSString * const kAttr_x				= @"x";
 NSString * const kAttr_y				= @"y";
 NSString * const kAttr_width			= @"w";
 NSString * const kAttr_height			= @"h";
+
+// Constants for XML attributes for follow up modal, events and listeners added in v7.0.x of this pod
 NSString * const kAttr_tap_events		= @"tap-events";
+NSString * const kAttr_followup_id      = @"followup-id";
+NSString * const kAttr_context_id       = @"context-id";
 extern NSString * const kAttr_listeners;
+NSString * const kAttr_type             = @"type";
 
 NSString * const kAttr_yoff				= @"yoffset";
 NSString * const kAttr_xoff				= @"xoffset";
-
+NSString * const kAttr_xTrailingOff     = @"x-trailing-offset";
 NSString * const kAttr_modifier			= @"modifier";
 
 NSString * const kAttr_urlText          = @"label";
@@ -108,6 +105,7 @@ NSString * const kButtonMode_url		= @"url";
 NSString * const kButtonMode_phone		= @"phone";
 NSString * const kButtonMode_email		= @"email";
 NSString * const kButtonMode_allurl		= @"allurl";
+NSString * const kButtonMode_link       = @"link";
 
 //label modifer constants
 NSString * const kLabelModifer_normal	= @"normal";
@@ -132,11 +130,9 @@ NSString * const kLabelModifer_bolditalics	= @"bold-italics";
 @property (nonatomic, assign)	CGRect			questionFrame;
 
 //object creation functions (take an xml element return an iphone interface object, ie a subclass of UIView)
-- (id)createButtonFromElement:					(TBXMLElement *)element		addTag:(NSInteger)tag			yPos:(CGFloat)yPos		container:(UIView *)container;
 - (id)createButtonLinesFromButtonElement:		(TBXMLElement *)element		buttonTag:(NSInteger)buttonTag	yPos:(CGFloat)yPos		container:(UIView *)container;
 - (id)createDisclosureIndicatorFromButtonTag:	(NSInteger)buttonTag		container:(UIView *)container;
 - (id)createImageFromElement:					(TBXMLElement *)element		xPos:(CGFloat)xpostion			yPos:(CGFloat)ypostion	container:(UIView *)container;
-- (id)createLabelFromElement:					(TBXMLElement *)element		parentTextAlignment:(UITextAlignment)panelAlign			xPos:(CGFloat)xpostion			yPos:(CGFloat)ypostion	container:(UIView *)container;
 - (id)createPanelFromElement:					(TBXMLElement *)element		buttonTag:(NSInteger)buttonTag	container:(UIView *)container;
 - (id)createQuestionFromElement:				(TBXMLElement *)element		container:(UIView *)container;
 - (id)createQuestionLabelFromElement:			(TBXMLElement *)element		container:(UIView *)container;
@@ -145,7 +141,6 @@ NSString * const kLabelModifer_bolditalics	= @"bold-italics";
 - (id)createTitleNumberFromElement:				(TBXMLElement *)element		titleMode:(NSString *)titleMode containerFrame:(CGRect)containerFrame;
 - (id)createTitleHeadingFromElement:			(TBXMLElement *)element		titleMode:(NSString *)titleMode containerFrame:(CGRect)containerFrame;
 - (id)createTitleSubheadingFromElement:			(TBXMLElement *)element		titleMode:(NSString *)titleMode containerFrame:(CGRect)containerFrame;
-- (UILabel *)createLabelWithFrame:				(CGRect)frame				autoResize:(BOOL)resize			text:(NSString *)text	color:(UIColor *)color	bgColor:(UIColor *)bgColor	alpha:(CGFloat)alpha	alignment:(UITextAlignment)textAlignment	font:(NSString *)font	size:(NSUInteger)size;
 
 @end
 
@@ -276,8 +271,6 @@ NSString * const kLabelModifer_bolditalics	= @"bold-italics";
 		
 		//init xml elements for interpretation
 		TBXMLElement	*title_el			= [TBXML childElementNamed:kName_Title parentElement:self.pageElement];
-		//TBXMLElement	*label_el			= [TBXML childElementNamed:kName_Label parentElement:self.pageElement];
-		//TBXMLElement	*image_el			= [TBXML childElementNamed:kName_Image parentElement:self.pageElement];
 		TBXMLElement	*question_el		= [TBXML childElementNamed:kName_Question parentElement:self.pageElement];
 		TBXMLElement	*second_question_el	= nil;
 		if (question_el != nil) {
@@ -362,7 +355,6 @@ NSString * const kLabelModifer_bolditalics	= @"bold-italics";
             
 ///TODO: use send rather than insert
             
-            //[self.pageView insertSubview:[self.pageView viewWithTag:99] aboveSubview:subTitleView]; //stick the gapfiller above the subtitle
             [self.pageView insertSubview:[self.pageView viewWithTag:90] atIndex:0];           //put the top shadow to back
             [self.pageView insertSubview:[self.pageView viewWithTag:91] atIndex:0];           //put the bottom shadow to back
         }
@@ -630,7 +622,7 @@ NSString * const kLabelModifer_bolditalics	= @"bold-italics";
         //NSMutableArray      *pageObjects        = [NSMutableArray alloc];
         
 		//init xml elements for interpretation
-		TBXMLElement		*object_el			= self.pageElement->firstChild;//[TBXML childElementNamed:kName_Button parentElement:self.pageElement];
+		TBXMLElement		*object_el			= self.pageElement->firstChild;
 		
 		//init variables for xml attributes
 		NSString			*button_mode		= nil;
@@ -644,8 +636,8 @@ NSString * const kLabelModifer_bolditalics	= @"bold-italics";
 		UIImageView         *imageImage			= nil;
 		
 		//init variables used to hold element attribute values
-		NSInteger			numOfButtons		= 0;//[[TBXML valueOfAttributeNamed:kAttr_numOfButtons forElement:self.pageElement] intValue];
-		NSInteger			numOfBigButtons		= 0;//[[TBXML valueOfAttributeNamed:kAttr_numOfBigButtons forElement:self.pageElement] intValue];
+		NSInteger			numOfButtons		= 0;
+		NSInteger			numOfBigButtons		= 0;
         NSInteger           numOfTextLabels     = 0;
         CGFloat             combinedHeightOfTextLabels = 0;
         NSInteger           numOfImages         = 0;
@@ -660,41 +652,47 @@ NSString * const kLabelModifer_bolditalics	= @"bold-italics";
         while (object_el != nil) {
             //NSLog(@"%@", [TBXML elementName:object_el]);
             
+            NSString *elementName = [TBXML elementName:object_el];
         ////title
-            if([[TBXML elementName:object_el] isEqual:kName_Title]) {
+            if([elementName isEqual:kName_Title]) {
                 //title creation is not handled here
             }
             
-        ////button
-			if ([[TBXML elementName:object_el] isEqual:kName_Button]) {
+            ////button
+            if ([elementName isEqual:kName_Button]) {
                 //get the button mode
                 button_mode		= [TBXML valueOfAttributeNamed:kAttr_mode forElement:object_el];
                 if ([button_mode isEqual:kButtonMode_big]) {
-                     numOfBigButtons++;
+                    numOfBigButtons++;
                 } else {
                     numOfButtons++;
                 }
             }
             
         ////text label
-            if ([[TBXML elementName:object_el] isEqual:kName_Label]) {
+            if ([elementName isEqual:kName_Label]) {
                 numOfTextLabels++;
                 
                 //note: because of the unpredictable height of text labels, we need to calculate their combined height
 
                 //create a temporary text label and add it's height to the tally
-                labelLabel = [self createLabelFromElement:object_el parentTextAlignment:NSTextAlignmentLeft xPos:0 yPos:0 container:self.pageView];
+                labelLabel = [[GTLabel alloc] initFromElement:object_el
+                                                 parentTextAlignment:NSTextAlignmentLeft
+                                                                xPos:0
+                                                                yPos:0
+                                                           container:self.pageView
+                                                               style:self.pageStyle];
+                
                 combinedHeightOfTextLabels += fmaxf(labelLabel.frame.size.height,40);
                 
             }
             
         ////image
-            if ([[TBXML elementName:object_el] isEqual:kName_Image]) {
+            if ([elementName isEqual:kName_Image]) {
                 numOfImages++;
             }
             
             object_el = object_el->nextSibling;
-            //object_el = [TBXML nextSiblingNamed:kName_Button searchFromElement:object_el];
         }
         //NSLog(@"\nCountLoop found:\n %ld regular buttons,\n %ld big buttons,\n %ld text labels,\n %ld images", (long)numOfButtons, (long)numOfBigButtons, (long)numOfTextLabels, (long)numOfImages);
         
@@ -708,9 +706,7 @@ NSString * const kLabelModifer_bolditalics	= @"bold-italics";
 		CGFloat				previousObjectYMax;
         NSInteger           buttonCount         = 1;
         NSInteger           labelCount          = 1;
-		//NSInteger			object_yoffset		= 0;
         NSInteger           object_ypos         = 0;
-		//NSInteger			object_xoffset		= 0;
         NSInteger           object_xpos         = 0;
         
         //reset object_el to the first object
@@ -746,79 +742,67 @@ NSString * const kLabelModifer_bolditalics	= @"bold-italics";
     ////Loop through all objects in the page
         while (object_el != nil) {
             
-            
+            NSString *elementName = [TBXML elementName:object_el];
             
             //y position handling
-            //object_yoffset = [[TBXML valueOfAttributeNamed:kAttr_yoff forElement:object_el] integerValue];
             object_ypos = [[TBXML valueOfAttributeNamed:kAttr_y forElement:object_el] integerValue];
             if (object_ypos == 0) {
                 object_ypos = (previousObjectYMax + spaceBetweenObjects);
             }
 			
 			//x position handling
-            //object_xoffset = [[TBXML valueOfAttributeNamed:kAttr_xoff forElement:object_el] integerValue];
             object_xpos = [[TBXML valueOfAttributeNamed:kAttr_x forElement:object_el] integerValue];
             if (object_xpos == 0) {
                 object_xpos = (10);
             }
             
             ////TITLE
-            if([[TBXML elementName:object_el] isEqual:kName_Title]) {
+            if([elementName isEqual:kName_Title]) {
                 //title creation is not handled here
                 //NSLog(@"Title already created");
             }
             
             ////BUTTON
-			if ([[TBXML elementName:object_el] isEqual:kName_Button]) {
+            if ([elementName isEqual:kName_Button] || [elementName isEqual:@"link-button"]) {
+                
                 //get the button mode
                 button_mode		= [TBXML valueOfAttributeNamed:kAttr_mode forElement:object_el];
-                
                 
                 //create the lines around the button and add it to the page's view
                 buttonLinesTemp	= [self createButtonLinesFromButtonElement:object_el buttonTag:buttonCount yPos:object_ypos container:nil];
                 [self.pageView addSubview:buttonLinesTemp];
                 
                 //create the button and add it to the page's view
-                buttonTemp		= [self createButtonFromElement:object_el addTag:buttonCount yPos:object_ypos container:nil];
+                buttonTemp      = [[UISnuffleButton alloc] createButtonFromElement:object_el
+                                                                            addTag:buttonCount
+                                                                              yPos:object_ypos
+                                                                         container:self.pageView
+                                                                         withStyle:self.pageStyle
+                                                                 buttonTapDelegate:self.buttonDelegate];
                 [self.pageView addSubview:buttonTemp];
                 
                 //create the arrow and add it to the page's view
                 arrowTemp		= [self createDisclosureIndicatorFromButtonTag:buttonCount container:nil];
                 [self.pageView addSubview:arrowTemp];
-                
-                /*
-                if ([button_mode isEqual:kButtonMode_big]) {
-                    //NSLog(@"BigButton created with frame: x:%f y:%f w:%f h:%f", buttonTemp.frame.origin.x, buttonTemp.frame.origin.y, buttonTemp.frame.size.width, buttonTemp.frame.size.height);
-                } else {
-                    //NSLog(@"Button created with frame: x:%f y:%f w:%f h:%f", buttonTemp.frame.origin.x, buttonTemp.frame.origin.y, buttonTemp.frame.size.width, buttonTemp.frame.size.height);
-                }
-                */
+
                 previousObjectYMax = CGRectGetMaxY(buttonLinesTemp.frame);
                 buttonCount++;
             }
             
             ////TEXT LABEL - note: some defaults are overridden here since existing text label defaults are for within panels, not page objects.
-            if ([[TBXML elementName:object_el] isEqual:kName_Label]) {
+            if ([elementName isEqual:kName_Label]) {
                 
-                labelLabel = [self createLabelFromElement:object_el parentTextAlignment:NSTextAlignmentLeft xPos:object_xpos yPos:object_ypos container:nil];
-                
+                labelLabel = [[GTLabel alloc]initFromElement:object_el
+                                                parentTextAlignment:NSTextAlignmentLeft
+                                                               xPos:object_xpos
+                                                               yPos:object_ypos
+                                                          container:self.pageView
+                                                              style:self.pageStyle];
                 [labelLabel setTag:(800+labelCount)];
                 if (labelLabel.alpha == 1) {
                     labelLabel.alpha = 0;
                 }
-                
-				/*
-                //set ypos if not set in snml
-                if ([TBXML valueOfAttributeNamed:kAttr_y forElement:object_el] == nil) {
-                    labelLabel.frame = CGRectMake(labelLabel.frame.origin.x, object_ypos, labelLabel.frame.size.width, labelLabel.frame.size.height);
-                }
-                
-                //set xpos if not set in snml
-                if ([TBXML valueOfAttributeNamed:kAttr_x forElement:object_el] == nil && [TBXML valueOfAttributeNamed:kAttr_align forElement:object_el] == nil ) {
-                    labelLabel.frame = CGRectMake(object_xpos, labelLabel.frame.origin.y, labelLabel.frame.size.width, labelLabel.frame.size.height);
-                }
-				 */
-                
+ 
                 //add created label
                 [self.pageView insertSubview:labelLabel atIndex:1];
                 
@@ -830,23 +814,11 @@ NSString * const kLabelModifer_bolditalics	= @"bold-italics";
             }
             
             ////IMAGE
-            if ([[TBXML elementName:object_el] isEqual:kName_Image]) {
+            if ([elementName isEqual:kName_Image]) {
                 numOfImages++;
                 
                 imageImage = [self createImageFromElement:object_el xPos:object_xpos yPos:object_ypos container:nil];
-				
-				/*
-				//set ypos if not set in snml
-                if ([TBXML valueOfAttributeNamed:kAttr_y forElement:object_el] == nil) {
-                    imageImage.frame = CGRectMake(imageImage.frame.origin.x, object_ypos, imageImage.frame.size.width, imageImage.frame.size.height);
-                }
-				
-                //set xpos if not set in snml
-                if ([TBXML valueOfAttributeNamed:kAttr_x forElement:object_el] == nil && [TBXML valueOfAttributeNamed:kAttr_align forElement:object_el] == nil ) {
-                    imageImage.frame = CGRectMake(object_xpos, imageImage.frame.origin.y, imageImage.frame.size.width, imageImage.frame.size.height);
-                }
-				 */
-                
+				            
                 [self.pageView insertSubview:imageImage atIndex:1];
                 
                 //NSLog(@"Image created with frame: x:%f y:%f w:%f h:%f", buttonTemp.frame.origin.x, buttonTemp.frame.origin.y, buttonTemp.frame.size.width, buttonTemp.frame.size.height);
@@ -854,67 +826,44 @@ NSString * const kLabelModifer_bolditalics	= @"bold-italics";
                 previousObjectYMax = CGRectGetMaxY(imageImage.frame);
             }
             
+            
+            ////FOLLOWUP MODAL
+            if ( [elementName isEqual:kName_Followup_Modal]) {
+                GTFollowupModalView *followupModalView = [[GTFollowupModalView alloc] initFromElement:object_el
+                                                                                            withStyle:self.pageStyle
+                                                                                       presentingView:self.pageView
+                                                                                  interpreterDelegate:self.delegate];
+                
+                GTFollowupViewController *viewController = [[GTFollowupViewController alloc]initWithFollowupView:followupModalView];
+                
+                NSArray *listeners = [[TBXML valueOfAttributeNamed:kAttr_listeners forElement:object_el] componentsSeparatedByString:@","];
+                
+                for (id listener in listeners) {
+                    NSString *listenerName = listener;
+                    
+                    if ([self.delegate respondsToSelector:@selector(registerListenerWithEventName:target:selector:parameter:)]) {
+                        [self.delegate registerListenerWithEventName:listenerName
+                                                                  target:self.delegate
+                                                                selector:@selector(presentFollowupModalView:)
+                                                               parameter:viewController];
+
+                    }
+                }
+                
+                if ([self watermark]) {
+                    [followupModalView setWatermark:[self watermark]];
+                }
+            }
             //NSLog(@"previousObjectYMax = %f\n", previousObjectYMax);
             
             //iterate to the next object
             object_el = object_el->nextSibling;
-            //object_el = [TBXML nextSiblingNamed:kName_Button searchFromElement:object_el];
+
             //NSLog(@"Button Loop found %d regular buttons and %d big buttons.", numOfButtons, numOfBigButtons);
         
                 
         }
         
-        
-        /*
-////		
-    ////process all the objects
-        
-        while (object_el != nil) {
-        //for (NSInteger buttonCount = 1; buttonCount <= (numOfButtons + numOfBigButtons); buttonCount++) {
-            
-            
-			//grab the mode of the button
-			button_mode		= [TBXML valueOfAttributeNamed:kAttr_mode forElement:object_el];
-			
-			//create the lines around the button and add it to the page's view
-			buttonLinesTemp	= [self createButtonLinesFromButtonElement:object_el buttonTag:buttonCount yPos:previousObjectYMax container:nil];
-			[self.pageView addSubview:buttonLinesTemp];
-    
-			//create the button and add it to the page's view
-			buttonTemp		= [self createButtonFromElement:object_el addTag:buttonCount yPos:previousObjectYMax container:nil];
-			[self.pageView addSubview:buttonTemp];
-			
-			//create the arrow and add it to the page's view
-			arrowTemp		= [self createDisclosureIndicatorFromButtonTag:buttonCount container:nil];
-			[self.pageView addSubview:arrowTemp];
-			
-			//clean up
-			[buttonLinesTemp release];
-			[buttonTemp release];
-			[arrowTemp release];
-			
-			//move to the next button and find the position of that button
-			object_el = [TBXML nextSiblingNamed:kName_Button searchFromElement:object_el];
-			
-			//if there is a new button and the user is setting the offset; grab offset of new button and add it to the last y position
-			if (object_el != nil && object_yoffset != nil) {
-				object_yoffset = [TBXML valueOfAttributeNamed:kAttr_yoff forElement:object_el];
-				
-				//set space to user defined or default (0)
-				if (object_yoffset != nil) {
-					spaceBetweenButtons = [object_yoffset floatValue];
-				} else {
-					spaceBetweenButtons = 0;
-				}
-				
-			}
-			//calculate the buttons position from the offset
-			previousObjectYMax += (([button_mode isEqual:kButtonMode_big] ? 140 : 40) + spaceBetweenButtons);
-			
-			object_el = object_el->nextSibling;
-		}
-        */
-		
 		//set flag
 		self.buttonElementsHaveBeenParsed = YES;
 	} else {
@@ -1055,174 +1004,6 @@ NSString * const kLabelModifer_bolditalics	= @"bold-italics";
 
 #pragma mark -
 #pragma mark Create Functions
-
-/**
- *	Description:	Creates a UISnuffleButton given a button element
- *	Parameters:		element:	The TBXMLElement that describes the button
- *					Tag:		The number that identifies the button
- *					yPos:		The y position of the button (which starts with the 2px line at the top)
- *	Returns:		A UISnuffleButton object with parameters set to what is described in the xml element.
- */
-- (id)createButtonFromElement:(TBXMLElement *)element addTag:(NSInteger)tag yPos:(CGFloat)yPos container:(UIView *)container {
-	
-	if (element != nil) {
-		
-		//init variables for xml elements
-		TBXMLElement						*button_label		= [TBXML childElementNamed:kName_ButtonText		parentElement:element];
-		TBXMLElement						*button_image		= [TBXML childElementNamed:kName_Image			parentElement:element];
-		
-		//init button's xml attributes
-		NSString							*mode				= [TBXML valueOfAttributeNamed:kAttr_mode		forElement:element];
-		NSString							*text				= nil;
-        NSString                            *urlTarget          = nil;
-		NSString							*textColorString	= nil;
-		NSString							*textSizeString		= nil;
-		NSString							*y					= nil;
-		NSString							*image				= nil;
-		NSArray								*tapEvents			= nil;
-		
-		if ([mode isEqual:kButtonMode_url] || [mode isEqual:kButtonMode_email] || [mode isEqual:kButtonMode_phone]) {
-			text				= [TBXML valueOfAttributeNamed:kAttr_urlText forElement:element];
-            if (text == nil) {
-                text            = [TBXML textForElement:element];
-            } else {
-                urlTarget       = [TBXML textForElement:element];
-            }
-			textColorString		= [TBXML valueOfAttributeNamed:kAttr_color	forElement:element];
-			textSizeString		= [TBXML valueOfAttributeNamed:kAttr_size	forElement:element];
-			y					= [TBXML valueOfAttributeNamed:kAttr_y		forElement:element];
-		} else if ([mode isEqual:kButtonMode_allurl]) {
-			text				= [TBXML textForElement:element];
-			textColorString		= [TBXML valueOfAttributeNamed:kAttr_color	forElement:element];
-			textSizeString		= [TBXML valueOfAttributeNamed:kAttr_size	forElement:element];
-			y					= [TBXML valueOfAttributeNamed:kAttr_y		forElement:element];
-		} else {
-			text				= [TBXML textForElement:button_label];
-			textColorString		= [TBXML valueOfAttributeNamed:kAttr_color	forElement:button_label];
-			textSizeString		= [TBXML valueOfAttributeNamed:kAttr_size	forElement:button_label];
-			y					= [TBXML valueOfAttributeNamed:kAttr_y		forElement:button_label];
-		}
-		
-		if ([TBXML valueOfAttributeNamed:kAttr_tap_events forElement:element]) {
-			tapEvents = [[TBXML valueOfAttributeNamed:kAttr_tap_events forElement:element] componentsSeparatedByString:@","];
-		}
-		
-		//grab the image path if it exists
-		if (button_image) {
-			image		= [TBXML textForElement:button_image];
-		}
-		
-		//set container to the page if not set
-		if (container == nil) {
-			container	= self.pageView;
-		}
-		
-		//if y attr is set then overwrite yPos
-		if (y != nil) {
-			yPos		= [y floatValue];
-		}
-		
-		//init object ptr to store the button
-		UISnuffleButton						*buttonTemp			= nil;
-		
-		//init variables for button parameters
-		UIImage								*bgImage			= nil;
-		UIColor								*bgColor			= nil;
-		UIColor								*textColor			= [GTPageStyle colorForHex:textColorString];
-		CGRect								frame;
-		CGFloat								size				= DEFAULT_TEXTSIZE_BUTTON;
-		UIControlContentHorizontalAlignment	contentHorizontalAlignment;
-		UIControlContentVerticalAlignment	contentVerticalAlignment;
-		UIEdgeInsets						edgeInset			= UIEdgeInsetsZero;
-		BOOL								hide				= YES;
-		
-		//set defaults based on mode
-		if ([mode isEqual:kButtonMode_big]) {
-			frame						= CGRectMake(LARGEBUTTONXOFFSET, yPos + 2, container.frame.size.width - (2 * LARGEBUTTONXOFFSET), 136);
-			bgColor						= [UIColor clearColor];
-			if (textColor == nil) {
-				textColor				= self.pageStyle.defaultTextColor;
-			}
-			contentHorizontalAlignment	= UIControlContentHorizontalAlignmentCenter;
-			contentVerticalAlignment	= UIControlContentVerticalAlignmentBottom;
-			edgeInset					= UIEdgeInsetsMake(0, 0, 7, 0);
-		} else if ([mode isEqual:kButtonMode_url] || [mode isEqual:kButtonMode_email] || [mode isEqual:kButtonMode_phone]) {
-			frame						= CGRectMake(BUTTONXOFFSET,
-                                                     yPos + 2,
-                                                     container.frame.size.width - (2 * BUTTONXOFFSET),
-                                                     50); //JJ: height of url button
-			
-			tag							+= 110;
-			bgColor						= [UIColor clearColor];
-			if (textColor == nil) {
-				textColor				= self.pageStyle.backgroundColor;
-			}
-			if (image == nil) {
-				bgImage = [self.fileLoader imageWithFilename:@"URL_Button.png"];
-			}
-			hide						= NO;
-			contentHorizontalAlignment	= UIControlContentHorizontalAlignmentCenter;
-			contentVerticalAlignment	= UIControlContentVerticalAlignmentCenter;
-		} else if ([mode isEqual:kButtonMode_allurl]) {
-			frame						= CGRectMake(BUTTONXOFFSET, yPos + 2, container.frame.size.width - (2 * BUTTONXOFFSET), 36);
-			bgColor						= [UIColor clearColor];
-			if (textColor == nil) {
-				textColor				= self.pageStyle.defaultTextColor;
-			}
-			contentHorizontalAlignment	= UIControlContentHorizontalAlignmentCenter;
-			contentVerticalAlignment	= UIControlContentVerticalAlignmentCenter;
-		} else {
-			frame						= CGRectMake(BUTTONXOFFSET, yPos + 2, container.frame.size.width - (2 * BUTTONXOFFSET), 36);
-			bgColor						= [UIColor clearColor];
-			if (textColor == nil) {
-				textColor				= self.pageStyle.defaultTextColor;
-			}
-			contentHorizontalAlignment	= UIControlContentHorizontalAlignmentLeft;
-			contentVerticalAlignment	= UIControlContentVerticalAlignmentCenter;
-			edgeInset					= UIEdgeInsetsMake(0, 10, 0, 0);
-		}
-		
-		
-		
-		//load background image if it exists
-		if (image != nil) {
-			bgImage = [self.fileLoader imageWithFilename:image];
-		}
-		
-		//if size defined then multiply it by that factor
-		if (textSizeString != nil) {
-			size = round(size * [textSizeString floatValue] / 100);
-		}
-		
-		//create, set up and return button
-		buttonTemp = [[UISnuffleButton alloc] initWithFrame:frame tapDelegate:self.buttonDelegate];
-		buttonTemp.tapEvents = tapEvents;
-		[buttonTemp setMode:mode];						//record the button's mode for later use
-		[buttonTemp setBackgroundColor:bgColor];
-		[buttonTemp setTitle:text forState:UIControlStateNormal];
-        //use urlTarget if label text is specified
-        if (urlTarget != nil) {
-            [buttonTemp setUrlTarget:urlTarget];
-        }
-        
-		buttonTemp.titleLabel.font = [UIFont fontWithName:buttonTemp.titleLabel.font.fontName size:size];
-		if (bgImage) {
-			[buttonTemp setBackgroundImage:bgImage forState:UIControlStateNormal];
-		}
-		[buttonTemp setAdjustsImageWhenHighlighted:YES];
-		[buttonTemp setTitleColor:textColor forState:UIControlStateNormal];
-		[buttonTemp setContentHorizontalAlignment:contentHorizontalAlignment];
-		[buttonTemp setContentVerticalAlignment:contentVerticalAlignment];
-		[buttonTemp setContentEdgeInsets:edgeInset];
-		[buttonTemp setTag:tag];
-		[buttonTemp setHidden:hide];
-		
-		return buttonTemp;
-		
-	} else {
-		return nil;
-	}
-}
 
 /**
  *	Description:	Creates an image view for the lines around the button given a button element
@@ -1386,108 +1167,6 @@ NSString * const kLabelModifer_bolditalics	= @"bold-italics";
 	
 }
 
-/**
- *	Description:	Creates an UILabel from a label element
- *	Parameters:		Element:	The TBXMLElement for the label
- *	Returns:		A UILabel object from the attributes specified in the passed TBXML element.
- */
-- (id)createLabelFromElement:(TBXMLElement *)element parentTextAlignment:(UITextAlignment)panelAlign xPos:(CGFloat)xpostion yPos:(CGFloat)ypostion container:(UIView *)container {
-	
-	//set container to the page if not set
-	if (container == nil) {
-		container	= self.pageView;
-	}
-	
-	//set default value if not set
-	if (!(xpostion >= 0)) {
-		xpostion = DEFAULT_PANEL_OFFSET_X;
-	}
-	
-	if (!(ypostion >= 0)) {
-		ypostion = DEFAULT_PANEL_OFFSET_Y;
-	}
-	
-	if (element != nil) {
-		
-		//read attributes for label
-		NSString	*text		=								[TBXML textForElement:element];
-		NSString	*modifier	=								[TBXML valueOfAttributeNamed:kAttr_modifier forElement:element];
-		UIColor		*color		=	[GTPageStyle colorForHex:	[TBXML valueOfAttributeNamed:kAttr_color	forElement:element]];
-		NSString	*alpha		=								[TBXML valueOfAttributeNamed:kAttr_alpha	forElement:element];
-		NSString	*align		=								[TBXML valueOfAttributeNamed:kAttr_align	forElement:element];
-		NSString	*textalign	=								[TBXML valueOfAttributeNamed:kAttr_textalign	forElement:element];
-		NSString	*size		=								[TBXML valueOfAttributeNamed:kAttr_size		forElement:element];
-		NSString	*x			=								[TBXML valueOfAttributeNamed:kAttr_x		forElement:element];
-		NSString	*y			=								[TBXML valueOfAttributeNamed:kAttr_y		forElement:element];
-		NSString	*w			=								[TBXML valueOfAttributeNamed:kAttr_width	forElement:element];
-		NSString	*h			=								[TBXML valueOfAttributeNamed:kAttr_height	forElement:element];
-		CGFloat		xoffset		=								round([[TBXML valueOfAttributeNamed:kAttr_xoff		forElement:element] floatValue]);
-		CGFloat		yoffset		=								round([[TBXML valueOfAttributeNamed:kAttr_yoff		forElement:element] floatValue]);
-		
-		//init variables for object parameters
-		CGRect			frame			= CGRectZero;
-		UITextAlignment textAlignment	= panelAlign;
-		BOOL			resize			= YES;
-		UIColor			*bgColor		= nil;
-		NSUInteger		textSize		= DEFAULT_TEXTSIZE_LABEL;
-		NSString		*font			= self.pageStyle.labelFontName;
-		CGFloat			labelAlpha		= 1.0;
-		
-		//set parameters to attribute val or defaults	//attribute value															//default value
-		//note: these defaults only apply to text labels inside panels
-        if		(x)										{frame.origin.x		=	round([x floatValue]);}								else	{frame.origin.x		= xpostion;}
-		if		(y)										{frame.origin.y		=	round([y floatValue]);}								else	{frame.origin.y		= ypostion;}
-		if		(w)										{frame.size.width	=	round([w floatValue]);}								else	{frame.size.width	= (container ? container.frame.size.width - (2 * DEFAULT_PANEL_OFFSET_X) : 280);}
-		if		(h)										{frame.size.height	=	round([h floatValue]);}								else	{frame.size.height	= 40;}
-		if		((w != nil) && (h != nil))				{resize				= NO;}
-		
-		if		(!bgColor)																											{bgColor			= self.pageStyle.defaultLabelBackgroundColor;}
-		if		(!color)																											{color				= self.pageStyle.defaultTextColor;}
-		if		(size)									{textSize			= round(textSize * [size floatValue] / 100);}
-		
-		//if alignment is found calculate position based on alignment
-		if ([align isEqualToString:kAlignment_left]) {
-			
-			frame.origin.x		= DEFAULT_PANEL_OFFSET_X;
-			
-		} else if ([align isEqualToString:kAlignment_center]) {
-			
-			frame.origin.x		= ( 0.5 * container.frame.size.width ) - ( 0.5 * frame.size.width );
-			
-		} else if ([align isEqualToString:kAlignment_right]) {
-			
-			frame.origin.x		= container.frame.size.width - frame.size.width - DEFAULT_PANEL_OFFSET_X;
-			
-		}
-		
-		//apply offset
-		frame.origin.x			+= xoffset;
-		frame.origin.y			+= yoffset;
-		
-		if (alpha) {
-			labelAlpha = [alpha floatValue];
-		}
-		
-		if (modifier) {
-			if		([modifier isEqual:kLabelModifer_bold])			{font		= self.pageStyle.boldLabelFontName;}
-			else if	([modifier isEqual:kLabelModifer_italics])		{font		= self.pageStyle.italicsLabelFontName;}
-			else if	([modifier isEqual:kLabelModifer_bolditalics])	{font		= self.pageStyle.boldItalicsLabelFontName;}
-		}
-		
-		if (textalign) {
-			if		([textalign isEqual:kAlignment_right])	{textAlignment		= NSTextAlignmentRight;}
-			else if ([textalign isEqual:kAlignment_center])	{textAlignment		= NSTextAlignmentCenter;}
-			else if ([textalign isEqual:kAlignment_left])	{textAlignment		= NSTextAlignmentLeft;}
-		}
-		
-		
-		return [self createLabelWithFrame:frame autoResize:resize text:text color:color bgColor:bgColor alpha:labelAlpha alignment:textAlignment font:font size:textSize];
-		
-	} else {
-		return nil;
-	}
-	
-}
 
 /**
  *	Description:	Creates an UISnufflePanel from a panel element
@@ -1517,6 +1196,8 @@ NSString * const kLabelModifer_bolditalics	= @"bold-italics";
 		UIImageView		*imageTemp			= nil;
 		UISnuffleButton	*buttonTemp			= nil;
 		
+        GTMultiButtonResponseView *multiButtonResponseView = nil;
+        
 		//init variables for xml attributes
 		CGFloat			maxWidth			= 0;
 		CGFloat			maxHeight			= 0;
@@ -1552,10 +1233,15 @@ NSString * const kLabelModifer_bolditalics	= @"bold-italics";
             }
             
             ////BUTTON
-			if ([[TBXML elementName:object_el] isEqual:kName_Button]) {
+			if ([[TBXML elementName:object_el] isEqual:kName_Button] || [[TBXML elementName:object_el] isEqual:@"link-button"]) {
 
 				//create image
-				buttonTemp			= [self createButtonFromElement:object_el addTag:buttonTag yPos:object_ypos container:tempContainerView];
+                buttonTemp          = [[UISnuffleButton alloc]createButtonFromElement:object_el
+                                                                               addTag:buttonTag
+                                                                                 yPos:object_ypos
+                                                                            container:tempContainerView
+                                                                            withStyle:self.pageStyle
+                                                                    buttonTapDelegate:self.buttonDelegate];
 				
 				//store the maximum dimensions
 				maxWidth			= fmaxf(maxWidth, CGRectGetMaxX(buttonTemp.frame));
@@ -1568,12 +1254,41 @@ NSString * const kLabelModifer_bolditalics	= @"bold-italics";
 				
             }
             
+            
+            ////POSITIVE-NEGATIVE BUTTON COMBO
+            if ([[TBXML elementName:object_el] isEqual:kName_Button_Pair]) {
+                TBXMLElement *firstChild = object_el->firstChild;
+                TBXMLElement *secondChild = firstChild->nextSibling;
+                
+                multiButtonResponseView = [[GTMultiButtonResponseView alloc]initWithFirstElement:firstChild
+                                                                                   secondElement:secondChild
+                                                                                   parentElement:object_el
+                                                                                       yPosition:object_ypos
+                                                                                   containerView:tempContainerView
+                                                                                       withStyle:self.pageStyle];
+                
+                maxWidth			= fmaxf(maxWidth, CGRectGetMaxX(multiButtonResponseView.frame));
+                maxHeight			= fmaxf(maxHeight, CGRectGetMaxY(multiButtonResponseView.frame));
+                
+                previousObjectYMax	= CGRectGetMaxY(multiButtonResponseView.frame);
+                
+                //add to container
+                [tempContainerView addSubview:multiButtonResponseView];
+                
+            }
+            
+            
             ////TEXT LABEL - note: some defaults are overridden here since existing text label defaults are for within panels, not page objects.
             if ([[TBXML elementName:object_el] isEqual:kName_Label]) {
                 
                 //create label
-				labelTemp			= [self createLabelFromElement:object_el parentTextAlignment:panelAlign xPos:object_xpos yPos:object_ypos container:tempContainerView];
-				
+                labelTemp           = [[GTLabel alloc] initFromElement:object_el
+                                                   parentTextAlignment:panelAlign
+                                                                  xPos:object_xpos
+                                                                  yPos:object_ypos
+                                                             container:tempContainerView
+                                                                 style:self.pageStyle];
+                
 				//store the maximum dimensions
 				maxWidth			= fmaxf(maxWidth, CGRectGetMaxX(labelTemp.frame));
 				maxHeight			= fmaxf(maxHeight, CGRectGetMaxY(labelTemp.frame));
@@ -1632,6 +1347,7 @@ NSString * const kLabelModifer_bolditalics	= @"bold-italics";
 	}
 }
 
+
 - (id)createQuestionFromElement:(TBXMLElement *)element container:(UIView *)container {
 	
 	//set container to the page if not set
@@ -1657,9 +1373,9 @@ NSString * const kLabelModifer_bolditalics	= @"bold-italics";
 			NSArray *listeners = [[TBXML valueOfAttributeNamed:kAttr_listeners forElement:element] componentsSeparatedByString:@","];
 			[listeners enumerateObjectsUsingBlock:^(NSString *listener, NSUInteger index, BOOL *stop) {
 				
-				if ([weakSelf.delegate respondsToSelector:@selector(registerListenerWithEventName:target:selector:)]) {
+				if ([weakSelf.delegate respondsToSelector:@selector(registerListenerWithEventName:target:selector:parameter:)]) {
 					
-					[weakSelf.delegate registerListenerWithEventName:listener target:nil selector:@selector(announce)];
+					[weakSelf.delegate registerListenerWithEventName:listener target:nil selector:@selector(announce) parameter:nil];
 					
 				}
 				
@@ -1851,9 +1567,16 @@ NSString * const kLabelModifer_bolditalics	= @"bold-italics";
 				font = self.pageStyle.labelFontName;
 			}
 		}
-		
-		return [self createLabelWithFrame:frame autoResize:resize text:text color:color bgColor:bgColor alpha:labelAlpha alignment:textAlignment font:font size:textSize];
-		
+        
+        return [[GTLabel alloc]initWithFrame:frame
+                                  autoResize:resize text:text
+                                       color:color
+                                     bgColor:bgColor
+                                       alpha:labelAlpha
+                                   alignment:textAlignment
+                                        font:font
+                                        size:textSize];
+
 	} else {
 		return nil;
 	}
@@ -2103,7 +1826,15 @@ NSString * const kLabelModifer_bolditalics	= @"bold-italics";
 			UILabel			*tempSubTitleText		= nil;
 			
 			if (subTitle_element) {
-				tempSubTitleText = [self createLabelWithFrame:frame autoResize:resize text:text color:color bgColor:self.pageStyle.defaultLabelBackgroundColor alpha:labelAlpha alignment:textAlignment font:font size:textSize];
+                tempSubTitleText = [[GTLabel alloc] initWithFrame:frame
+                                                       autoResize:resize
+                                                             text:text
+                                                            color:color
+                                                          bgColor:self.pageStyle.defaultLabelBackgroundColor
+                                                            alpha:labelAlpha
+                                                        alignment:textAlignment
+                                                             font:font
+                                                              size:textSize];
 			}
 			
 			
@@ -2124,7 +1855,16 @@ NSString * const kLabelModifer_bolditalics	= @"bold-italics";
 														 tapDelegate:self.panelDelegate];
 			
 			CGRect peekPanelArrowFrame = CGRectMake((subTitleFrame.size.width / 2) - 5 ,subTitleFrame.size.height - 8 , 10, 10);
-			UILabel	*peekPanelArrow = [self createLabelWithFrame:peekPanelArrowFrame autoResize:NO text:@"▼" color:self.pageStyle.defaultTextColor bgColor:self.pageStyle.defaultLabelBackgroundColor alpha:1.0 alignment:NSTextAlignmentCenter font:self.pageStyle.labelFontName size:8];
+            UILabel *peekPanelArrow = [[GTLabel alloc] initWithFrame:peekPanelArrowFrame
+                                                          autoResize:NO
+                                                                text:@"▼"
+                                                               color:self.pageStyle.defaultTextColor
+                                                             bgColor:self.pageStyle.defaultLabelBackgroundColor
+                                                               alpha:1.0
+                                                           alignment:NSTextAlignmentCenter
+                                                                font:self.pageStyle.labelFontName
+                                                                size:8];
+            
 			peekPanelArrow.shadowColor = [UIColor darkGrayColor];
 			
 			[subTitleContainer addSubview:tempSubTitleText];
@@ -2183,7 +1923,15 @@ NSString * const kLabelModifer_bolditalics	= @"bold-italics";
 			if		([titleMode isEqual:kTitleMode_clear])	{bgColor			= self.pageStyle.clearTitleBackgroundColor;}
 		}
 		
-		return [self createLabelWithFrame:frame autoResize:resize text:text color:color bgColor:bgColor alpha:labelAlpha alignment:textAlignment font:font size:textSize];
+        return [[GTLabel alloc] initWithFrame:frame
+                                   autoResize:resize
+                                         text:text
+                                        color:color
+                                      bgColor:bgColor
+                                        alpha:labelAlpha
+                                    alignment:textAlignment
+                                         font:font
+                                         size:textSize];
 		
 	} else {
 		return nil;
@@ -2249,7 +1997,15 @@ NSString * const kLabelModifer_bolditalics	= @"bold-italics";
 			if		([titleMode isEqual:kTitleMode_clear])		{bgColor			= self.pageStyle.clearTitleBackgroundColor;}
 			else if ([titleMode isEqual:kTitleMode_straight])	{
 				textAlignment=NSTextAlignmentCenter;
-				UILabel *temp = [self createLabelWithFrame:frame autoResize:resize text:text color:color bgColor:bgColor alpha:labelAlpha alignment:textAlignment font:font size:textSize];
+                UILabel *temp = [[GTLabel alloc] initWithFrame:frame
+                                                    autoResize:resize
+                                                          text:text
+                                                         color:color
+                                                       bgColor:bgColor
+                                                         alpha:labelAlpha
+                                                     alignment:textAlignment
+                                                          font:font
+                                                          size:textSize];
 				frame = temp.frame;
 				frame.origin.x		= 0;
 				frame.size.width = containerFrame.size.width;
@@ -2259,7 +2015,15 @@ NSString * const kLabelModifer_bolditalics	= @"bold-italics";
 			}
 		}
 		
-		return [self createLabelWithFrame:frame autoResize:resize text:text color:color bgColor:bgColor alpha:labelAlpha alignment:textAlignment font:font size:textSize];
+        return [[GTLabel alloc] initWithFrame:frame
+                                   autoResize:resize
+                                         text:text
+                                        color:color
+                                      bgColor:bgColor
+                                        alpha:labelAlpha
+                                    alignment:textAlignment
+                                         font:font
+                                         size:textSize];
 	} else {
 		return nil;
 	}
@@ -2329,8 +2093,16 @@ NSString * const kLabelModifer_bolditalics	= @"bold-italics";
 	}
 	
 	//**added to remove multiple return points**	
-	//Sets up the return data, the mode handling modifies this.
-	UILabel *tempLabel = [self createLabelWithFrame:frame autoResize:resize text:text color:color bgColor:bgColor alpha:labelAlpha alignment:textAlignment font:font size:textSize];
+    //Sets up the return data, the mode handling modifies this.
+    UILabel *tempLabel = [[GTLabel alloc] initWithFrame:frame
+                                             autoResize:resize
+                                                   text:text
+                                                  color:color
+                                                bgColor:bgColor
+                                                  alpha:labelAlpha
+                                              alignment:textAlignment
+                                                   font:font
+                                                   size:textSize];
 	
 	//mode handling
 	if (titleMode) {
@@ -2354,38 +2126,6 @@ NSString * const kLabelModifer_bolditalics	= @"bold-italics";
 	}
 	
 	//**CONFIRM REDUNDANCY**	return [self createLabelWithFrame:frame autoResize:resize text:text color:color bgColor:bgColor alpha:labelAlpha alignment:textAlignment font:font size:textSize];
-	return tempLabel;
-}
-
-//Returns a label given label attributes
-- (UILabel *)createLabelWithFrame:(CGRect)frame autoResize:(BOOL)resize text:(NSString *)text color:(UIColor *)color bgColor:(UIColor *)bgColor alpha:(CGFloat)alpha alignment:(UITextAlignment)textAlignment font:(NSString *)font size:(NSUInteger)size {
-	UILabel *tempLabel = [[UILabel alloc] initWithFrame:frame];
-	
-	//Colors
-	[tempLabel setBackgroundColor:bgColor];
-	[tempLabel setTextColor:color];
-	
-	//Set Alpha
-	if (alpha < 1) {
-		[tempLabel setOpaque:NO];
-		[tempLabel setAlpha:alpha];
-	}
-	
-	//Text & Formatting
-	[tempLabel setText:text];
-	[tempLabel setFont:[UIFont fontWithName:font size:size]];
-	[tempLabel setTextAlignment:textAlignment];
-	[tempLabel setLineBreakMode:NSLineBreakByWordWrapping];
-	
-	//Size
-	[tempLabel setNumberOfLines:0];
-	if (resize) {
-		[tempLabel sizeToFit];
-	}
-	
-	//Reset width to fill the width available
-	[tempLabel setFrame:CGRectMake(tempLabel.frame.origin.x, tempLabel.frame.origin.y, frame.size.width, tempLabel.frame.size.height)];
-	
 	return tempLabel;
 }
 

@@ -23,7 +23,68 @@ Thank You for forgiving my sins and giving me eternal life.  Take control of the
 		</panel>
 	</button>
     
-	<question mode="straight" size="96" translate="true">Christ will come into your life 
-as He promised.</question>
+    <question size="90" textalign="center">Is there anything stopping you from saying this right now?</question>
     
+    <button>
+        <buttontext size="82" translate="true">Did you pray this prayer?</buttontext>
+        <panel>
+            <button-pair>
+                <positive-button h="40" w="120" tap-events="prayer-page-give-me-follow-up">YES</positive-button>
+                <negative-button h="40" w="120" tap-events="prayer-page-not-today">Not Today</negative-button>
+            </button-pair>
+            <link-button h="20" size="70" textalign="center" tap-events="prayer-page-already-decided">I already made this decision</link-button>
+        </panel>
+    </button>
+    
+    <followup-modal followup-id="1" listeners="prayer-page-give-me-follow-up">
+        <fallback>
+            <followup-title modifier="bold" x="0" xoffset="30" x-trailing-offset="30">Jesus has come into your life as he promised.</followup-title>
+            <followup-body modifier="bold" yoffset="40" x="0" xoffset="30" x-trailing-offset="30">Knowing someone better helps a relationship grow. Would you like to sign up for an email series that can help guide you in your new relationship with Jesus Christ?</followup-body>
+            <input-field name="email" type="email" xoffset="30" yoffset="10" x-trailing-offset="30">
+                <input-label modifier="bold" size="80">Email</input-label>
+                <input-placeholder>john.doe@gmail.com</input-placeholder>
+            </input-field>
+            <input-field name="name" type="text" xoffset="30" yoffset="10" x-trailing-offset="30">
+                <input-label modifier="bold" size="80">Name</input-label>
+                <input-placeholder>John Doe (Optional)</input-placeholder>
+            </input-field>
+            <button-pair align="right" xoffset="30" x-trailing-offset="30">
+                <positive-button h="40" w="80" tap-events="follow-up-send">Send</positive-button>
+                <negative-button h="40" w="120" size="70" mode="link" tap-events="follow-up-no-thanks">No Thanks</negative-button>
+            </button-pair>
+            
+            <!-- thank-you should be handled as an embedded page -->
+            <thank-you listeners="follow-up-send">
+                <text modifier="bold" textalign="center" size="100" xoffset="30" x-trailing-offset="30">Thank you</text>
+                <text textalign="left" size="100" xoffset="30" x-trailing-offset="30">Check your email soon for your first study in following Jesus Christ.</text>
+                <text textalign="left" size="100" xoffset="30" x-trailing-offset="30">If you don't receive it, please check your spam folder.</text>
+                <link-button textalign="center" tap-events="follow-up-thank-you-done">Done</button>
+            </thank-you>
+        </fallback>
+    </followup-modal>
+    
+    <followup-modal followup-id="1" listeners="prayer-page-already-decided">
+        <fallback>
+            <followup-body modifier="bold" yoffset="40" x="0" xoffset="30" x-trailing-offset="30">Knowing someone better helps a relationship grow. Would you like to sign up for an email series that can help guide you in your new relationship with Jesus Christ?</followup-body>
+            <input-field name="email" type="email" xoffset="30" yoffset="10" x-trailing-offset="30">
+                <input-label modifier="bold" size="80">Email</input-label>
+                <input-placeholder>john.doe@gmail.com</input-placeholder>
+            </input-field>
+            <input-field name="name" type="text" xoffset="30" yoffset="10" x-trailing-offset="30">
+                <input-label modifier="bold" size="80">Name</input-label>
+                <input-placeholder>John Doe (Optional)</input-placeholder>
+            </input-field>
+            <button-pair align="right" xoffset="30" x-trailing-offset="30">
+                <positive-button h="40" w="80" tap-events="follow-up-send">Send</positive-button>
+                <negative-button mode="link" h="40" w="120" size="70" tap-events="already-decided-follow-up-no-thanks">No Thanks</negative-button>
+            </button-pair>
+            
+            <!-- thank-you should be handled as an embedded page -->
+            <thank-you listeners="already-decided-follow-up-no-thanks">
+                <text modifier="bold" textalign="center" size="100" yoffset="00">Thank you</text>
+                <text textalign="left" width="240" size="100">Satisfied....</text>
+                <link-button textalign="center" tap-events="follow-up-thank-you-done">Done</button>
+            </thank-you>
+        </fallback>
+    </followup-modal>
 </page>

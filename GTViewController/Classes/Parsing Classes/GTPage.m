@@ -129,7 +129,7 @@ extern NSString * const kAttr_watermark;
 	
 	if ((self = [self initWithFrame:frame])) {
 		
-		[self registerNotificationHandlersForEvents];
+        self.listeners = [NSMutableDictionary dictionary];
 		
         self.pageDelegate             = delegate;
         self.fileLoader               = fileLoader;
@@ -170,40 +170,78 @@ extern NSString * const kAttr_watermark;
 
 - (void)registerNotificationHandlersForEvents {
 	
-	self.listeners = [NSMutableDictionary dictionary];
-	
-	__weak typeof(self)weakSelf = self;
-	[[NSNotificationCenter defaultCenter] addObserverForName:GTPageNotificationEvent object:self queue:nil usingBlock:^(NSNotification *note) {
-		
-		NSString *eventName = note.userInfo[GTPageNotificationEventKeyEventName];
-		[weakSelf triggerEventWithName:eventName];
-		
-	}];
-	
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(didReceivePageEventWithNotification:)
+                                                 name:GTPageNotificationEvent
+                                               object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(didReceiveButtonTapEventWithNotification:)
+                                                 name:UISnuffleButtonNotificationButtonTapEvent
+                                               object:nil];
+}
+
+- (void)didReceivePageEventWithNotification:(NSNotification *)notification {
+    
+    NSString *eventName = notification.userInfo[GTPageNotificationEventKeyEventName];
+    [self triggerEventWithName:eventName];
+    
+}
+
+- (void)didReceiveButtonTapEventWithNotification:(NSNotification *)notification {
+    
+    NSString *eventName = notification.userInfo[UISnuffleButtonNotificationButtonTapEventKeyEventName];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:GTPageNotificationEvent
+                                                        object:self
+                                                      userInfo:@{GTPageNotificationEventKeyEventName: eventName}];
+    
+}
+
+- (void)removeNotificationHandlersForEvents {
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:GTPageNotificationEvent object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UISnuffleButtonNotificationButtonTapEvent object:nil];
+    
 }
 
 - (void)triggerEventWithName:(NSString *)eventName {
-	
-	if (eventName && self.listeners[eventName]) {
-		
-		[self.listeners[eventName] enumerateObjectsUsingBlock:^(NSDictionary *pair, NSUInteger index, BOOL *stop) {
-			
-			id target = pair[@"target"];
-			SEL selector = NSSelectorFromString(pair[@"selector"]);
-			
-			[target performSelector:selector];
-			
+    
+    if (eventName && self.listeners[eventName]) {
+        
+        [self.listeners[eventName] enumerateObjectsUsingBlock:^(NSDictionary *pair, NSUInteger index, BOOL *stop) {
+            
+            id target = pair[@"target"];
+            SEL selector = NSSelectorFromString(pair[@"selector"]);
+			id parameter = pair[@"parameter"];
+            
+            if (parameter) {
+                [target performSelector:selector withObject:parameter];
+            } else {
+                [target performSelector:selector];
+            }
 		}];
 		
-	}
-	
+    }
 }
 
-- (void)registerListenerWithEventName:(NSString *)eventName target:(id)target selector:(SEL)selector {
+- (void)registerListenerWithEventName:(NSString *)eventName target:(id)target selector:(SEL)selector parameter:(id)parameter {
 	
 	target = ( target ? target : self );
-	NSDictionary *pair = ( selector && [target respondsToSelector:selector] ? @{@"target": target, @"selector": NSStringFromSelector(selector)} : nil );
-	
+    NSDictionary *pair;
+    
+    if (selector && [target respondsToSelector:selector]) {
+        if (parameter) {
+            pair = @{@"target": target, @"selector": NSStringFromSelector(selector), @"parameter" : parameter};
+        } else {
+            pair = @{@"target": target, @"selector": NSStringFromSelector(selector)};
+        }
+    } else {
+        pair = nil;
+    }
+    
 	if (eventName && pair) {
 		
 		if (self.listeners[eventName]) {
@@ -529,14 +567,6 @@ extern NSString * const kAttr_watermark;
 }
 
 - (void)didReceiveTapOnButton:(UISnuffleButton *)button {
-	
-	NSArray *events = button.tapEvents;
-	__weak typeof(self)weakSelf = self;
-	[events enumerateObjectsUsingBlock:^(NSString *event, NSUInteger index, BOOL *stop) {
-
-		[[NSNotificationCenter defaultCenter] postNotificationName:GTPageNotificationEvent object:weakSelf userInfo:@{GTPageNotificationEventKeyEventName: event}];
-
-	}];
 	
 	[self click:button];
 	
@@ -1064,6 +1094,8 @@ extern NSString * const kAttr_watermark;
 
 - (void)viewHasTransitionedIn {
 	
+    [self registerNotificationHandlersForEvents];
+    
 	if (self.watermark == nil) {
 		self.watermark = self.interpreter.watermark;
 		
@@ -1094,6 +1126,8 @@ extern NSString * const kAttr_watermark;
 - (void)viewHasTransitionedOut {
 	//Prepare the view to be animated in again:
 	
+    [self removeNotificationHandlersForEvents];
+    
 	self.isanimating = NO;
 	
 	self.watermark.alpha = 0.0;
@@ -1327,6 +1361,30 @@ extern NSString * const kAttr_watermark;
 	//self.isanimating = NO;
 	
 }
+
+
+#pragma mark - Followup Modal methods
+
+- (void)presentFollowupModalView:(GTFollowupViewController*)followupViewController {
+    if ([self.pageDelegate respondsToSelector:@selector(presentFollowupModal:)]) {
+        [self.pageDelegate presentFollowupModal:followupViewController];
+    }
+}
+
+
+- (void)transitionFollowupToThankYou {
+    if ([self.pageDelegate respondsToSelector:@selector(transitionFollowupToThankYou)]) {
+        [self.pageDelegate transitionFollowupToThankYou];
+    }
+}
+
+
+- (void)dismissFollowupModal {
+    if ([self.pageDelegate respondsToSelector:@selector(dismissFollowupModal)]) {
+        [self.pageDelegate dismissFollowupModal];
+    }
+}
+
 
 - (void)dealloc {
 	

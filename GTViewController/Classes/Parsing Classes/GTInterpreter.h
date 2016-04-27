@@ -38,6 +38,7 @@
 @protocol GTInterpreterDelegate <NSObject>
 
 @optional
-- (void)registerListenerWithEventName:(NSString *)eventName target:(id)target selector:(SEL)selector;
+- (void)registerListenerWithEventName:(NSString *)eventName target:(id)target selector:(SEL)selector parameter:(id)parameter;
+
 
 @end

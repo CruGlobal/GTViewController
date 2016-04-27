@@ -13,6 +13,7 @@
 #import <MessageUI/MessageUI.h>
 #import "GTPage.h"
 #import "GTAboutViewController.h"
+#import "GTFollowupViewController.h"
 #import "GTPageMenuViewController.h"
 #import "GTShareViewController.h"
 #import "GTShareInfo.h"
@@ -153,6 +154,7 @@ NSString * const kAttr_listeners	= @"listeners";
 @property (nonatomic, assign)	BOOL isRotated;
 @property (nonatomic, assign)	BOOL instructionsAreRunning;
 
+@property (nonatomic, weak)     GTFollowupViewController    *followupViewController;
 @property (nonatomic, strong)	GTAboutViewController		*aboutPage;
 @property (nonatomic, strong)	GTPageMenuViewController	*pageMenu;
 @property (nonatomic, strong)	GTShareInfo					*shareInfo;
@@ -310,11 +312,12 @@ NSString * const kAttr_listeners	= @"listeners";
 - (void)registerListenerWithName:(NSString *)eventName forPageNumber:(NSInteger)pageNumber {
 	
 	if (eventName && pageNumber) {
-	
-		if (self.listeners[eventName]) {
-			[self.listeners[eventName] addObject:@(pageNumber)];
+        NSString *trimmedEventName = [eventName stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+        
+		if (self.listeners[trimmedEventName]) {
+			[self.listeners[trimmedEventName] addObject:@(pageNumber)];
 		} else {
-			self.listeners[eventName] = @[@(pageNumber)].mutableCopy;
+			self.listeners[trimmedEventName] = @[@(pageNumber)].mutableCopy;
 		}
 		
 	}
@@ -322,16 +325,21 @@ NSString * const kAttr_listeners	= @"listeners";
 }
 
 - (void)pageEventDetected:(NSNotification *)notification {
-	
-	NSString *eventName = notification.userInfo[GTPageNotificationEventKeyEventName];
-	
-	if (eventName && self.listeners[eventName]) {
-		
-		NSNumber *pageNumber = self.listeners[eventName][0];
-		[self switchToPageWithIndex:pageNumber.integerValue];
-		[self.centerPage triggerEventWithName:eventName];
-	}
-	
+    
+    NSString *eventName = notification.userInfo[GTPageNotificationEventKeyEventName];
+    
+    if (eventName && self.listeners[eventName]) {
+        NSString *trimmedEventName = [eventName stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+        
+        NSNumber *pageNumber = self.listeners[trimmedEventName][0];
+        [self switchToPageWithIndex:pageNumber.integerValue];
+        [self.centerPage triggerEventWithName:trimmedEventName];
+        
+        // dismiss a follow up modal if it is present and displayed
+        if (self.followupViewController) {
+            [self dismissViewControllerAnimated:YES completion:nil];
+        }
+    }
 }
 
 #pragma mark - methods for changing pages
@@ -522,9 +530,13 @@ NSString * const kAttr_listeners	= @"listeners";
                                               forElement:page_el]];
         [descArr addObject:[TBXML textForElement:page_el]];				//add description
 		
-		[self registerListenerWithName:[TBXML valueOfAttributeNamed:kAttr_listeners forElement:page_el]
-						 forPageNumber:fileArr.count - 1];
-		
+        NSArray *listeners = [[TBXML valueOfAttributeNamed:kAttr_listeners forElement:page_el] componentsSeparatedByString:@","];
+        __weak typeof(self) weakSelf = self;
+        
+        [listeners enumerateObjectsUsingBlock:^(NSString *listener, NSUInteger index, BOOL *stop) {
+            [weakSelf registerListenerWithName:listener forPageNumber:fileArr.count - 1];
+        }];
+        
         //move to next page element
         page_el = [TBXML nextSiblingNamed:kName_Page searchFromElement:page_el];
     }
@@ -607,6 +619,11 @@ NSString * const kAttr_listeners	= @"listeners";
         
     }];
     
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(pageEventDetected:)
+                                                 name:GTPageNotificationEvent
+                                               object:nil];
+
 }
 
 - (void)removeNotificationHandlers {
@@ -1140,6 +1157,18 @@ NSString * const kAttr_listeners	= @"listeners";
     pasteboard.string = websiteString;
 }
 
+- (void)presentFollowupModal:(GTFollowupViewController *)followupModalViewController {
+    self.followupViewController = followupModalViewController;
+    [self presentViewController:self.followupViewController animated:YES completion:nil];
+}
+
+- (void)transitionFollowupToThankYou {
+    [self.followupViewController transitionToThankYou];
+}
+
+- (void)dismissFollowupModal {
+    [self.followupViewController dismissViewControllerAnimated:YES completion:nil];
+}
 
 #pragma mark - User Interaction methods
 
@@ -2070,4 +2099,6 @@ NSString * const kAttr_listeners	= @"listeners";
         self.lastTrackedLanguage = self.languageCode;
     }
 }
+
+
 @end

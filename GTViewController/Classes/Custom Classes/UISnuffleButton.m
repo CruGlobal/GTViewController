@@ -10,6 +10,12 @@
 #import "snuffyViewControllerTouchNotifications.h"
 #import "HorizontalGestureRecognizer.h"
 
+#import "GTPageInterpreter.h"
+#import "GTFileLoader.h"
+
+NSString * const UISnuffleButtonNotificationButtonTapEvent = @"org.cru.godtools.gtviewcontroller.uisnufflebutton.notification.buttontapevent";
+NSString * const UISnuffleButtonNotificationButtonTapEventKeyEventName = @"org.cru.godtools.gtviewcontroller.uisnufflebutton.notification.buttontapevent.key.eventname";
+
 //button mode constants
 extern NSString * const kButtonMode_big;
 extern NSString * const kButtonMode_url;
@@ -53,6 +59,245 @@ extern NSString * const kButtonMode_allurl;
 	
     return self;
 }
+
+#pragma mark -
+#pragma mark Create Functions
+
+
+/**
+ *	Description:	Creates a UISnuffleButton given a button element
+ *	Parameters:		element:	The TBXMLElement that describes the button
+ *					Tag:		The number that identifies the button
+ *					yPos:		The y position of the button (which starts with the 2px line at the top)
+ *	Returns:		A UISnuffleButton object with parameters set to what is described in the xml element.
+ */
+- (id)createButtonFromElement:(TBXMLElement *)element addTag:(NSInteger)tag yPos:(CGFloat)yPos container:(UIView *)container withStyle:(GTPageStyle *)pageStyle buttonTapDelegate:(id<UISnuffleButtonTapDelegate>)buttonDelegate {
+    
+    if (element != nil) {
+        
+        //init variables for xml elements
+        TBXMLElement						*button_label		= [TBXML childElementNamed:kName_ButtonText		parentElement:element];
+        TBXMLElement						*button_image		= [TBXML childElementNamed:kName_Image			parentElement:element];
+        
+        //init button's xml attributes
+        NSString							*mode				= [TBXML valueOfAttributeNamed:kAttr_mode		forElement:element];
+        NSString							*text				= nil;
+        NSString                            *urlTarget          = nil;
+        NSString							*textColorString	= nil;
+        NSString							*textSizeString		= nil;
+        NSString							*y					= nil;
+        NSString							*image				= nil;
+        NSArray								*tapEvents			= nil;
+        CGFloat                             h                   = 0;
+        CGFloat                             w                   = 0;
+        
+        if ([mode isEqual:kButtonMode_url] || [mode isEqual:kButtonMode_email] || [mode isEqual:kButtonMode_phone]) {
+            text				= [TBXML valueOfAttributeNamed:kAttr_urlText forElement:element];
+            if (text == nil) {
+                text            = [TBXML textForElement:element];
+            } else {
+                urlTarget       = [TBXML textForElement:element];
+            }
+            textColorString		= [TBXML valueOfAttributeNamed:kAttr_color	forElement:element];
+            textSizeString		= [TBXML valueOfAttributeNamed:kAttr_size	forElement:element];
+            y					= [TBXML valueOfAttributeNamed:kAttr_y		forElement:element];
+        } else if ([mode isEqual:kButtonMode_allurl]) {
+            text				= [TBXML textForElement:element];
+            textColorString		= [TBXML valueOfAttributeNamed:kAttr_color	forElement:element];
+            textSizeString		= [TBXML valueOfAttributeNamed:kAttr_size	forElement:element];
+            y					= [TBXML valueOfAttributeNamed:kAttr_y		forElement:element];
+        } else if ([mode isEqual:kButtonMode_link] ||
+                   [[TBXML elementName:element] isEqual:kName_Positive_Button] ||
+                   [[TBXML elementName:element] isEqual:kName_Negative_Button] ||
+                   [[TBXML elementName:element] isEqual:kName_LinkButton]) {
+            text                = [TBXML textForElement:element];
+            textColorString		= [TBXML valueOfAttributeNamed:kAttr_color	forElement:element];
+            textSizeString		= [TBXML valueOfAttributeNamed:kAttr_size	forElement:element];
+            y					= [TBXML valueOfAttributeNamed:kAttr_y		forElement:element];
+            h					= round([[TBXML valueOfAttributeNamed:kAttr_height	forElement:element] floatValue]);
+            w					= round([[TBXML valueOfAttributeNamed:kAttr_width  forElement:element] floatValue]);
+        } else {
+            text				= [TBXML textForElement:button_label];
+            textColorString		= [TBXML valueOfAttributeNamed:kAttr_color	forElement:button_label];
+            textSizeString		= [TBXML valueOfAttributeNamed:kAttr_size	forElement:button_label];
+            y					= [TBXML valueOfAttributeNamed:kAttr_y		forElement:button_label];
+        }
+        
+        if ([TBXML valueOfAttributeNamed:kAttr_tap_events forElement:element]) {
+            tapEvents = [[TBXML valueOfAttributeNamed:kAttr_tap_events forElement:element] componentsSeparatedByString:@","];
+        }
+        
+        //grab the image path if it exists
+        if (button_image) {
+            image		= [TBXML textForElement:button_image];
+        }
+        
+        
+        //if y attr is set then overwrite yPos
+        if (y != nil) {
+            yPos		= [y floatValue];
+        }
+        
+        //init object ptr to store the button
+        UISnuffleButton						*buttonTemp			= nil;
+        
+        //init variables for button parameters
+        UIImage								*bgImage			= nil;
+        UIColor								*bgColor			= nil;
+        UIColor								*textColor			= [GTPageStyle colorForHex:textColorString];
+        CGRect								frame;
+        CGFloat								size				= DEFAULT_TEXTSIZE_BUTTON;
+        UIControlContentHorizontalAlignment	contentHorizontalAlignment;
+        UIControlContentVerticalAlignment	contentVerticalAlignment;
+        UIEdgeInsets						edgeInset			= UIEdgeInsetsZero;
+        BOOL								hide				= YES;
+        
+        //set defaults based on mode
+        if ([mode isEqual:kButtonMode_big]) {
+            frame						= CGRectMake(LARGEBUTTONXOFFSET,
+                                                     yPos + 2,
+                                                     container.frame.size.width - (2 * LARGEBUTTONXOFFSET),
+                                                     DEFAULT_HEIGHT_BIGBUTTON);
+            bgColor						= [UIColor clearColor];
+            if (textColor == nil) {
+                textColor				= pageStyle.defaultTextColor;
+            }
+            contentHorizontalAlignment	= UIControlContentHorizontalAlignmentCenter;
+            contentVerticalAlignment	= UIControlContentVerticalAlignmentBottom;
+            edgeInset					= UIEdgeInsetsMake(0, 0, 7, 0);
+        } else if ([mode isEqual:kButtonMode_url] ||
+                   [mode isEqual:kButtonMode_email] ||
+                   [mode isEqual:kButtonMode_phone]) {
+            frame						= CGRectMake(BUTTONXOFFSET,
+                                                     yPos + 2,
+                                                     container.frame.size.width - (2 * BUTTONXOFFSET),
+                                                     DEFAULT_HEIGHT_URLBUTTON); //JJ: height of url button
+            
+            tag							+= 110;
+            bgColor						= [UIColor clearColor];
+            if (textColor == nil) {
+                textColor				= pageStyle.backgroundColor;
+            }
+            if (image == nil) {
+                bgImage = [[GTFileLoader fileLoader] imageWithFilename:@"URL_Button.png"];
+            }
+            hide						= NO;
+            contentHorizontalAlignment	= UIControlContentHorizontalAlignmentCenter;
+            contentVerticalAlignment	= UIControlContentVerticalAlignmentCenter;
+        } else if ([mode isEqual:kButtonMode_allurl]) {
+            frame						= CGRectMake(BUTTONXOFFSET,
+                                                     yPos + 2,
+                                                     container.frame.size.width - (2 * BUTTONXOFFSET),
+                                                     DEFAULT_HEIGHT_ALLURLBUTTON);
+            bgColor						= [UIColor clearColor];
+            if (textColor == nil) {
+                textColor				= pageStyle.defaultTextColor;
+            }
+            contentHorizontalAlignment	= UIControlContentHorizontalAlignmentCenter;
+            contentVerticalAlignment	= UIControlContentVerticalAlignmentCenter;
+        } else if ([mode isEqual:kButtonMode_link] || [[TBXML elementName:element] isEqual:kName_LinkButton]) {
+            frame						= CGRectMake(BUTTONXOFFSET,
+                                                     yPos + 2,
+                                                     w ?: container.frame.size.width - BUTTONXOFFSET * 2,
+                                                     h ?: DEFAULT_HEIGHT_LINKBUTTON);
+            
+            tag							+= 110;
+            bgColor						= [UIColor clearColor];
+            if (textColor == nil) {
+                textColor				= pageStyle.defaultTextColor;
+            }
+            hide						= NO;
+            contentHorizontalAlignment	= UIControlContentHorizontalAlignmentCenter;
+            contentVerticalAlignment	= UIControlContentVerticalAlignmentCenter;
+        } else if ([[TBXML elementName:element] isEqual:kName_Positive_Button] ||
+                   [[TBXML elementName:element] isEqual:kName_Negative_Button]) {
+            frame						= CGRectMake(BUTTONXOFFSET,
+                                                     yPos + 2,
+                                                     w,
+                                                     h);
+            
+            tag							+= 110;
+            bgColor						= [UIColor clearColor];
+            if (textColor == nil) {
+                textColor				= pageStyle.backgroundColor;
+            }
+            if (image == nil) {
+                bgImage = [[GTFileLoader fileLoader] imageWithFilename:@"URL_Button.png"];
+            }
+            hide						= NO;
+            contentHorizontalAlignment	= UIControlContentHorizontalAlignmentCenter;
+            contentVerticalAlignment	= UIControlContentVerticalAlignmentCenter;
+        } else {
+            frame						= CGRectMake(BUTTONXOFFSET,
+                                                     yPos + 2,
+                                                     container.frame.size.width - (2 * BUTTONXOFFSET),
+                                                     DEFAULT_HEIGHT_BUTTON);
+            bgColor						= [UIColor clearColor];
+            if (textColor == nil) {
+                textColor				= pageStyle.defaultTextColor;
+            }
+            contentHorizontalAlignment	= UIControlContentHorizontalAlignmentLeft;
+            contentVerticalAlignment	= UIControlContentVerticalAlignmentCenter;
+            edgeInset					= UIEdgeInsetsMake(0, 10, 0, 0);
+        }
+        
+        
+        
+        //load background image if it exists
+        if (image != nil) {
+            bgImage = [[GTFileLoader fileLoader] imageWithFilename:image];
+        }
+        
+        //if size defined then multiply it by that factor
+        if (textSizeString != nil) {
+            size = round(size * [textSizeString floatValue] / 100);
+        }
+        
+        //create, set up and return button
+        buttonTemp = [[UISnuffleButton alloc] initWithFrame:frame tapDelegate:buttonDelegate];
+        buttonTemp.tapEvents = tapEvents;
+        [buttonTemp setMode:mode];						//record the button's mode for later use
+        [buttonTemp setBackgroundColor:bgColor];
+        [buttonTemp setTitle:text forState:UIControlStateNormal];
+        //use urlTarget if label text is specified
+        if (urlTarget != nil) {
+            [buttonTemp setUrlTarget:urlTarget];
+        }
+        
+        if ([mode isEqual:kButtonMode_link] || [[TBXML elementName:element] isEqual:kName_LinkButton]) {
+            UIFont *font = [UIFont fontWithName:buttonTemp.titleLabel.font.fontName size:size];
+            
+            NSDictionary *stringAttributes = @{NSUnderlineStyleAttributeName: @(NSUnderlineStyleSingle),
+                                            NSForegroundColorAttributeName : textColor,
+                                               NSFontAttributeName : font};
+            
+            NSAttributedString *underlinedTitle = [[NSAttributedString alloc] initWithString:text
+                                                                                  attributes:stringAttributes];
+
+            [buttonTemp setAttributedTitle:underlinedTitle  forState:UIControlStateNormal];
+        } else {
+            buttonTemp.titleLabel.font = [UIFont fontWithName:buttonTemp.titleLabel.font.fontName size:size];
+            
+            if (bgImage) {
+                [buttonTemp setBackgroundImage:bgImage forState:UIControlStateNormal];
+            }
+        }
+        
+        [buttonTemp setAdjustsImageWhenHighlighted:YES];
+        [buttonTemp setTitleColor:textColor forState:UIControlStateNormal];
+        [buttonTemp setContentHorizontalAlignment:contentHorizontalAlignment];
+        [buttonTemp setContentVerticalAlignment:contentVerticalAlignment];
+        [buttonTemp setContentEdgeInsets:edgeInset];
+        [buttonTemp setTag:tag];
+        [buttonTemp setHidden:hide];
+        
+        return buttonTemp;
+        
+    } else {
+        return nil;
+    }
+}
+
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
 	UITouch *touch = [touches anyObject];
@@ -200,7 +445,16 @@ extern NSString * const kButtonMode_allurl;
 				
 			}
 			
-		}
+            [self.tapEvents enumerateObjectsUsingBlock:^(NSString *eventName, NSUInteger idx, BOOL *stop) {
+                if (eventName) {
+                    NSString *trimmedEventName = [eventName stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+                    
+                    [[NSNotificationCenter defaultCenter] postNotificationName:UISnuffleButtonNotificationButtonTapEvent
+                                                                        object:self
+                                                                      userInfo:@{UISnuffleButtonNotificationButtonTapEventKeyEventName: trimmedEventName}];
+                }
+            }];
+        }
 		
 		[self reset];
 	}
