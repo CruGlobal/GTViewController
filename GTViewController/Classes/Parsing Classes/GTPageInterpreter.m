@@ -77,6 +77,8 @@ NSString * const kAttr_context_id       = @"context-id";
 extern NSString * const kAttr_listeners;
 NSString * const kAttr_type             = @"type";
 NSString * const kAttr_forceValidation  = @"force-validation";
+NSString * const kAttr_validFormat      = @"valid-format";
+NSString * const kAttr_name             = @"name";
 
 NSString * const kAttr_yoff				= @"yoffset";
 NSString * const kAttr_xoff				= @"xoffset";
@@ -114,6 +116,8 @@ NSString * const kLabelModifer_bold		= @"bold";
 NSString * const kLabelModifer_italics	= @"italics";
 NSString * const kLabelModifer_bolditalics	= @"bold-italics";
 
+NSString * const kInputFieldType_email  = @"email";
+NSString * const kInputFieldType_text   = @"text";
 
 @interface GTPageInterpreter ()
 

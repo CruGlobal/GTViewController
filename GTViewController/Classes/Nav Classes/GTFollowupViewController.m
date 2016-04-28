@@ -14,6 +14,8 @@
 #import "GTFollowupModalView.h"
 #import "GTFollowupThankYouView.h"
 
+NSString *const GTFollowupViewControllerParameterName_Name                      = @"name";
+NSString *const GTFollowupViewControllerParameterName_Email                     = @"email";
 NSString *const GTFollowupViewControllerFieldSubscriptionNotificationName       = @"org.cru.godtools.GTFollowupModalView.followupSubscriptionNotificationName";
 NSString *const GTFollowupViewControllerFieldSubscriptionEventName              = @"followup:subscribe";
 NSString *const GTFollowupViewControllerFieldKeyEmail                           = @"org.cru.godtools.GTFollowupModalView.fieldKeyEmail";
@@ -107,9 +109,9 @@ NSString *const GTFollowupViewControllerFieldKeyFollowupId                      
     [self.followupModalView.inputFieldViews enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         GTInputFieldView *inputFieldView = obj;
         
-        if ([[inputFieldView inputFieldType] isEqualToString:@"name"] && inputFieldView.inputFieldValue) {
+        if ([inputFieldView.parameterName isEqualToString:GTFollowupViewControllerParameterName_Name] && inputFieldView.inputFieldValue) {
             [followupDetailsDictionary setValue:inputFieldView.inputFieldValue forKey:GTFollowupViewControllerFieldKeyName];
-        } else if ([[inputFieldView inputFieldType] isEqualToString:@"email"]) {
+        } else if ([inputFieldView.parameterName isEqualToString:GTFollowupViewControllerParameterName_Email] && inputFieldView.inputFieldValue) {
             [followupDetailsDictionary setValue:inputFieldView.inputFieldValue forKey:GTFollowupViewControllerFieldKeyEmail];
         }
     }];

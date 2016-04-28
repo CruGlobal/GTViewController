@@ -106,6 +106,8 @@ extern NSString * const kAttr_tap_events;
 extern NSString * const kAttr_followup_id;
 extern NSString * const kAttr_context_id;
 extern NSString * const kAttr_forceValidation;
+extern NSString * const kAttr_validFormat;
+extern NSString * const kAttr_name;
 extern NSString * const kAttr_listeners;
 extern NSString * const kAttr_type;
 
@@ -144,6 +146,10 @@ extern NSString * const kLabelModifer_normal;
 extern NSString * const kLabelModifer_bold;
 extern NSString * const kLabelModifer_italics;
 extern NSString * const kLabelModifer_bolditalics;
+
+//input field type constants
+extern NSString * const kInputFieldType_email;
+extern NSString * const kInputFieldType_text;
 
 @interface GTPageInterpreter : GTInterpreter
 

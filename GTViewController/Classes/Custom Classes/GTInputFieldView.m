@@ -25,6 +25,7 @@ NSString const *emailRegEx =
 
 @interface GTInputFieldView ()
 
+@property (strong, nonatomic, readwrite) NSString   *parameterName;
 @property (strong, nonatomic) UILabel               *inputFieldLabel;
 @property (strong, nonatomic) NSString              *inputFieldType;
 @property (strong, nonatomic) NSRegularExpression   *validationRegex;
@@ -94,17 +95,19 @@ NSString const *emailRegEx =
         inputFieldChildElement = inputFieldChildElement->nextSibling;
     }
     
-    if ([[TBXML valueOfAttributeNamed:kAttr_type forElement:element] isEqual:@"email"]) {
+    if ([[TBXML valueOfAttributeNamed:kAttr_type forElement:element] isEqual:kInputFieldType_email]) {
         self.inputTextField.keyboardType = UIKeyboardTypeEmailAddress;
         self.inputTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
-        self.inputFieldType = @"email";
-    } else if([[TBXML valueOfAttributeNamed:kAttr_type forElement:element] isEqual:@"text"]) {
+        self.inputFieldType = kInputFieldType_email;
+    } else if([[TBXML valueOfAttributeNamed:kAttr_type forElement:element] isEqual:kInputFieldType_text]) {
         self.inputTextField.autocapitalizationType = UITextAutocapitalizationTypeWords;
-        self.inputFieldType = @"name";
+        self.inputFieldType = kInputFieldType_text;
     }
+    
+    self.parameterName = [TBXML valueOfAttributeNamed:kAttr_name forElement:element];
 
-    if ([TBXML valueOfAttributeNamed:@"valid-format" forElement:element]) {
-       self.validationRegex = [[NSRegularExpression alloc] initWithPattern:[TBXML valueOfAttributeNamed:@"valid-format" forElement:element]
+    if ([TBXML valueOfAttributeNamed:kAttr_validFormat forElement:element]) {
+       self.validationRegex = [[NSRegularExpression alloc] initWithPattern:[TBXML valueOfAttributeNamed:kAttr_validFormat forElement:element]
                                                                    options:NSRegularExpressionCaseInsensitive
                                                                      error:nil];
     }
@@ -129,7 +132,7 @@ NSString const *emailRegEx =
 
 
 - (BOOL)isValid {
-    if ([[self inputFieldType] isEqualToString:@"email"]) {
+    if ([[self inputFieldType] isEqualToString:kInputFieldType_email]) {
         return [self isValidEmail];
     }
     
