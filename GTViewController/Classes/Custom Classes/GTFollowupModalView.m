@@ -75,7 +75,7 @@
     betweenElementsSpace =  (availableBufferSpace * 0.2) / (numLabels + numButtonPairs + numTextInputs);
     
     int currentY = topLeadingSpace;
-    int inputFieldTag = 0;
+    int inputFieldTag = BASE_TAG_INPUTFIELDTEXT;
     
     // second pass - render objects
     modalComponentElement = fallbackElement->firstChild;

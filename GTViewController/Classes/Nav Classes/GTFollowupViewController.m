@@ -180,17 +180,17 @@ NSString *const GTFollowupViewControllerFieldKeyFollowupId                      
     CGRect inputFieldViewFrame = self.activeField.superview.frame;
     
     CGRect unobscuredByKeyboardFrame = self.view.frame;
-    unobscuredByKeyboardFrame.size.height -= keyboardFrame.size.height;
+    unobscuredByKeyboardFrame.size.height -= CGRectGetHeight(keyboardFrame);
     
     // offset the height of the inputFieldView, b/c it is a label stacked on an input
     // if just the frame is considered, then the label could show while the input is hidden
-    unobscuredByKeyboardFrame.size.height -= inputFieldViewFrame.size.height;
+    unobscuredByKeyboardFrame.size.height -= CGRectGetHeight(inputFieldViewFrame);
     
     if (CGRectContainsPoint(unobscuredByKeyboardFrame, inputFieldViewFrame.origin) ) {
         return;
     }
 
-    CGFloat viewVerticalDelta = (inputFieldViewFrame.origin.y + inputFieldViewFrame.size.height) - unobscuredByKeyboardFrame.size.height;
+    CGFloat viewVerticalDelta = (CGRectGetMinY(inputFieldViewFrame) + CGRectGetHeight(inputFieldViewFrame)) - CGRectGetHeight(unobscuredByKeyboardFrame);
     UIViewAnimationCurve animationCurve;
     NSTimeInterval animationDuration;
     
@@ -210,16 +210,17 @@ NSString *const GTFollowupViewControllerFieldKeyFollowupId                      
     [UIView beginAnimations:nil context:nil];
     [UIView setAnimationDuration:animationDuration];
     [UIView setAnimationCurve:animationCurve];
-    
+
     newViewFrame.origin.y -= verticalDelta;
     newViewFrame.size.height += verticalDelta;
+
     self.view.frame = newViewFrame;
     
     [UIView commitAnimations];
 }
 
 
-- (void) resetViewPosition:(NSNotification *) notification {
+- (void) resetViewPosition:(NSNotification *)notification {
     NSDictionary *userInfo = notification.userInfo;
     
     // Get animation info from userInfo
@@ -243,11 +244,24 @@ NSString *const GTFollowupViewControllerFieldKeyFollowupId                      
 }
 
 - (CGFloat)calculateVerticalDeltaFromCurrentField:(UIView *)currentField toNextField:(UIView *)nextField {
-    return nextField.frame.origin.y - currentField.frame.origin.y;
+    return CGRectGetMinY(nextField.frame) - CGRectGetMinY(currentField.frame);
     
 }
 
 #pragma mark - UITextFieldDelegate methods
+
+- (void)textFieldDidBeginEditing:(UITextField *)textField {
+    self.activeField = textField;
+    if (![textField.superview.superview viewWithTag:textField.tag + 1]) {
+        [textField setReturnKeyType:UIReturnKeyDone];
+    }
+}
+
+
+- (void)textFieldDidEndEditing:(UITextField *)textField {
+    self.activeField = nil;
+}
+
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
     NSInteger nextTag = textField.tag + 1;
@@ -276,16 +290,10 @@ NSString *const GTFollowupViewControllerFieldKeyFollowupId                      
 }
 
 
-- (void)textFieldDidBeginEditing:(UITextField *)textField {
-    self.activeField = textField;
-    if (![textField.superview.superview viewWithTag:textField.tag + 1]) {
-        [textField setReturnKeyType:UIReturnKeyDone];
-    }
-}
+#pragma mark - UIAlertViewDelegate methods
 
-
-- (void)textFieldDidEndEditing:(UITextField *)textField {
-    self.activeField = nil;
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    [alertView dismissWithClickedButtonIndex:buttonIndex animated:YES];
 }
 
 @end

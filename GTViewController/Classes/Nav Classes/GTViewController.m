@@ -350,7 +350,7 @@ NSString * const kAttr_listeners	= @"listeners";
             self.bypassPresentingNavbar = YES;
             __weak typeof(self) weakSelf = self;
             
-            [self dismissViewControllerAnimated:YES completion:^{
+            [self.followupViewController dismissViewControllerAnimated:YES completion:^{
                 weakSelf.bypassPresentingNavbar = NO;
             }];
         }
@@ -1022,10 +1022,8 @@ NSString * const kAttr_listeners	= @"listeners";
         
     }
     
-    self.navToolbarIsShown		= NO;
-    
     CGRect toolbarFrame			= self.navToolbar.frame;
-    toolbarFrame.origin.y		= self.view.frame.size.height - TOOLBAR_PEEK;
+    toolbarFrame.origin.y		= CGRectGetHeight(self.view.frame) - TOOLBAR_PEEK;
     CGRect toolbarButtonFrame	= self.navToolbarButton.frame;
     toolbarButtonFrame.origin.y	= toolbarFrame.origin.y - self.navToolbarButton.frame.size.height;
     
@@ -1044,8 +1042,7 @@ NSString * const kAttr_listeners	= @"listeners";
 
 - (void)hideNavToolbarDidStop {
     
-    
-    
+    self.navToolbarIsShown = NO;
 }
 
 #pragma mark - GTPageDelegate

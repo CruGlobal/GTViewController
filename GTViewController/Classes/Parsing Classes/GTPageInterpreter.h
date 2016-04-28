@@ -49,6 +49,9 @@
 #define DEFAULT_HEIGHT_BIGBUTTON 136.0
 #define DEFAULT_HEIGHT_ALLURLBUTTON 36.0
 #define DEFAULT_HEIGHT_LINKBUTTON 40.0
+
+#define BASE_TAG_INPUTFIELDTEXT 3580
+
 //////////Run-Time Constants///////////
 
 // Constants for the XML element names that will be considered during the parse.
