@@ -8,12 +8,12 @@
 
 #import <UIKit/UIKit.h>
 #import "TBXML.h"
-#import "GTPageStyle.h"
 
 extern NSString * const UISnuffleButtonNotificationButtonTapEvent;
 extern NSString * const UISnuffleButtonNotificationButtonTapEventKeyEventName;
 
 @protocol UISnuffleButtonTapDelegate;
+@class GTPageStyle;
 
 @interface UISnuffleButton : UIButton
 
