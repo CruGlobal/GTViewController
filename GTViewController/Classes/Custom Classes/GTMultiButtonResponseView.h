@@ -17,6 +17,6 @@
 @property (strong, nonatomic) UISnuffleButton *positiveButton;
 @property (strong, nonatomic) UISnuffleButton *negativeButton;
 
-- (instancetype) initWithFirstElement:(TBXMLElement *)firstElement secondElement:(TBXMLElement *)secondElement parentElement:(TBXMLElement *) parentElement yPosition:(CGFloat)y containerView:(UIView *)container withStyle:(GTPageStyle *) pageStyle;
+- (instancetype) initWithFirstElement:(TBXMLElement *)firstElement secondElement:(TBXMLElement *)secondElement parentElement:(TBXMLElement *) parentElement yPosition:(CGFloat)y containerView:(UIView *)container withStyle:(GTPageStyle *) pageStyle buttonTapDelegate:(id<UISnuffleButtonTapDelegate>)tapDelegate ;
 
 @end

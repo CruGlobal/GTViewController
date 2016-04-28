@@ -15,7 +15,7 @@
 @implementation GTMultiButtonResponseView
 
 
-- (instancetype) initWithFirstElement:(TBXMLElement *)firstElement secondElement:(TBXMLElement *)secondElement parentElement:(TBXMLElement *) parentElement yPosition:(CGFloat)y containerView:(UIView *)container withStyle:(GTPageStyle *) pageStyle{
+- (instancetype) initWithFirstElement:(TBXMLElement *)firstElement secondElement:(TBXMLElement *)secondElement parentElement:(TBXMLElement *) parentElement yPosition:(CGFloat)y containerView:(UIView *)container withStyle:(GTPageStyle *) pageStyle buttonTapDelegate:(id<UISnuffleButtonTapDelegate>)tapDelegate {
     TBXMLElement *positiveElement                  = nil;
     TBXMLElement *negativeElement                  = nil;
     
@@ -48,7 +48,7 @@
                                                                             yPos:0
                                                                        container:responseView
                                                                        withStyle:pageStyle
-                                                               buttonTapDelegate:nil];
+                                                               buttonTapDelegate:tapDelegate];
     
     
     
@@ -57,7 +57,7 @@
                                                                             yPos:0
                                                                        container:responseView
                                                                        withStyle:pageStyle
-                                                               buttonTapDelegate:nil];
+                                                               buttonTapDelegate:tapDelegate];
     
     [self layoutBasedOnAlignmentPositiveButton:positiveButton
                                 negativeButton:negativeButton

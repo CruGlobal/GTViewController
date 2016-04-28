@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
+#import "UISnuffleButton.h"
+
 extern NSString *const GTFollowupViewControllerFieldSubscriptionNotificationName;
 extern NSString *const GTFollowupViewControllerFieldSubscriptionEventName;
 extern NSString *const GTFollowupViewControllerFieldKeyEmail;
@@ -16,12 +18,13 @@ extern NSString *const GTFollowupViewControllerFieldKeyFollowupId;
 
 @class GTFollowupModalView, GTFollowupThankYouView;
 
-@interface GTFollowupViewController : UIViewController<UITextFieldDelegate, UIAlertViewDelegate>
+@interface GTFollowupViewController : UIViewController<UITextFieldDelegate, UIAlertViewDelegate, UISnuffleButtonTapDelegate>
 
 @property (strong,nonatomic) GTFollowupModalView *followupModalView;
 @property (strong,nonatomic) GTFollowupThankYouView *followupThankYouView;
 
-- (id)initWithFollowupView:(GTFollowupModalView *)followupModalView;
-- (id)initWithFollowupView:(GTFollowupModalView *)followupModalView thankYouView:(GTFollowupThankYouView *)thankYouView;
+- (void)setFollowupView:(GTFollowupModalView *)followupModalView;
+- (void)setFollowupView:(GTFollowupModalView *)followupModalView andThankYouView:(GTFollowupThankYouView *)thankYouView;
+
 - (void)transitionToThankYou;
 @end

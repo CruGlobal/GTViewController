@@ -22,7 +22,7 @@
 
 @implementation GTFollowupModalView
 
-- (instancetype)initFromElement:(TBXMLElement *)element withStyle:(GTPageStyle*)style presentingView:(UIView *)presentingView interpreterDelegate:(id<GTInterpreterDelegate>)interpreterDelegate {
+- (instancetype)initFromElement:(TBXMLElement *)element withStyle:(GTPageStyle*)style presentingView:(UIView *)presentingView interpreterDelegate:(id<GTInterpreterDelegate>)interpreterDelegate buttonTapDelegate:(id<UISnuffleButtonTapDelegate>)tapDelegate {
     
     self = [super initWithFrame:presentingView.frame];
 
@@ -126,7 +126,8 @@
                                                                                                   parentElement:modalComponentElement
                                                                                                       yPosition:currentY
                                                                                                   containerView:self
-                                                                                                      withStyle:style];
+                                                                                                      withStyle:style
+                                                                                              buttonTapDelegate:tapDelegate];
             
             [self addSubview:buttonPairView];
             

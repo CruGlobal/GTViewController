@@ -21,6 +21,7 @@ extern NSString * const UISnuffleButtonNotificationButtonTapEventKeyEventName;
 @property (nonatomic, strong) NSString			*mode;
 @property (nonatomic, strong) NSString			*urlTarget;
 @property (nonatomic, strong) NSArray			*tapEvents;
+@property (nonatomic, assign) BOOL              forceValidation;
 
 - (id)buttonWithElement:(TBXMLElement *)element addTag:(NSInteger)tag yPos:(CGFloat)yPos container:(UIView *)container withStyle:(GTPageStyle *)pageStyle buttonTapDelegate:(id<UISnuffleButtonTapDelegate>)buttonDelegate;
 -(instancetype)initWithFrame:(CGRect)frame tapDelegate:(id<UISnuffleButtonTapDelegate>)tapDelegate;
@@ -39,5 +40,5 @@ extern NSString * const UISnuffleButtonNotificationButtonTapEventKeyEventName;
 - (void)didReceiveTapOnEmailButton:(UISnuffleButton *)emailButton;
 - (void)didReceiveTapOnAllURLButton:(UISnuffleButton *)allURLButton;
 - (void)didReceiveTapOnButton:(UISnuffleButton *)button;
-
+- (void)didReceiveTapOnPositiveButton:(UISnuffleButton *)positiveButton;
 @end

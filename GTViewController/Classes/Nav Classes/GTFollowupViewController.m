@@ -29,55 +29,8 @@ NSString *const GTFollowupViewControllerFieldKeyFollowupId                      
 
 @implementation GTFollowupViewController
 
-
-- (id)initWithFollowupView:(GTFollowupModalView *)followupModalView {
-    if (self) {
-        self = [super init];
-        self.followupModalView = followupModalView;
-        self.followupThankYouView = followupModalView.thankYouView;
-        [self.view insertSubview:self.followupModalView atIndex:0];
-        [self.view insertSubview:self.followupThankYouView belowSubview:self.followupModalView];
-        self.originalHeight = followupModalView.frame.size.height;
-        
-        [self.followupModalView.inputFieldViews enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-            GTInputFieldView *inputFieldView = obj;
-            inputFieldView.inputTextField.delegate = self;
-        }];
-        
-        return self;
-    }
-    
-    return nil;
-}
-
-
-- (id)initWithFollowupView:(GTFollowupModalView *)followupModalView thankYouView:(GTFollowupThankYouView *)thankYouView {
-    if (self) {
-        self = [super init];
-        self.followupModalView = followupModalView;
-        self.followupThankYouView = thankYouView;
-        self.view = followupModalView;
-        self.originalHeight = followupModalView.frame.size.height;
-        
-        [self.followupModalView.inputFieldViews enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-            GTInputFieldView *inputFieldView = obj;
-            inputFieldView.inputTextField.delegate = self;
-        }];
-        
-        return self;
-    }
-    
-    return nil;
-}
-
-
 - (void) viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-        
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(sendFollowupSubscribeListener:)
-                                                 name:UISnuffleButtonNotificationButtonTapEvent
-                                               object:nil];
     
     // register for keyboard notifications
     [[NSNotificationCenter defaultCenter] addObserver:self
@@ -106,30 +59,47 @@ NSString *const GTFollowupViewControllerFieldKeyFollowupId                      
 }
 
 
-- (void) viewDidDisappear:(BOOL)animated {
-    [super viewDidDisappear:animated];
+- (void)setFollowupView:(GTFollowupModalView *)followupModalView {
+    self.followupModalView = followupModalView;
+    self.followupThankYouView = followupModalView.thankYouView;
+    [self.view insertSubview:self.followupModalView atIndex:0];
+    [self.view insertSubview:self.followupThankYouView belowSubview:self.followupModalView];
+    self.originalHeight = followupModalView.frame.size.height;
     
-    [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                    name:UISnuffleButtonNotificationButtonTapEvent
-                                                  object:nil];
+    [self.followupModalView.inputFieldViews enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        GTInputFieldView *inputFieldView = obj;
+        inputFieldView.inputTextField.delegate = self;
+    }];
+    
+    return;
 }
 
 
-- (void) sendFollowupSubscribeListener:(NSNotification *)notification {
-    if (![notification.userInfo[UISnuffleButtonNotificationButtonTapEventKeyEventName] isEqualToString:GTFollowupViewControllerFieldSubscriptionEventName]) {
-        return;
-    }
+- (void)setFollowupView:(GTFollowupModalView *)followupModalView andThankYouView:(GTFollowupThankYouView *)thankYouView {
+    self.followupModalView = followupModalView;
+    self.followupThankYouView = thankYouView;
+    self.view = followupModalView;
+    self.originalHeight = followupModalView.frame.size.height;
     
-    NSArray *inputValidationErrors = [self inputValidationErrors];
+    [self.followupModalView.inputFieldViews enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        GTInputFieldView *inputFieldView = obj;
+        inputFieldView.inputTextField.delegate = self;
+    }];
     
-    if ([inputValidationErrors count]) {
-        [[[UIAlertView alloc] initWithTitle:@"Please correct these fields:"
-                                    message:[inputValidationErrors componentsJoinedByString:@"\n"]
-                                   delegate:self
-                          cancelButtonTitle:@"Ok"
-                          otherButtonTitles:nil] show];
-        return;
-    }
+    return;
+}
+
+
+- (void)transitionToThankYou {
+    [self.view addSubview:self.followupThankYouView];
+    
+    [UIView animateWithDuration:2.0 animations:^{
+        [self.view bringSubviewToFront:self.followupThankYouView];
+    }];
+}
+
+
+- (void) sendFollowupSubscribeListener {
     
     __block NSMutableDictionary *followupDetailsDictionary = [[NSMutableDictionary alloc]init];
     [followupDetailsDictionary setValue:self.followupModalView.followupId forKey:GTFollowupViewControllerFieldKeyFollowupId];
@@ -150,35 +120,7 @@ NSString *const GTFollowupViewControllerFieldKeyFollowupId                      
 }
 
 
-- (NSArray *)inputValidationErrors {
-    __block NSMutableArray *validationErrors = @[].mutableCopy;
-
-    [self.followupModalView.inputFieldViews enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        GTInputFieldView *inputFieldView = obj;
-        
-        if (![inputFieldView isValid]) {
-            [validationErrors addObject:[inputFieldView validationMessage]];
-        }
-    }];
-    
-    return validationErrors;
-}
-
-
-- (void)transitionToThankYou {
-    if ([self inputValidationErrors]) {
-        return;
-    }
-
-    [self.view addSubview:self.followupThankYouView];
-    
-    [UIView animateWithDuration:2.0 animations:^{
-        [self.view bringSubviewToFront:self.followupThankYouView];
-    }];
-}
-
-
-#pragma mark Animation methods to prevent text field from being hidden
+#pragma mark - Animation methods to prevent text field from being hidden
 
 -(void)keyboardWillShow:(NSNotification *) notification {
     if (self.view.frame.origin.y < 0) {
@@ -324,6 +266,57 @@ NSString *const GTFollowupViewControllerFieldKeyFollowupId                      
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
     [alertView dismissWithClickedButtonIndex:buttonIndex animated:YES];
+}
+
+
+#pragma mark - UISnuffleButtonTapDelegate methods
+
+- (void)didReceiveTapOnPositiveButton:(UISnuffleButton *)positiveButton {    
+    NSArray *inputValidationErrors = [self inputValidationErrors];
+    
+    if ([positiveButton forceValidation] && [inputValidationErrors count]) {
+        [[[UIAlertView alloc] initWithTitle:@"Please correct these fields:"
+                                    message:[inputValidationErrors componentsJoinedByString:@"\n"]
+                                   delegate:self
+                          cancelButtonTitle:@"Ok"
+                          otherButtonTitles:nil] show];
+        return;
+    }
+    
+    [positiveButton.tapEvents enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        NSString *tapEvent = obj;
+        tapEvent = tapEvent ? [tapEvent stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]] : @"";
+       
+        if ([tapEvent isEqualToString:GTFollowupViewControllerFieldSubscriptionEventName]) {
+            [self sendFollowupSubscribeListener];
+        } else {
+            [[NSNotificationCenter defaultCenter] postNotificationName:UISnuffleButtonNotificationButtonTapEvent
+                                                                object:self
+                                                              userInfo:@{UISnuffleButtonNotificationButtonTapEventKeyEventName: tapEvent}];
+        }
+    }];
+}
+
+- (CGRect)pageFrame {
+    return self.followupModalView.frame;
+}
+
+- (UIView *)viewOfPageViewController {
+    return self.followupModalView;
+}
+
+- (NSArray *)inputValidationErrors {
+    __block NSMutableArray *validationErrors = @[].mutableCopy;
+    
+    [self.followupModalView.inputFieldViews enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        GTInputFieldView *inputFieldView = obj;
+        
+        if (![inputFieldView isValid]) {
+            [validationErrors addObject:[inputFieldView validationMessage]];
+        }
+    }];
+    
+    return validationErrors;
 }
 
 @end
