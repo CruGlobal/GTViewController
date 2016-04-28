@@ -28,7 +28,7 @@ NSString const *emailRegEx =
 @property (strong, nonatomic, readwrite) NSString   *parameterName;
 @property (strong, nonatomic) UILabel               *inputFieldLabel;
 @property (strong, nonatomic) NSString              *inputFieldType;
-@property (strong, nonatomic) NSRegularExpression   *validationRegex;
+@property (strong, nonatomic) NSString              *validationRegex;
 
 @end
 
@@ -107,9 +107,7 @@ NSString const *emailRegEx =
     self.parameterName = [TBXML valueOfAttributeNamed:kAttr_name forElement:element];
 
     if ([TBXML valueOfAttributeNamed:kAttr_validFormat forElement:element]) {
-       self.validationRegex = [[NSRegularExpression alloc] initWithPattern:[TBXML valueOfAttributeNamed:kAttr_validFormat forElement:element]
-                                                                   options:NSRegularExpressionCaseInsensitive
-                                                                     error:nil];
+        self.validationRegex = [TBXML valueOfAttributeNamed:kAttr_validFormat forElement:element];
     }
     
     [self.inputTextField setFrame:CGRectMake(0, self.inputFieldLabel.frame.size.height, w, h)];
@@ -140,9 +138,7 @@ NSString const *emailRegEx =
         return true;
     }
     
-    return [self.validationRegex numberOfMatchesInString:[self inputFieldValue]
-                                                 options:0
-                                                   range:NSMakeRange(0, [[self inputFieldValue] length])];
+    return [[NSPredicate predicateWithFormat:@"SELF MATCHES %@", self.validationRegex] evaluateWithObject:self.inputFieldValue];
 }
 
 - (BOOL)isValidEmail {
@@ -152,9 +148,9 @@ NSString const *emailRegEx =
 
 - (NSString *) validationMessage {
     if (![[self inputFieldValue] length]) {
-        return [NSString stringWithFormat:@"%@ was empty.", self.inputFieldLabel.text];
+        return [NSString stringWithFormat:NSLocalizedString(@"GTInputFieldView_validationMessage_empty",nil), self.inputFieldLabel.text];
     } else {
-        return [NSString stringWithFormat:@"%@ was not properly formatted.", self.inputFieldLabel.text];
+        return [NSString stringWithFormat:NSLocalizedString(@"GTInputFieldView_validationMessage_badFormat", nil), self.inputFieldLabel.text];
     }
 }
 @end
