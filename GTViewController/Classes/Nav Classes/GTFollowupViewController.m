@@ -120,6 +120,17 @@ NSString *const GTFollowupViewControllerFieldKeyFollowupId                      
         return;
     }
     
+    NSArray *inputValidationErrors = [self inputValidationErrors];
+    
+    if ([inputValidationErrors count]) {
+        [[[UIAlertView alloc] initWithTitle:@"Please correct these fields:"
+                                    message:[inputValidationErrors componentsJoinedByString:@"\n"]
+                                   delegate:self
+                          cancelButtonTitle:@"Ok"
+                          otherButtonTitles:nil] show];
+        return;
+    }
+    
     __block NSMutableDictionary *followupDetailsDictionary = [[NSMutableDictionary alloc]init];
     [followupDetailsDictionary setValue:self.followupModalView.followupId forKey:GTFollowupViewControllerFieldKeyFollowupId];
     
@@ -139,7 +150,26 @@ NSString *const GTFollowupViewControllerFieldKeyFollowupId                      
 }
 
 
+- (NSArray *)inputValidationErrors {
+    __block NSMutableArray *validationErrors = @[].mutableCopy;
+
+    [self.followupModalView.inputFieldViews enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        GTInputFieldView *inputFieldView = obj;
+        
+        if (![inputFieldView isValid]) {
+            [validationErrors addObject:[inputFieldView validationMessage]];
+        }
+    }];
+    
+    return validationErrors;
+}
+
+
 - (void)transitionToThankYou {
+    if ([self inputValidationErrors]) {
+        return;
+    }
+
     [self.view addSubview:self.followupThankYouView];
     
     [UIView animateWithDuration:2.0 animations:^{

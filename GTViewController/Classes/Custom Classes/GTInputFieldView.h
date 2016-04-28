@@ -19,5 +19,7 @@
 
 - (NSString *)inputFieldType;
 - (NSString *)inputFieldValue;
+- (BOOL) isValid;
+- (NSString *)validationMessage;
 
 @end

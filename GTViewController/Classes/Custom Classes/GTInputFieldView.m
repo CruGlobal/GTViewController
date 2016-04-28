@@ -16,7 +16,10 @@
 
 @interface GTInputFieldView ()
 
+@property (strong, nonatomic) UILabel               *inputFieldLabel;
 @property (strong, nonatomic) NSString              *inputFieldType;
+@property (strong, nonatomic) NSRegularExpression   *validationRegex;
+
 @end
 
 @implementation GTInputFieldView
@@ -24,7 +27,6 @@
 
 - (instancetype)inputFieldWithElement:(TBXMLElement *)element withY:(CGFloat)yPos withStyle:(GTPageStyle*)style presentingView:(UIView *)presentingView {
     
-    GTLabel *inputFieldLabel = nil;
     self.inputTextField = [[UITextField alloc]init];
     
     // format & configure view
@@ -68,14 +70,14 @@
         NSString *childElementName = [TBXML elementName:inputFieldChildElement];
         
         if ([childElementName isEqual:kName_Input_Label]) {
-            inputFieldLabel = [[GTLabel alloc]initWithElement:inputFieldChildElement
+            self.inputFieldLabel = [[GTLabel alloc]initWithElement:inputFieldChildElement
                                           parentTextAlignment:UITextAlignmentLeft
                                                          xPos:0
                                                          yPos:0
                                                     container:self
                                                         style:style];
             
-            [inputFieldLabel setFrame:CGRectMake(0,0,w,DEFAULT_HEIGHT_INPUTFIELDLABEL)];
+            [self.inputFieldLabel setFrame:CGRectMake(0,0,w,DEFAULT_HEIGHT_INPUTFIELDLABEL)];
         } else if ([childElementName isEqual:kName_Input_Placeholder]) {
             self.inputTextField.placeholder = [TBXML textForElement:inputFieldChildElement];
         }
@@ -92,14 +94,20 @@
         self.inputFieldType = @"name";
     }
 
-    [self.inputTextField setFrame:CGRectMake(0, inputFieldLabel.frame.size.height, w, h)];
+    if ([TBXML valueOfAttributeNamed:@"valid-format" forElement:element]) {
+       self.validationRegex = [[NSRegularExpression alloc] initWithPattern:[TBXML valueOfAttributeNamed:@"valid-format" forElement:element]
+                                                                   options:NSRegularExpressionCaseInsensitive
+                                                                     error:nil];
+    }
+    
+    [self.inputTextField setFrame:CGRectMake(0, self.inputFieldLabel.frame.size.height, w, h)];
     [self.inputTextField setTextColor:[UIColor darkTextColor]];
     [self.inputTextField setBackgroundColor:[UIColor whiteColor]];
     [self.inputTextField setReturnKeyType:UIReturnKeyNext];
     
-    [inputFieldView setFrame:CGRectMake(x, y, w, self.inputTextField.frame.size.height + inputFieldLabel.frame.size.height)];
+    [inputFieldView setFrame:CGRectMake(x, y, w, self.inputTextField.frame.size.height + self.inputFieldLabel.frame.size.height)];
     
-    [inputFieldView addSubview:inputFieldLabel];
+    [inputFieldView addSubview:self.inputFieldLabel];
     [inputFieldView addSubview:self.inputTextField];
     
     return self;
@@ -110,4 +118,23 @@
     return self.inputTextField.text;
 }
 
+
+- (BOOL) isValid {
+    if (!self.validationRegex) {
+        return true;
+    }
+    
+    return [self.validationRegex numberOfMatchesInString:[self inputFieldValue]
+                                                 options:0
+                                                   range:NSMakeRange(0, [[self inputFieldValue] length])];
+}
+
+
+- (NSString *) validationMessage {
+    if (![[self inputFieldValue] length]) {
+        return [NSString stringWithFormat:@"%@ was empty.", self.inputFieldLabel.text];
+    } else {
+        return [NSString stringWithFormat:@"%@ was not properly formatted.", self.inputFieldLabel.text];
+    }
+}
 @end
