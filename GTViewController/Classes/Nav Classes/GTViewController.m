@@ -163,6 +163,8 @@ NSString * const kAttr_listeners	= @"listeners";
 @property (nonatomic, assign)	BOOL						isFirstRunSinceCreation;
 @property (nonatomic, strong)	NSArray						*allURLsButtonArray;
 
+@property (nonatomic, assign)   BOOL                        bypassPresentingNavbar;
+
 //config functions
 - (NSMutableArray *)pageArrayForConfigFile:(NSString *)filename;
 
@@ -345,7 +347,12 @@ NSString * const kAttr_listeners	= @"listeners";
         
         // dismiss a follow up modal if it is present and displayed
         if (self.followupViewController) {
-            [self dismissViewControllerAnimated:YES completion:nil];
+            self.bypassPresentingNavbar = YES;
+            __weak typeof(self) weakSelf = self;
+            
+            [self.followupViewController dismissViewControllerAnimated:YES completion:^{
+                weakSelf.bypassPresentingNavbar = NO;
+            }];
         }
     }
 }
@@ -1016,7 +1023,7 @@ NSString * const kAttr_listeners	= @"listeners";
     }
     
     CGRect toolbarFrame			= self.navToolbar.frame;
-    toolbarFrame.origin.y		= self.view.frame.size.height - TOOLBAR_PEEK;
+    toolbarFrame.origin.y		= CGRectGetHeight(self.view.frame) - TOOLBAR_PEEK;
     CGRect toolbarButtonFrame	= self.navToolbarButton.frame;
     toolbarButtonFrame.origin.y	= toolbarFrame.origin.y - self.navToolbarButton.frame.size.height;
     
@@ -1035,8 +1042,7 @@ NSString * const kAttr_listeners	= @"listeners";
 
 - (void)hideNavToolbarDidStop {
     
-    self.navToolbarIsShown		= NO;
-    
+    self.navToolbarIsShown = NO;
 }
 
 #pragma mark - GTPageDelegate
@@ -1175,7 +1181,13 @@ NSString * const kAttr_listeners	= @"listeners";
 }
 
 - (void)dismissFollowupModal {
-    [self.followupViewController dismissViewControllerAnimated:YES completion:nil];
+    self.bypassPresentingNavbar = YES;
+    __weak typeof(self) weakSelf = self;
+    
+    [self.followupViewController dismissViewControllerAnimated:YES completion:^{
+        weakSelf.bypassPresentingNavbar = NO;
+    }];
+    
 }
 
 #pragma mark - User Interaction methods
@@ -1448,9 +1460,7 @@ NSString * const kAttr_listeners	= @"listeners";
     
     if (touch.tapCount == 20) {
         [self fiftyTap];
-    }
-    
-    if (touch.tapCount == 1) {
+    } else if (touch.tapCount > 1) {
         [self.centerPage tapAnywhere];
         
         if (self.navToolbarIsShown) {
@@ -1994,8 +2004,6 @@ NSString * const kAttr_listeners	= @"listeners";
     
     [super viewWillAppear:animated];
     
-    //[self setUpViewController];
-    
     //calculate the positions the views will have during animation
     self.inViewInCenterCenter = CGPointMake(self.view.frame.size.width / 2, self.view.center.y);
     self.outOfViewOnRightCenter = CGPointMake((3 * self.inViewInCenterCenter.x) + self.gapBetweenViews, self.inViewInCenterCenter.y);
@@ -2012,7 +2020,10 @@ NSString * const kAttr_listeners	= @"listeners";
     
     [self navToolbarAddRemoveSwitchButton];
     [self navToolbarAddRemoveRefreshButton];
-    [self showNavToolbar];
+    
+    if (!self.bypassPresentingNavbar) {
+        [self showNavToolbar];
+    }
     
 }
 

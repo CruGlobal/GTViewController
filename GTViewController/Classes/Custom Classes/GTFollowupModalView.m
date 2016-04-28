@@ -70,16 +70,12 @@
         modalComponentElement = modalComponentElement->nextSibling;
     }
     
-    // there are too many elements, not sure what to do
-    if (totalUsedSpace >= totalVerticalSpace) {
-        
-    } else {
-        CGFloat availableBufferSpace = totalVerticalSpace - totalUsedSpace;
-        topLeadingSpace =       availableBufferSpace * 0.15;
-        betweenElementsSpace =  (availableBufferSpace * 0.2) / (numLabels + numButtonPairs + numTextInputs);
-    }
+    CGFloat availableBufferSpace = totalVerticalSpace - totalUsedSpace;
+    topLeadingSpace =       availableBufferSpace * 0.15;
+    betweenElementsSpace =  (availableBufferSpace * 0.2) / (numLabels + numButtonPairs + numTextInputs);
     
     int currentY = topLeadingSpace;
+    int inputFieldTag = BASE_TAG_INPUTFIELDTEXT;
     
     // second pass - render objects
     modalComponentElement = fallbackElement->firstChild;
@@ -115,6 +111,9 @@
                                                                                 presentingView:presentingView];
             
             currentY = inputFieldView.frame.origin.y + inputFieldView.frame.size.height + betweenElementsSpace;
+            
+            // i love C sleight of hand :)
+            inputFieldView.inputTextField.tag = inputFieldTag++;
             
             [self.inputFieldViews addObject:inputFieldView];
             [self addSubview:inputFieldView];

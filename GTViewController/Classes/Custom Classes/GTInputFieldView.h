@@ -11,7 +11,9 @@
 
 @class GTPageStyle;
 
-@interface GTInputFieldView : UIView<UITextFieldDelegate>
+@interface GTInputFieldView : UIView
+
+@property (strong, nonatomic) UITextField           *inputTextField;
 
 - (instancetype)inputFieldWithElement:(TBXMLElement *)element withY:(CGFloat)yPos withStyle:(GTPageStyle*)style presentingView:(UIView *)presentingView;
 
