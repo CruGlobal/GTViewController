@@ -276,7 +276,7 @@ NSString *const GTFollowupViewControllerFieldKeyFollowupId                      
 - (void)didReceiveTapOnPositiveButton:(UISnuffleButton *)positiveButton {    
     NSArray *inputValidationErrors = [self inputValidationErrors];
     
-    if ([positiveButton forceValidation] && [inputValidationErrors count]) {
+    if ([positiveButton validation] && [inputValidationErrors count]) {
         [[[UIAlertView alloc] initWithTitle:@"Please correct these fields:"
                                     message:[inputValidationErrors componentsJoinedByString:@"\n"]
                                    delegate:self

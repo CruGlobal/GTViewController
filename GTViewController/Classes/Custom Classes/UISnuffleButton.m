@@ -87,7 +87,7 @@ extern NSString * const kButtonMode_allurl;
         NSString							*textSizeString		= nil;
         NSString							*y					= nil;
         NSString							*image				= nil;
-        NSString                            *forceValidationString    = nil;
+        NSString                            *validationString   = nil;
         NSArray								*tapEvents			= nil;
         CGFloat                             h                   = 0;
         CGFloat                             w                   = 0;
@@ -117,7 +117,7 @@ extern NSString * const kButtonMode_allurl;
             y					= [TBXML valueOfAttributeNamed:kAttr_y		forElement:element];
             h					= round([[TBXML valueOfAttributeNamed:kAttr_height	forElement:element] floatValue]);
             w					= round([[TBXML valueOfAttributeNamed:kAttr_width  forElement:element] floatValue]);
-            forceValidationString     = [TBXML valueOfAttributeNamed:kAttr_forceValidation forElement:element];
+            validationString    = [TBXML valueOfAttributeNamed:kAttr_validation forElement:element];
         } else {
             text				= [TBXML textForElement:button_label];
             textColorString		= [TBXML valueOfAttributeNamed:kAttr_color	forElement:button_label];
@@ -153,7 +153,7 @@ extern NSString * const kButtonMode_allurl;
         UIControlContentVerticalAlignment	contentVerticalAlignment;
         UIEdgeInsets						edgeInset			= UIEdgeInsetsZero;
         BOOL								hide				= YES;
-        BOOL                                forceValidation     = NO;
+        BOOL                                validation          = NO;
         
         //set defaults based on mode
         if ([mode isEqual:kButtonMode_big]) {
@@ -231,10 +231,12 @@ extern NSString * const kButtonMode_allurl;
             contentHorizontalAlignment	= UIControlContentHorizontalAlignmentCenter;
             contentVerticalAlignment	= UIControlContentVerticalAlignmentCenter;
             
-            forceValidation             = [[TBXML elementName:element] isEqual:kName_Positive_Button] &&
-                                            forceValidationString &&
-                                            ([[forceValidationString lowercaseString] isEqualToString:@"yes"] ||
-                                             [[forceValidationString lowercaseString] isEqualToString:@"true"]);
+            // gate on positive-buttons first.
+            if ([[TBXML elementName:element] isEqual:kName_Positive_Button]) {
+                validation = !validationString ||
+                    (![[validationString lowercaseString] isEqualToString:@"no"] && ![[validationString lowercaseString] isEqualToString:@"false"]);
+                
+            }
         } else {
             frame						= CGRectMake(BUTTONXOFFSET,
                                                      yPos + 2,
@@ -298,7 +300,7 @@ extern NSString * const kButtonMode_allurl;
         [buttonTemp setContentEdgeInsets:edgeInset];
         [buttonTemp setTag:tag];
         [buttonTemp setHidden:hide];
-        [buttonTemp setForceValidation:forceValidation];
+        [buttonTemp setValidation:validation];
         
         return buttonTemp;
         
@@ -454,7 +456,7 @@ extern NSString * const kButtonMode_allurl;
 				
 			}
 			
-            if (self.forceValidation && self.tapDelegate && [self.tapDelegate respondsToSelector:@selector(didReceiveTapOnPositiveButton:)]) {
+            if (self.validation && self.tapDelegate && [self.tapDelegate respondsToSelector:@selector(didReceiveTapOnPositiveButton:)]) {
                 [self.tapDelegate didReceiveTapOnPositiveButton:self];
             } else {
                 [self.tapEvents enumerateObjectsUsingBlock:^(NSString *eventName, NSUInteger idx, BOOL *stop) {

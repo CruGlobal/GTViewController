@@ -49,7 +49,7 @@ Thank You for forgiving my sins and giving me eternal life.  Take control of the
                 <input-placeholder>John Doe (Optional)</input-placeholder>
             </input-field>
             <button-pair align="right" xoffset="30" x-trailing-offset="30">
-                <positive-button h="40" w="80" force-validation="true" tap-events="follow-up-send,followup:subscribe">Send</positive-button>
+                <positive-button h="40" w="80" tap-events="follow-up-send,followup:subscribe">Send</positive-button>
                 <negative-button h="40" w="120" size="70" mode="link" tap-events="follow-up-no-thanks">No Thanks</negative-button>
             </button-pair>
             

@@ -76,7 +76,7 @@ NSString * const kAttr_followup_id      = @"followup-id";
 NSString * const kAttr_context_id       = @"context-id";
 extern NSString * const kAttr_listeners;
 NSString * const kAttr_type             = @"type";
-NSString * const kAttr_forceValidation  = @"force-validation";
+NSString * const kAttr_validation       = @"validation";
 NSString * const kAttr_validFormat      = @"valid-format";
 NSString * const kAttr_name             = @"name";
 

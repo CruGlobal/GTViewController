@@ -105,7 +105,7 @@ extern NSString * const kAttr_height;
 extern NSString * const kAttr_tap_events;
 extern NSString * const kAttr_followup_id;
 extern NSString * const kAttr_context_id;
-extern NSString * const kAttr_forceValidation;
+extern NSString * const kAttr_validation;
 extern NSString * const kAttr_validFormat;
 extern NSString * const kAttr_name;
 extern NSString * const kAttr_listeners;
