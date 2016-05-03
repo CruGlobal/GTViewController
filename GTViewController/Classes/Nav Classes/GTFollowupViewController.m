@@ -10,6 +10,7 @@
 
 #import "GTFollowUpViewController.h"
 
+#import "GTFileLoader.h"
 #import "GTInputFieldView.h"
 #import "GTFollowupModalView.h"
 #import "GTFollowupThankYouView.h"
@@ -275,9 +276,9 @@ NSString *const GTFollowupViewControllerFieldKeyFollowupId                      
 
 - (void)didReceiveTapOnPositiveButton:(UISnuffleButton *)positiveButton {    
     NSArray *inputValidationErrors = [self inputValidationErrors];
-    
+
     if ([positiveButton validation] && [inputValidationErrors count]) {
-        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"GTFollowupViewController_validation_title",nil)
+        [[[UIAlertView alloc] initWithTitle:[[GTFileLoader sharedInstance] localizedString:@"GTFollowupViewController_validation_title"]
                                     message:[inputValidationErrors componentsJoinedByString:@"\n"]
                                    delegate:self
                           cancelButtonTitle:@"Ok"

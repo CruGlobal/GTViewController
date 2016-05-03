@@ -13,6 +13,7 @@
 #import "GTPageInterpreter.h"
 #import "GTInputFieldView.h"
 #import "GTLabel.h"
+#import "GTFileLoader.h"
 
 NSString const *emailRegEx =
 @"(?:[a-z0-9!#$%\\&'*+/=?\\^_`{|}~-]+(?:\\.[a-z0-9!#$%\\&'*+/=?\\^_`{|}"
@@ -148,9 +149,9 @@ NSString const *emailRegEx =
 
 - (NSString *) validationMessage {
     if (![[self inputFieldValue] length]) {
-        return [NSString stringWithFormat:NSLocalizedString(@"GTInputFieldView_validationMessage_empty",nil), self.inputFieldLabel.text];
+        return [NSString stringWithFormat:[[GTFileLoader sharedInstance] localizedString:@"GTInputFieldView_validationMessage_empty"], self.inputFieldLabel.text];
     } else {
-        return [NSString stringWithFormat:NSLocalizedString(@"GTInputFieldView_validationMessage_badFormat", nil), self.inputFieldLabel.text];
+        return [NSString stringWithFormat:[[GTFileLoader sharedInstance] localizedString:@"GTInputFieldView_validationMessage_badFormat"], self.inputFieldLabel.text];
     }
 }
 @end
