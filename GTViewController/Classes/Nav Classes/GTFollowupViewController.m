@@ -27,7 +27,7 @@ NSString *const GTFollowupViewControllerFieldKeyFollowupId                      
 
 @property (weak, nonatomic)         UITextField *activeField;
 @property (assign, nonatomic)       CGFloat originalHeight;
-
+@property (assign, nonatomic)       CGRect visibleFrame;
 @end
 
 @implementation GTFollowupViewController
@@ -187,6 +187,8 @@ NSString *const GTFollowupViewControllerFieldKeyFollowupId                      
     // if just the frame is considered, then the label could show while the input is hidden
     unobscuredByKeyboardFrame.size.height -= CGRectGetHeight(inputFieldViewFrame);
     
+    self.visibleFrame = unobscuredByKeyboardFrame;
+    
     if (CGRectContainsPoint(unobscuredByKeyboardFrame, inputFieldViewFrame.origin) ) {
         return;
     }
@@ -194,6 +196,11 @@ NSString *const GTFollowupViewControllerFieldKeyFollowupId                      
     CGFloat viewVerticalDelta = (CGRectGetMinY(inputFieldViewFrame) + CGRectGetHeight(inputFieldViewFrame)) - CGRectGetHeight(unobscuredByKeyboardFrame);
     UIViewAnimationCurve animationCurve;
     NSTimeInterval animationDuration;
+    
+    self.visibleFrame = CGRectMake(CGRectGetMinX(self.visibleFrame),
+                                   CGRectGetMinY(self.visibleFrame),
+                                   CGRectGetWidth(self.visibleFrame),
+                                   CGRectGetHeight(self.visibleFrame) + viewVerticalDelta);
     
     [[userInfo objectForKey:UIKeyboardAnimationCurveUserInfoKey] getValue:&animationCurve];
     [[userInfo objectForKey:UIKeyboardAnimationDurationUserInfoKey] getValue:&animationDuration];
@@ -245,8 +252,13 @@ NSString *const GTFollowupViewControllerFieldKeyFollowupId                      
 }
 
 - (CGFloat)calculateVerticalDeltaFromCurrentField:(UIView *)currentField toNextField:(UIView *)nextField {
-    return CGRectGetMinY(nextField.frame) - CGRectGetMinY(currentField.frame);
+    CGRect nextFrame = nextField.frame;
     
+    if (CGRectContainsPoint(self.visibleFrame, nextField.frame.origin)) {
+        return 0;
+    }
+    
+    return CGRectGetMinY(nextField.frame) - CGRectGetMinY(currentField.frame);
 }
 
 #pragma mark - UITextFieldDelegate methods
@@ -276,6 +288,11 @@ NSString *const GTFollowupViewControllerFieldKeyFollowupId                      
                                                                  toNextField:nextActiveField.superview];
         
         self.activeField = nextActiveField;
+    
+        self.visibleFrame = CGRectMake(CGRectGetMinX(self.visibleFrame),
+                                       CGRectGetMinY(self.visibleFrame),
+                                       CGRectGetWidth(self.visibleFrame),
+                                       CGRectGetHeight(self.visibleFrame) + verticalDelta);
         
         [self animateViewWithVerticalDelta:verticalDelta animationDuration:0.3 animationCurve:UIViewAnimationCurveEaseOut];
         
