@@ -45,6 +45,11 @@ NSString *const GTFollowupViewControllerFieldKeyFollowupId                      
                                              selector:@selector(keyboardWillHide:)
                                                  name:UIKeyboardWillHideNotification
                                                object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(lookForSendFollowupListener:)
+                                                 name:UISnuffleButtonNotificationButtonTapEvent
+                                               object:nil];
 
 }
 
@@ -59,6 +64,10 @@ NSString *const GTFollowupViewControllerFieldKeyFollowupId                      
     [[NSNotificationCenter defaultCenter] removeObserver:self
                                                     name:UIKeyboardWillHideNotification
                                                   object:nil];
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                 name:UISnuffleButtonNotificationButtonTapEvent
+                                               object:nil];
 }
 
 
@@ -99,6 +108,17 @@ NSString *const GTFollowupViewControllerFieldKeyFollowupId                      
     [UIView animateWithDuration:2.0 animations:^{
         [self.view bringSubviewToFront:self.followupThankYouView];
     }];
+}
+
+
+- (void) lookForSendFollowupListener:(NSNotification *)notification {
+    NSDictionary *userInfo = notification.userInfo;
+    
+    NSString *eventName = [userInfo valueForKey:UISnuffleButtonNotificationButtonTapEventKeyEventName];
+    
+    if ([[eventName lowercaseString]isEqualToString:GTFollowupViewControllerFieldSubscriptionEventName]) {
+        [self sendFollowupSubscribeListener];
+    }
 }
 
 
@@ -274,30 +294,19 @@ NSString *const GTFollowupViewControllerFieldKeyFollowupId                      
 
 #pragma mark - UISnuffleButtonTapDelegate methods
 
-- (void)didReceiveTapOnPositiveButton:(UISnuffleButton *)positiveButton {    
+- (BOOL)validateFields {
     NSArray *inputValidationErrors = [self inputValidationErrors];
 
-    if ([positiveButton validation] && [inputValidationErrors count]) {
+    if ([inputValidationErrors count]) {
         [[[UIAlertView alloc] initWithTitle:[[GTFileLoader sharedInstance] localizedString:@"GTFollowupViewController_validation_title"]
                                     message:[inputValidationErrors componentsJoinedByString:@"\n"]
                                    delegate:self
                           cancelButtonTitle:@"Ok"
                           otherButtonTitles:nil] show];
-        return;
+        return NO;
     }
-    
-    [positiveButton.tapEvents enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        NSString *tapEvent = obj;
-        tapEvent = tapEvent ? [tapEvent stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]] : @"";
-       
-        if ([tapEvent isEqualToString:GTFollowupViewControllerFieldSubscriptionEventName]) {
-            [self sendFollowupSubscribeListener];
-        } else {
-            [[NSNotificationCenter defaultCenter] postNotificationName:UISnuffleButtonNotificationButtonTapEvent
-                                                                object:self
-                                                              userInfo:@{UISnuffleButtonNotificationButtonTapEventKeyEventName: tapEvent}];
-        }
-    }];
+
+    return YES;
 }
 
 - (CGRect)pageFrame {

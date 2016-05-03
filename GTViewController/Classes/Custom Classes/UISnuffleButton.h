@@ -40,5 +40,5 @@ extern NSString * const UISnuffleButtonNotificationButtonTapEventKeyEventName;
 - (void)didReceiveTapOnEmailButton:(UISnuffleButton *)emailButton;
 - (void)didReceiveTapOnAllURLButton:(UISnuffleButton *)allURLButton;
 - (void)didReceiveTapOnButton:(UISnuffleButton *)button;
-- (void)didReceiveTapOnPositiveButton:(UISnuffleButton *)positiveButton;
+- (BOOL)validateFields;
 @end

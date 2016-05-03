@@ -456,9 +456,13 @@ extern NSString * const kButtonMode_allurl;
 				
 			}
 			
-            if (self.validation && self.tapDelegate && [self.tapDelegate respondsToSelector:@selector(didReceiveTapOnPositiveButton:)]) {
-                [self.tapDelegate didReceiveTapOnPositiveButton:self];
-            } else {
+            BOOL fieldsAreValid = YES;
+            
+            if (self.validation && self.tapDelegate && [self.tapDelegate respondsToSelector:@selector(validateFields)]) {
+                fieldsAreValid = [self.tapDelegate validateFields];
+            }
+            
+            if (fieldsAreValid) {
                 [self.tapEvents enumerateObjectsUsingBlock:^(NSString *eventName, NSUInteger idx, BOOL *stop) {
                     if (eventName) {
                         NSString *trimmedEventName = [eventName stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
