@@ -197,11 +197,6 @@ NSString *const GTFollowupViewControllerFieldKeyFollowupId                      
     UIViewAnimationCurve animationCurve;
     NSTimeInterval animationDuration;
     
-    self.visibleFrame = CGRectMake(CGRectGetMinX(self.visibleFrame),
-                                   CGRectGetMinY(self.visibleFrame),
-                                   CGRectGetWidth(self.visibleFrame),
-                                   CGRectGetHeight(self.visibleFrame) + viewVerticalDelta);
-    
     [[userInfo objectForKey:UIKeyboardAnimationCurveUserInfoKey] getValue:&animationCurve];
     [[userInfo objectForKey:UIKeyboardAnimationDurationUserInfoKey] getValue:&animationDuration];
 
@@ -212,6 +207,12 @@ NSString *const GTFollowupViewControllerFieldKeyFollowupId                      
 
 
 - (void) animateViewWithVerticalDelta:(CGFloat)verticalDelta animationDuration:(NSTimeInterval) animationDuration animationCurve:(UIViewAnimationCurve)animationCurve {
+    
+    self.visibleFrame = CGRectMake(CGRectGetMinX(self.visibleFrame),
+                                   CGRectGetMinY(self.visibleFrame),
+                                   CGRectGetWidth(self.visibleFrame),
+                                   CGRectGetHeight(self.visibleFrame) + verticalDelta);
+
     // Get animation info from userInfo
     CGRect newViewFrame = self.view.frame;
     
@@ -234,29 +235,16 @@ NSString *const GTFollowupViewControllerFieldKeyFollowupId                      
     // Get animation info from userInfo
     NSTimeInterval animationDuration;
     UIViewAnimationCurve animationCurve;
-    CGRect myFrame = self.view.frame;
     
     [[userInfo objectForKey:UIKeyboardAnimationCurveUserInfoKey] getValue:&animationCurve];
     [[userInfo objectForKey:UIKeyboardAnimationDurationUserInfoKey] getValue:&animationDuration];
     
-    [UIView beginAnimations:nil context:nil];
-    [UIView setAnimationDuration:animationDuration];
-    [UIView setAnimationCurve:animationCurve];
-    
-    myFrame.origin.y = 0;
-    myFrame.size.height = self.originalHeight;
-    
-    self.view.frame = myFrame;
-    
-    [UIView commitAnimations];
+    [self animateViewWithVerticalDelta:self.originalHeight - CGRectGetHeight(self.view.frame)
+                     animationDuration:animationDuration
+                        animationCurve:animationCurve];
 }
 
 - (CGFloat)calculateVerticalDeltaFromCurrentField:(UIView *)currentField toNextField:(UIView *)nextField {
-    CGRect nextFrame = nextField.frame;
-    
-    if (CGRectContainsPoint(self.visibleFrame, nextField.frame.origin)) {
-        return 0;
-    }
     
     return CGRectGetMinY(nextField.frame) - CGRectGetMinY(currentField.frame);
 }
@@ -284,17 +272,18 @@ NSString *const GTFollowupViewControllerFieldKeyFollowupId                      
     if (nextResponder) {
         UITextField *nextActiveField = (UITextField*)nextResponder;
         
-        CGFloat verticalDelta = [self calculateVerticalDeltaFromCurrentField:self.activeField.superview
-                                                                 toNextField:nextActiveField.superview];
+        //nextActiveField.superview because the UITextField is in a container UIView.  The container UIView
+        //is the one whose y-position we care about.  The UITextField y-position is relative to the container
+        //and is not helpful here
+        CGFloat verticalDelta = CGRectContainsPoint(self.visibleFrame, nextActiveField.superview.frame.origin) ? 0 :
+        [self calculateVerticalDeltaFromCurrentField:self.activeField.superview
+                                         toNextField:nextActiveField.superview];
         
         self.activeField = nextActiveField;
-    
-        self.visibleFrame = CGRectMake(CGRectGetMinX(self.visibleFrame),
-                                       CGRectGetMinY(self.visibleFrame),
-                                       CGRectGetWidth(self.visibleFrame),
-                                       CGRectGetHeight(self.visibleFrame) + verticalDelta);
-        
-        [self animateViewWithVerticalDelta:verticalDelta animationDuration:0.3 animationCurve:UIViewAnimationCurveEaseOut];
+
+        [self animateViewWithVerticalDelta:verticalDelta
+                         animationDuration:0.3
+                            animationCurve:UIViewAnimationCurveEaseOut];
         
         if (![nextActiveField.superview.superview viewWithTag:++nextTag]) {
             [nextActiveField setReturnKeyType:UIReturnKeyDone];
