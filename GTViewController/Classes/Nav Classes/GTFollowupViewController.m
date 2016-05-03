@@ -105,6 +105,12 @@ NSString *const GTFollowupViewControllerFieldKeyFollowupId                      
 - (void)transitionToThankYou {
     [self.view addSubview:self.followupThankYouView];
     
+    [self.followupModalView.inputFieldViews enumerateObjectsUsingBlock:^(GTInputFieldView *inputFieldView, NSUInteger idx, BOOL * _Nonnull stop) {
+        if([inputFieldView.inputTextField isFirstResponder]) {
+            [inputFieldView.inputTextField resignFirstResponder];
+        }
+    }];
+    
     [UIView animateWithDuration:2.0 animations:^{
         [self.view bringSubviewToFront:self.followupThankYouView];
     }];
