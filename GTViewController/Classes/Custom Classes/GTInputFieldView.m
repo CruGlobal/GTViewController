@@ -98,10 +98,12 @@ NSString const *emailRegEx =
     
     if ([[TBXML valueOfAttributeNamed:kAttr_type forElement:element] isEqual:kInputFieldType_email]) {
         self.inputTextField.keyboardType = UIKeyboardTypeEmailAddress;
+        self.inputTextField.autocorrectionType = UITextAutocorrectionTypeNo;
         self.inputTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
         self.inputFieldType = kInputFieldType_email;
     } else if([[TBXML valueOfAttributeNamed:kAttr_type forElement:element] isEqual:kInputFieldType_text]) {
         self.inputTextField.autocapitalizationType = UITextAutocapitalizationTypeWords;
+        self.inputTextField.autocorrectionType = UITextAutocorrectionTypeNo;
         self.inputFieldType = kInputFieldType_text;
     }
     
@@ -144,7 +146,7 @@ NSString const *emailRegEx =
 
 - (BOOL)isValidEmail {
     NSPredicate *regExPredicate = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", emailRegEx];
-    return [regExPredicate evaluateWithObject:self.inputFieldValue];
+    return [regExPredicate evaluateWithObject:[self.inputFieldValue lowercaseString]];
 }
 
 - (NSString *) validationMessage {
