@@ -7,7 +7,7 @@
 */
 
 "GTInputFieldView_validationMessage_empty"           = "%@ was empty";
-"GTInputFieldView_validationMessage_badFormat"       = "%%@ was not properly formatted";
+"GTInputFieldView_validationMessage_badFormat"       = "%@ was not properly formatted";
 
 "GTFollowupViewController_validation_title"          = "Please correct these fields:";
 
