@@ -11,6 +11,8 @@
 
 extern NSString * const UISnuffleButtonNotificationButtonTapEvent;
 extern NSString * const UISnuffleButtonNotificationButtonTapEventKeyEventName;
+extern NSString * const UISnuffleButtonNotificationButtonTapEventKeyPackageCode;
+extern NSString * const UISnuffleButtonNotificationButtonTapEventKeyLanguageCode;
 
 @protocol UISnuffleButtonTapDelegate;
 @class GTPageStyle;
@@ -41,4 +43,6 @@ extern NSString * const UISnuffleButtonNotificationButtonTapEventKeyEventName;
 - (void)didReceiveTapOnAllURLButton:(UISnuffleButton *)allURLButton;
 - (void)didReceiveTapOnButton:(UISnuffleButton *)button;
 - (BOOL)validateFields;
+- (NSString *)currentPackageCode;
+- (NSString *)currentLanguageCode;
 @end

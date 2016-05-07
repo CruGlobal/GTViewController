@@ -15,6 +15,8 @@
 
 NSString * const UISnuffleButtonNotificationButtonTapEvent = @"org.cru.godtools.gtviewcontroller.uisnufflebutton.notification.buttontapevent";
 NSString * const UISnuffleButtonNotificationButtonTapEventKeyEventName = @"org.cru.godtools.gtviewcontroller.uisnufflebutton.notification.buttontapevent.key.eventname";
+NSString * const UISnuffleButtonNotificationButtonTapEventKeyPackageCode = @"org.cru.godtools.gtviewcontroller.uisnufflebutton.notification.buttontapevent.key.packagecode";
+NSString * const UISnuffleButtonNotificationButtonTapEventKeyLanguageCode = @"org.cru.godtools.gtviewcontroller.uisnufflebutton.notification.buttontapevent.key.languagecode";
 
 //button mode constants
 extern NSString * const kButtonMode_big;
@@ -469,7 +471,7 @@ extern NSString * const kButtonMode_allurl;
                         
                         [[NSNotificationCenter defaultCenter] postNotificationName:UISnuffleButtonNotificationButtonTapEvent
                                                                             object:self
-                                                                          userInfo:@{UISnuffleButtonNotificationButtonTapEventKeyEventName: trimmedEventName}];
+                                                                          userInfo:[self userInfoForTapEventNotification:trimmedEventName]];
                     }
                 }];
             }
@@ -488,6 +490,23 @@ extern NSString * const kButtonMode_allurl;
 	}
 	
 }
+
+
+- (NSDictionary *)userInfoForTapEventNotification:(NSString *)eventName {
+    NSMutableDictionary *userInfo = @{}.mutableCopy;
+    userInfo[UISnuffleButtonNotificationButtonTapEventKeyEventName] = eventName;
+    
+    if (self.tapDelegate && [self.tapDelegate respondsToSelector:@selector(currentPackageCode)] && [self.tapDelegate currentPackageCode]) {
+        userInfo[UISnuffleButtonNotificationButtonTapEventKeyPackageCode] = [self.tapDelegate currentPackageCode];
+    }
+    
+    if (self.tapDelegate && [self.tapDelegate respondsToSelector:@selector(currentLanguageCode)] && [self.tapDelegate currentLanguageCode]) {
+        userInfo[UISnuffleButtonNotificationButtonTapEventKeyLanguageCode] = [self.tapDelegate currentLanguageCode];
+    }
+    
+    return userInfo;
+}
+
 
 - (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event {
 	

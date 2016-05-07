@@ -28,6 +28,9 @@ NSString *const GTFollowupViewControllerFieldKeyFollowupId                      
 @property (weak, nonatomic)         UITextField *activeField;
 @property (assign, nonatomic)       CGFloat originalHeight;
 @property (assign, nonatomic)       CGRect visibleFrame;
+@property (strong, nonatomic)       NSString *packageCode;
+@property (strong, nonatomic)       NSString *LanguageCode;
+
 @end
 
 @implementation GTFollowupViewController
@@ -99,6 +102,11 @@ NSString *const GTFollowupViewControllerFieldKeyFollowupId                      
     }];
     
     return;
+}
+
+- (void)setPackageCode:(NSString *)packageCode andLanguageCode:(NSString *)languageCode {
+    self.packageCode = packageCode;
+    self.LanguageCode = languageCode;
 }
 
 
@@ -320,6 +328,16 @@ NSString *const GTFollowupViewControllerFieldKeyFollowupId                      
 
     return YES;
 }
+
+- (NSString *)currentLanguageCode {
+    return self.LanguageCode;
+}
+
+
+- (NSString *)currentPackageCode {
+    return self.packageCode;
+}
+
 
 - (CGRect)pageFrame {
     return self.followupModalView.frame;

@@ -25,6 +25,7 @@ extern NSString *const GTFollowupViewControllerFieldKeyFollowupId;
 
 - (void)setFollowupView:(GTFollowupModalView *)followupModalView;
 - (void)setFollowupView:(GTFollowupModalView *)followupModalView andThankYouView:(GTFollowupThankYouView *)thankYouView;
+- (void)setPackageCode:(NSString *)packageCode andLanguageCode:(NSString *)languageCode;
 
 - (void)transitionToThankYou;
 @end

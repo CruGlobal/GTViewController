@@ -1274,7 +1274,7 @@ NSString * const kInputFieldType_text   = @"text";
                                                                                        yPosition:object_ypos
                                                                                    containerView:tempContainerView
                                                                                        withStyle:self.pageStyle
-                                                                               buttonTapDelegate:nil];
+                                                                               buttonTapDelegate:self.buttonDelegate];
                 
                 maxWidth			= fmaxf(maxWidth, CGRectGetMaxX(multiButtonResponseView.frame));
                 maxHeight			= fmaxf(maxHeight, CGRectGetMaxY(multiButtonResponseView.frame));
