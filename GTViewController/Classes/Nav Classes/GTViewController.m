@@ -1473,7 +1473,7 @@ NSString * const kAttr_listeners	= @"listeners";
     
     if (touch.tapCount == 20) {
         [self fiftyTap];
-    } else if (touch.tapCount > 1) {
+    } else if (touch.tapCount == 1) {
         [self.centerPage tapAnywhere];
         
         if (self.navToolbarIsShown) {
