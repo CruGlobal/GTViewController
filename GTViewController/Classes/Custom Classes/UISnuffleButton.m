@@ -25,13 +25,13 @@ extern NSString * const kButtonMode_allurl;
 
 @interface UISnuffleButton ()
 
-@property (nonatomic, assign) BOOL           firstMoveOfTouch;
-@property (nonatomic, assign) CGPoint        startTouchPosition;
-@property (nonatomic, assign) NSTimeInterval startTimeStamp;
-@property (nonatomic, assign) CGPoint        lastTouchPosition;
-@property (nonatomic, assign) NSTimeInterval lastTimeStamp;
-@property (nonatomic, assign) double         totalHorizontalDistance;
-@property (nonatomic, assign) double         horizontalSpeed;
+@property (nonatomic, assign) BOOL                          firstMoveOfTouch;
+@property (nonatomic, assign) CGPoint                       startTouchPosition;
+@property (nonatomic, assign) NSTimeInterval                startTimeStamp;
+@property (nonatomic, assign) CGPoint                       lastTouchPosition;
+@property (nonatomic, assign) NSTimeInterval                lastTimeStamp;
+@property (nonatomic, assign) double                        totalHorizontalDistance;
+@property (nonatomic, assign) double                        horizontalSpeed;
 
 @end
 
@@ -87,6 +87,7 @@ extern NSString * const kButtonMode_allurl;
         NSString							*textSizeString		= nil;
         NSString							*y					= nil;
         NSString							*image				= nil;
+        NSString                            *validationString   = nil;
         NSArray								*tapEvents			= nil;
         CGFloat                             h                   = 0;
         CGFloat                             w                   = 0;
@@ -116,6 +117,7 @@ extern NSString * const kButtonMode_allurl;
             y					= [TBXML valueOfAttributeNamed:kAttr_y		forElement:element];
             h					= round([[TBXML valueOfAttributeNamed:kAttr_height	forElement:element] floatValue]);
             w					= round([[TBXML valueOfAttributeNamed:kAttr_width  forElement:element] floatValue]);
+            validationString    = [TBXML valueOfAttributeNamed:kAttr_validation forElement:element];
         } else {
             text				= [TBXML textForElement:button_label];
             textColorString		= [TBXML valueOfAttributeNamed:kAttr_color	forElement:button_label];
@@ -151,6 +153,7 @@ extern NSString * const kButtonMode_allurl;
         UIControlContentVerticalAlignment	contentVerticalAlignment;
         UIEdgeInsets						edgeInset			= UIEdgeInsetsZero;
         BOOL								hide				= YES;
+        BOOL                                validation          = NO;
         
         //set defaults based on mode
         if ([mode isEqual:kButtonMode_big]) {
@@ -227,6 +230,13 @@ extern NSString * const kButtonMode_allurl;
             hide						= NO;
             contentHorizontalAlignment	= UIControlContentHorizontalAlignmentCenter;
             contentVerticalAlignment	= UIControlContentVerticalAlignmentCenter;
+            
+            // gate on positive-buttons first.
+            if ([[TBXML elementName:element] isEqual:kName_Positive_Button]) {
+                validation = !validationString ||
+                    (![[validationString lowercaseString] isEqualToString:@"no"] && ![[validationString lowercaseString] isEqualToString:@"false"]);
+                
+            }
         } else {
             frame						= CGRectMake(BUTTONXOFFSET,
                                                      yPos + 2,
@@ -290,6 +300,7 @@ extern NSString * const kButtonMode_allurl;
         [buttonTemp setContentEdgeInsets:edgeInset];
         [buttonTemp setTag:tag];
         [buttonTemp setHidden:hide];
+        [buttonTemp setValidation:validation];
         
         return buttonTemp;
         
@@ -445,15 +456,23 @@ extern NSString * const kButtonMode_allurl;
 				
 			}
 			
-            [self.tapEvents enumerateObjectsUsingBlock:^(NSString *eventName, NSUInteger idx, BOOL *stop) {
-                if (eventName) {
-                    NSString *trimmedEventName = [eventName stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
-                    
-                    [[NSNotificationCenter defaultCenter] postNotificationName:UISnuffleButtonNotificationButtonTapEvent
-                                                                        object:self
-                                                                      userInfo:@{UISnuffleButtonNotificationButtonTapEventKeyEventName: trimmedEventName}];
-                }
-            }];
+            BOOL fieldsAreValid = YES;
+            
+            if (self.validation && self.tapDelegate && [self.tapDelegate respondsToSelector:@selector(validateFields)]) {
+                fieldsAreValid = [self.tapDelegate validateFields];
+            }
+            
+            if (fieldsAreValid) {
+                [self.tapEvents enumerateObjectsUsingBlock:^(NSString *eventName, NSUInteger idx, BOOL *stop) {
+                    if (eventName) {
+                        NSString *trimmedEventName = [eventName stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+                        
+                        [[NSNotificationCenter defaultCenter] postNotificationName:UISnuffleButtonNotificationButtonTapEvent
+                                                                            object:self
+                                                                          userInfo:@{UISnuffleButtonNotificationButtonTapEventKeyEventName: trimmedEventName}];
+                    }
+                }];
+            }
         }
 		
 		[self reset];

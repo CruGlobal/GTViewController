@@ -76,6 +76,9 @@ NSString * const kAttr_followup_id      = @"followup-id";
 NSString * const kAttr_context_id       = @"context-id";
 extern NSString * const kAttr_listeners;
 NSString * const kAttr_type             = @"type";
+NSString * const kAttr_validation       = @"validation";
+NSString * const kAttr_validFormat      = @"valid-format";
+NSString * const kAttr_name             = @"name";
 
 NSString * const kAttr_yoff				= @"yoffset";
 NSString * const kAttr_xoff				= @"xoffset";
@@ -113,6 +116,8 @@ NSString * const kLabelModifer_bold		= @"bold";
 NSString * const kLabelModifer_italics	= @"italics";
 NSString * const kLabelModifer_bolditalics	= @"bold-italics";
 
+NSString * const kInputFieldType_email  = @"email";
+NSString * const kInputFieldType_text   = @"text";
 
 @interface GTPageInterpreter ()
 
@@ -829,12 +834,15 @@ NSString * const kLabelModifer_bolditalics	= @"bold-italics";
             
             ////FOLLOWUP MODAL
             if ( [elementName isEqual:kName_Followup_Modal]) {
+                GTFollowupViewController *viewController = [[GTFollowupViewController alloc]init];
+                
                 GTFollowupModalView *followupModalView = [[GTFollowupModalView alloc] initFromElement:object_el
                                                                                             withStyle:self.pageStyle
                                                                                        presentingView:self.pageView
-                                                                                  interpreterDelegate:self.delegate];
+                                                                                  interpreterDelegate:self.delegate
+                                                                                    buttonTapDelegate:viewController];
                 
-                GTFollowupViewController *viewController = [[GTFollowupViewController alloc]initWithFollowupView:followupModalView];
+                [viewController setFollowupView:followupModalView];
                 
                 NSArray *listeners = [[TBXML valueOfAttributeNamed:kAttr_listeners forElement:object_el] componentsSeparatedByString:@","];
                 
@@ -1265,7 +1273,8 @@ NSString * const kLabelModifer_bolditalics	= @"bold-italics";
                                                                                    parentElement:object_el
                                                                                        yPosition:object_ypos
                                                                                    containerView:tempContainerView
-                                                                                       withStyle:self.pageStyle];
+                                                                                       withStyle:self.pageStyle
+                                                                               buttonTapDelegate:nil];
                 
                 maxWidth			= fmaxf(maxWidth, CGRectGetMaxX(multiButtonResponseView.frame));
                 maxHeight			= fmaxf(maxHeight, CGRectGetMaxY(multiButtonResponseView.frame));

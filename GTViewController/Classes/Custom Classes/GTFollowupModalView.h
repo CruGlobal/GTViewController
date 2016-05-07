@@ -21,7 +21,7 @@
 @property (strong, nonatomic) NSMutableArray *inputFieldViews;
 @property (strong, nonatomic) NSString *followupId;
 
-- (instancetype)initFromElement:(TBXMLElement *)element withStyle:(GTPageStyle*)style presentingView:(UIView *)presentingView interpreterDelegate:(id<GTInterpreterDelegate>)interpreterDelegate;
+- (instancetype)initFromElement:(TBXMLElement *)element withStyle:(GTPageStyle*)style presentingView:(UIView *)presentingView interpreterDelegate:(id<GTInterpreterDelegate>)interpreterDelegate buttonTapDelegate:(id<UISnuffleButtonTapDelegate>)tapDelegate;
 
 - (void)setWatermark:(UIImageView *) watermarkImageView;
 @end

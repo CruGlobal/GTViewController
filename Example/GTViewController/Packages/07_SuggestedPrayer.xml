@@ -44,7 +44,7 @@ Thank You for forgiving my sins and giving me eternal life.  Take control of the
                 <input-label modifier="bold" size="80">Email</input-label>
                 <input-placeholder>john.doe@gmail.com</input-placeholder>
             </input-field>
-            <input-field name="name" type="text" xoffset="30" yoffset="10" x-trailing-offset="30">
+            <input-field name="name" type="text" xoffset="30" yoffset="10" x-trailing-offset="30" valid-format="[A-Za-z]+">
                 <input-label modifier="bold" size="80">Name</input-label>
                 <input-placeholder>John Doe (Optional)</input-placeholder>
             </input-field>

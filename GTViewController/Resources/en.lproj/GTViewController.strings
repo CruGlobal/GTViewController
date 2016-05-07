@@ -6,6 +6,11 @@
   Copyright (c) 2015 Michael Harrison. All rights reserved.
 */
 
+"GTInputFieldView_validationMessage_empty"           = "%@ was empty";
+"GTInputFieldView_validationMessage_badFormat"       = "%@ was not properly formatted";
+
+"GTFollowupViewController_validation_title"          = "Please correct these fields:";
+
 "GTViewController_urlButton_cancel"                  = "Cancel";
 "GTViewController_urlButton_copy"                    = "Copy";
 "GTViewController_urlButton_email"                   = "Email";

@@ -14,10 +14,12 @@
 @interface GTInputFieldView : UIView
 
 @property (strong, nonatomic) UITextField           *inputTextField;
+@property (strong, nonatomic, readonly) NSString    *parameterName;
 
 - (instancetype)inputFieldWithElement:(TBXMLElement *)element withY:(CGFloat)yPos withStyle:(GTPageStyle*)style presentingView:(UIView *)presentingView;
 
-- (NSString *)inputFieldType;
 - (NSString *)inputFieldValue;
+- (BOOL) isValid;
+- (NSString *)validationMessage;
 
 @end

@@ -13,10 +13,24 @@
 #import "GTPageInterpreter.h"
 #import "GTInputFieldView.h"
 #import "GTLabel.h"
+#import "GTFileLoader.h"
+
+NSString const *emailRegEx =
+@"(?:[a-z0-9!#$%\\&'*+/=?\\^_`{|}~-]+(?:\\.[a-z0-9!#$%\\&'*+/=?\\^_`{|}"
+@"~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\"
+@"x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-z0-9](?:[a-"
+@"z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5"
+@"]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-"
+@"9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21"
+@"-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])";
 
 @interface GTInputFieldView ()
 
+@property (strong, nonatomic, readwrite) NSString   *parameterName;
+@property (strong, nonatomic) UILabel               *inputFieldLabel;
 @property (strong, nonatomic) NSString              *inputFieldType;
+@property (strong, nonatomic) NSString              *validationRegex;
+
 @end
 
 @implementation GTInputFieldView
@@ -24,7 +38,6 @@
 
 - (instancetype)inputFieldWithElement:(TBXMLElement *)element withY:(CGFloat)yPos withStyle:(GTPageStyle*)style presentingView:(UIView *)presentingView {
     
-    GTLabel *inputFieldLabel = nil;
     self.inputTextField = [[UITextField alloc]init];
     
     // format & configure view
@@ -68,14 +81,14 @@
         NSString *childElementName = [TBXML elementName:inputFieldChildElement];
         
         if ([childElementName isEqual:kName_Input_Label]) {
-            inputFieldLabel = [[GTLabel alloc]initWithElement:inputFieldChildElement
+            self.inputFieldLabel = [[GTLabel alloc]initWithElement:inputFieldChildElement
                                           parentTextAlignment:UITextAlignmentLeft
                                                          xPos:0
                                                          yPos:0
                                                     container:self
                                                         style:style];
             
-            [inputFieldLabel setFrame:CGRectMake(0,0,w,DEFAULT_HEIGHT_INPUTFIELDLABEL)];
+            [self.inputFieldLabel setFrame:CGRectMake(0,0,w,DEFAULT_HEIGHT_INPUTFIELDLABEL)];
         } else if ([childElementName isEqual:kName_Input_Placeholder]) {
             self.inputTextField.placeholder = [TBXML textForElement:inputFieldChildElement];
         }
@@ -83,23 +96,31 @@
         inputFieldChildElement = inputFieldChildElement->nextSibling;
     }
     
-    if ([[TBXML valueOfAttributeNamed:kAttr_type forElement:element] isEqual:@"email"]) {
+    if ([[TBXML valueOfAttributeNamed:kAttr_type forElement:element] isEqual:kInputFieldType_email]) {
         self.inputTextField.keyboardType = UIKeyboardTypeEmailAddress;
+        self.inputTextField.autocorrectionType = UITextAutocorrectionTypeNo;
         self.inputTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
-        self.inputFieldType = @"email";
-    } else if([[TBXML valueOfAttributeNamed:kAttr_type forElement:element] isEqual:@"text"]) {
+        self.inputFieldType = kInputFieldType_email;
+    } else if([[TBXML valueOfAttributeNamed:kAttr_type forElement:element] isEqual:kInputFieldType_text]) {
         self.inputTextField.autocapitalizationType = UITextAutocapitalizationTypeWords;
-        self.inputFieldType = @"name";
+        self.inputTextField.autocorrectionType = UITextAutocorrectionTypeNo;
+        self.inputFieldType = kInputFieldType_text;
     }
+    
+    self.parameterName = [TBXML valueOfAttributeNamed:kAttr_name forElement:element];
 
-    [self.inputTextField setFrame:CGRectMake(0, inputFieldLabel.frame.size.height, w, h)];
+    if ([TBXML valueOfAttributeNamed:kAttr_validFormat forElement:element]) {
+        self.validationRegex = [TBXML valueOfAttributeNamed:kAttr_validFormat forElement:element];
+    }
+    
+    [self.inputTextField setFrame:CGRectMake(0, self.inputFieldLabel.frame.size.height, w, h)];
     [self.inputTextField setTextColor:[UIColor darkTextColor]];
     [self.inputTextField setBackgroundColor:[UIColor whiteColor]];
     [self.inputTextField setReturnKeyType:UIReturnKeyNext];
     
-    [inputFieldView setFrame:CGRectMake(x, y, w, self.inputTextField.frame.size.height + inputFieldLabel.frame.size.height)];
+    [inputFieldView setFrame:CGRectMake(x, y, w, self.inputTextField.frame.size.height + self.inputFieldLabel.frame.size.height)];
     
-    [inputFieldView addSubview:inputFieldLabel];
+    [inputFieldView addSubview:self.inputFieldLabel];
     [inputFieldView addSubview:self.inputTextField];
     
     return self;
@@ -110,4 +131,29 @@
     return self.inputTextField.text;
 }
 
+
+- (BOOL)isValid {
+    if ([[self inputFieldType] isEqualToString:kInputFieldType_email]) {
+        return [self isValidEmail];
+    }
+    
+    if (!self.validationRegex) {
+        return true;
+    }
+    
+    return [[NSPredicate predicateWithFormat:@"SELF MATCHES %@", self.validationRegex] evaluateWithObject:self.inputFieldValue];
+}
+
+- (BOOL)isValidEmail {
+    NSPredicate *regExPredicate = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", emailRegEx];
+    return [regExPredicate evaluateWithObject:[self.inputFieldValue lowercaseString]];
+}
+
+- (NSString *) validationMessage {
+    if (![[self inputFieldValue] length]) {
+        return [NSString stringWithFormat:[[GTFileLoader sharedInstance] localizedString:@"GTInputFieldView_validationMessage_empty"], self.inputFieldLabel.text];
+    } else {
+        return [NSString stringWithFormat:[[GTFileLoader sharedInstance] localizedString:@"GTInputFieldView_validationMessage_badFormat"], self.inputFieldLabel.text];
+    }
+}
 @end
