@@ -572,6 +572,20 @@ extern NSString * const kAttr_watermark;
 	
 }
 
+- (NSString *)currentPackageCode {
+    if (self.pageDelegate && [self.pageDelegate respondsToSelector:@selector(currentPackageCode)]) {
+        return [self.pageDelegate currentPackageCode];
+    }
+    return nil;
+}
+
+- (NSString *)currentLanguageCode {
+    if (self.pageDelegate && [self.pageDelegate respondsToSelector:@selector(currentLanguageCode)]) {
+        return [self.pageDelegate currentLanguageCode];
+    }
+    return nil;
+}
+
 #pragma mark -
 #pragma mark Button Interaction Functions
 

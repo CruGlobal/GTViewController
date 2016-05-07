@@ -55,4 +55,6 @@ extern NSString * const GTPageNotificationEventKeyEventName;
 - (void)presentFollowupModal:(GTFollowupViewController *)followupViewController;
 - (void)transitionFollowupToThankYou;
 - (void)dismissFollowupModal;
+- (NSString *)currentLanguageCode;
+- (NSString *)currentPackageCode;
 @end

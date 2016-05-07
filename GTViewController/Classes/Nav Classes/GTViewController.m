@@ -1173,6 +1173,9 @@ NSString * const kAttr_listeners	= @"listeners";
 
 - (void)presentFollowupModal:(GTFollowupViewController *)followupModalViewController {
     self.followupViewController = followupModalViewController;
+    
+    [self.followupViewController setPackageCode:self.packageCode andLanguageCode:self.languageCode];
+    
     [self presentViewController:self.followupViewController animated:YES completion:nil];
 }
 
@@ -1189,6 +1192,16 @@ NSString * const kAttr_listeners	= @"listeners";
     }];
     
 }
+
+
+- (NSString *)currentPackageCode {
+    return self.packageCode;
+}
+
+- (NSString *)currentLanguageCode {
+    return self.languageCode;
+}
+
 
 #pragma mark - User Interaction methods
 
