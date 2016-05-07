@@ -1174,6 +1174,7 @@ NSString * const kAttr_listeners	= @"listeners";
 - (void)presentFollowupModal:(GTFollowupViewController *)followupModalViewController {
     self.followupViewController = followupModalViewController;
     
+    self.activeViewMasked = NO;
     [self.followupViewController setPackageCode:self.packageCode andLanguageCode:self.languageCode];
     
     [self presentViewController:self.followupViewController animated:YES completion:nil];
