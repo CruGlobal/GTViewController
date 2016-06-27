@@ -1177,6 +1177,11 @@ NSString * const kAttr_listeners	= @"listeners";
     self.activeViewMasked = NO;
     [self.followupViewController setPackageCode:self.packageCode andLanguageCode:self.languageCode];
     
+    if ([self.followupViewController isBeingPresented]) {
+        NSLog(@"%@", @"followupViewController is already being presented.  not presenting it again.");
+        return;
+    }
+    
     [self presentViewController:self.followupViewController animated:YES completion:nil];
 }
 
