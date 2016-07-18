@@ -697,7 +697,6 @@ NSString * const kAttr_listeners	= @"listeners";
                                                                      target:self
                                                                      action:@selector(showInstructions)];
     self.navigationItem.rightBarButtonItem	= helpButton;
-    
     //configure bottom toolbar
     NSMutableArray *buttons = [NSMutableArray arrayWithObject:[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil]];
     
@@ -731,7 +730,7 @@ NSString * const kAttr_listeners	= @"listeners";
     [buttons addObject:[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil]];
     
     [self.navToolbar setItems:[NSArray arrayWithArray:buttons] animated:YES];
-    
+    self.navToolbar.tintColor = [UIColor whiteColor];
 }
 
 -(void)navToolbarAddRemoveRefreshButton{
