@@ -188,7 +188,6 @@ NSString * const kAttr_listeners	= @"listeners";
 -(void)showNavToolbarDidStop;
 -(void)hideNavToolbar;
 -(void)hideNavToolbarDidStop;
--(void)fiftyTap;
 
 -(void)showInstructions;
 -(void)runInstructionsIfNecessary;
@@ -887,43 +886,6 @@ NSString * const kAttr_listeners	= @"listeners";
 	self.parallelLanguageCode = languageCode;
 }
 
-#pragma mark - easter egg
-
-- (void)fiftyTap {
-    
-    [UIView beginAnimations:nil context:nil];
-    [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
-    [UIView setAnimationBeginsFromCurrentState:YES];
-    [UIView	setAnimationDuration:1];
-    
-    CABasicAnimation *fullRotation = [CABasicAnimation animationWithKeyPath:@"transform.rotation"];
-    fullRotation.fromValue = [NSNumber numberWithFloat:0];
-    fullRotation.toValue = [NSNumber numberWithFloat:((360*M_PI)/180)];
-    fullRotation.duration = 0.5;
-    fullRotation.repeatCount = 10;
-    [self.centerPage.layer addAnimation:fullRotation forKey:@"360"];
-    
-    CABasicAnimation *zoomFull = [CABasicAnimation animationWithKeyPath:@"transform.scale"];
-    zoomFull.fromValue = [NSNumber numberWithFloat:0.0];
-    zoomFull.toValue = [NSNumber numberWithFloat:1.0];
-    zoomFull.duration = 2.5;
-    zoomFull.repeatCount = 1;
-    [self.centerPage.layer addAnimation:zoomFull forKey:@"zoom"];
-    
-    [UIView commitAnimations];
-    
-    //NSError *error = nil;
-    NSString *soundPath = [self.fileLoader.bundle pathForResource:@"fiftytap" ofType:@"mp3"];
-    NSURL		*soundURL	= [[NSURL alloc] initFileURLWithPath:soundPath];
-    self.AVPlayer = [[AVAudioPlayer alloc] initWithContentsOfURL:soundURL error:NULL];
-    
-    if (!self.AVPlayer.playing) {
-        [self.AVPlayer play];
-    }
-    
-    
-}
-
 #pragma mark - instruction methods (ie show instructions to user)
 
 -(void)runInstructionsIfNecessary {
@@ -1471,27 +1433,6 @@ NSString * const kAttr_listeners	= @"listeners";
             [self animateCenterViewBackToCenterFromLeft];
         }
     }
-}
-
-- (void)processTap:(UITouch *)touch withEvent:(UIEvent *)event {
-    //NSLog(@"Tap Count: %d", touch.tapCount);
-    //retract any panels that are open
-    
-    if (touch.tapCount == 20) {
-        [self fiftyTap];
-    } else if (touch.tapCount == 1) {
-        [self.centerPage tapAnywhere];
-        
-        if (self.navToolbarIsShown) {
-            [self hideNavToolbar];
-        } else {
-            if (!self.activeViewMasked) {
-                [self showNavToolbar];
-            }
-        }
-        
-    }
-    
 }
 
 - (void)resetViews {
