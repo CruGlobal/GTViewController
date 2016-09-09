@@ -1473,17 +1473,6 @@ NSString * const kAttr_listeners	= @"listeners";
     }
 }
 
-- (void)processTap:(UITouch *)touch withEvent:(UIEvent *)event {
-    //NSLog(@"Tap Count: %d", touch.tapCount);
-    //retract any panels that are open
-    
-    if (touch.tapCount == 20) {
-        [self fiftyTap];
-    } else if (touch.tapCount == 1) {
-        [self.centerPage tapAnywhere];
-    }
-}
-
 - (void)resetViews {
     //NSLog(@"snuffyViewController: resetViews");
     //remove animations
