@@ -44,18 +44,16 @@ NSInteger const HorizontalGestureRecognizerMinSwipeSpeed	= 400;
 }
 
 - (void)processTouchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
-	
-	if (self.startTouchPosition.x < 0.1 || self.startTouchPosition.y < 0.1) {
-		//grab touch attributes
-		UITouch *touch = [touches anyObject];
-		
-		//set initial values for instance variables
-		self.startTouchPosition		= [touch locationInView:self.targetView];
-		self.startTimeStamp			= [touch timestamp];
-		self.lastTouchPosition		= [touch locationInView:self.targetView];
-		self.lastTimeStamp			= [touch timestamp];
-		self.totalHorizontalDistance= 0;
-	}
+    
+    //grab touch attributes
+    UITouch *touch = [touches anyObject];
+    
+    //set initial values for instance variables
+    self.startTouchPosition		= [touch locationInView:self.targetView];
+    self.startTimeStamp			= [touch timestamp];
+    self.lastTouchPosition		= [touch locationInView:self.targetView];
+    self.lastTimeStamp			= [touch timestamp];
+    self.totalHorizontalDistance = 0;
 }
 
 - (void)processTouchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
