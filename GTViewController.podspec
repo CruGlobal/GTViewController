@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "GTViewController"
-  s.version      = "7.0.1"
+  s.version      = "7.0.2.1"
   s.summary      = "A View Controller that renders God Tools xml packages"
   s.description  = <<-DESC
                    GTViewController takes a God Tools xml package and renders it for iOS devices.

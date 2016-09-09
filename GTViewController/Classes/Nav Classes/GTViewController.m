@@ -1481,17 +1481,7 @@ NSString * const kAttr_listeners	= @"listeners";
         [self fiftyTap];
     } else if (touch.tapCount == 1) {
         [self.centerPage tapAnywhere];
-        
-        if (self.navToolbarIsShown) {
-            [self hideNavToolbar];
-        } else {
-            if (!self.activeViewMasked) {
-                [self showNavToolbar];
-            }
-        }
-        
     }
-    
 }
 
 - (void)resetViews {
